@@ -1,0 +1,13 @@
+# 코드↔실명 매핑표 — 절대 공개 저장소에 올리지 않음 (선생님 로컬에만 보관)
+roster.csv
+
+.DS_Store
+**/.DS_Store
+Thumbs.db
+.Spotlight-V100
+.Trashes
+._*
+
+# 수업 자료(오리엔테이션 등) 및 동기화 폴더 — 공개 제외
+*.pdf
+docs/

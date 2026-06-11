@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>혼자 사는 서울</title>
+
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+font-family:'IBM Plex Sans KR',sans-serif;
+background:#f8fafc;
+color:#0f172a;
+overflow-x:hidden;
+}
+
+.hero{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+background:linear-gradient(180deg,#020617,#0f172a);
+color:white;
+position:relative;
+}
+
+.hero::before{
+content:'';
+position:absolute;
+width:600px;
+height:600px;
+border-radius:50%;
+background:rgba(255,255,255,.05);
+filter:blur(80px);
+}
+
+.hero-content{position:relative;z-index:2}
+
+.hero-number{
+font-size:clamp(120px,18vw,260px);
+font-weight:700;
+line-height:1;
+background:linear-gradient(180deg,#fff,#94a3b8);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.hero h1{
+font-size:clamp(48px,7vw,96px);
+margin:10px 0;
+}
+
+.hero p{
+font-size:clamp(18px,2vw,28px);
+color:#cbd5e1;
+line-height:1.8;
+}
+
+.scroll{
+margin-top:40px;
+letter-spacing:4px;
+color:#94a3b8;
+}
+
+.section{
+min-height:100vh;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:80px;
+align-items:center;
+padding:100px 8%;
+}
+
+.reverse .text{order:2}
+.reverse .visual{order:1}
+
+.label{
+letter-spacing:2px;
+text-transform:uppercase;
+color:#64748b;
+margin-bottom:16px;
+}
+
+.big-number{
+font-size:clamp(60px,10vw,130px);
+font-weight:700;
+}
+
+.text h2{
+font-size:clamp(38px,5vw,72px);
+line-height:1.15;
+margin:10px 0 20px;
+}
+
+.text p{
+font-size:19px;
+line-height:1.9;
+color:#64748b;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:28px;
+box-shadow:0 25px 60px rgba(0,0,0,.08);
+border:1px solid #e2e8f0;
+}
+
+.chart{
+height:450px;
+}
+
+.final{
+height:100vh;
+background:#020617;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:40px;
+color:white;
+}
+
+.final h2{
+font-size:clamp(44px,6vw,88px);
+line-height:1.3;
+}
+
+.final p{
+margin-top:24px;
+font-size:24px;
+color:#cbd5e1;
+}
+
+@media(max-width:900px){
+.section{
+grid-template-columns:1fr;
+gap:40px;
+}
+.chart{height:320px}
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+<div class="hero-content">
+<div class="hero-number counter" data-target="37.1">0</div>
+<h1>혼자 사는 서울</h1>
+<p>서울의 1인 가구 증가는<br>청년의 이야기가 아니라<br>고령화의 이야기일 수 있다.</p>
+<div class="scroll">SCROLL ↓</div>
+</div>
+</section>
+
+<section class="section">
+<div class="text reveal">
+<div class="label">Marriage Trend</div>
+<h2>결혼은<br>줄어들고 있다</h2>
+<p>서울시 혼인 건수는 감소세를 보인다. 가족 형성 방식의 변화는 1인 가구 증가의 배경이 되고 있다.</p>
+</div>
+<div class="visual reveal">
+<div class="card"><div class="chart"><canvas id="marriageChart"></canvas></div></div>
+</div>
+</section>
+
+<section class="section reverse">
+<div class="text reveal">
+<div class="label">Young Adults</div>
+<div class="big-number counter" data-target="26.5">0</div>
+<h2>청년은<br>혼자 살기 시작했다</h2>
+<p>25~34세 청년층 1인 가구는 꾸준히 증가했다.</p>
+</div>
+<div class="visual reveal">
+<div class="card"><div class="chart"><canvas id="youthChart"></canvas></div></div>
+</div>
+</section>
+
+<section class="section">
+<div class="text reveal">
+<div class="label">Seniors</div>
+<div class="big-number counter" data-target="37.1">0</div>
+<h2>하지만 더 빠르게<br>증가한 집단이 있다</h2>
+<p>65세 이상 고령층 1인 가구는 청년층보다 더 빠르게 증가했다.</p>
+</div>
+<div class="visual reveal">
+<div class="card"><div class="chart"><canvas id="seniorChart"></canvas></div></div>
+</div>
+</section>
+
+<section class="section reverse">
+<div class="text reveal">
+<div class="label">Comparison</div>
+<h2>누가 더 빠르게 증가했는가?</h2>
+<p>데이터는 우리가 생각했던 것과 다른 이야기를 보여준다.</p>
+</div>
+<div class="visual reveal">
+<div class="card"><div class="chart"><canvas id="compareChart"></canvas></div></div>
+</div>
+</section>
+
+<section class="final">
+<div>
+<h2>서울의 1인 가구 증가는<br>청년의 독립만으로 설명할 수 없다</h2>
+<p>오히려 고령화가 서울의 가구 구조를 바꾸고 있다.</p>
+</div>
+</section>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+gsap.utils.toArray(".reveal").forEach(el=>{
+gsap.from(el,{
+y:80,
+opacity:0,
+duration:1.2,
+scrollTrigger:{
+trigger:el,
+start:"top 80%"
+}
+});
+});
+
+document.querySelectorAll('.counter').forEach(el=>{
+let target=parseFloat(el.dataset.target);
+gsap.to({v:0},{
+v:target,
+duration:2,
+scrollTrigger:{trigger:el,start:"top 85%"},
+onUpdate:function(){
+el.innerHTML=this.targets()[0].v.toFixed(1)+"%";
+}
+});
+});
+
+Chart.defaults.font.family="'IBM Plex Sans KR', sans-serif";
+const opt={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}};
+
+new Chart(marriageChart,{type:'line',data:{labels:['2020','2021','2022','2023','2024'],datasets:[{data:[44746,37012,35752,36324,42471],borderColor:'#2b5c8f',backgroundColor:'rgba(43,92,143,.08)',fill:true,tension:.25}]},options:opt});
+
+new Chart(youthChart,{type:'bar',data:{labels:['2020','2021','2022','2023','2024'],datasets:[{data:[422090,467788,499521,523956,534043],backgroundColor:'#64748b',borderRadius:8}]},options:opt});
+
+new Chart(seniorChart,{type:'line',data:{labels:['2020','2021','2022','2023','2024'],datasets:[{data:[259733,286384,309081,334348,356186],borderColor:'#0f172a',backgroundColor:'rgba(15,23,42,.08)',fill:true,tension:.25}]},options:opt});
+
+new Chart(compareChart,{type:'bar',data:{labels:['청년층','고령층'],datasets:[{data:[26.5,37.1],backgroundColor:['#64748b','#0f172a'],borderRadius:8}]},options:opt});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>행복과 불평등: 대한민국은 왜 경제 수준에 비해 불행할까?</title>
+  
+  <meta name="description" content="대한민국의 경제적 성장 대비 현저히 낮은 행복도와 사회적 고립, 기대여명과의 관계를 인문학적 통찰과 Flourish 시각화 자료를 통해 심층 분석하는 데이터 대시보드입니다.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ==========================================================================
+       1. CSS Variables & Reset
+       ========================================================================== */
+    :root {
+      /* Backgrounds & Surfaces (다크 모드 베이스) */
+      --bg-dark: #0f1115;
+      --bg-card: #181b21;
+      --bg-card-hover: #1e2229;
+      
+      /* Typography Colors */
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      
+      /* Accents / Neon Colors (사이버펑크/데이터 비주얼리제이션 느낌) */
+      --neon-cyan: #00f0ff;
+      --neon-magenta: #ff003c;
+      --neon-lime: #39ff14;
+      --neon-yellow: #facc15;
+      --accent-korea: #FF4A4A; /* 대한민국 강조색 */
+      
+      /* Gradients */
+      --grad-cyan-blue: linear-gradient(135deg, #00f0ff 0%, #0077ff 100%);
+      --grad-magenta-purple: linear-gradient(135deg, #ff003c 0%, #a800ff 100%);
+      
+      /* Shadows & Borders */
+      --glow-cyan: 0 0 15px rgba(0, 240, 255, 0.3);
+      --glow-magenta: 0 0 15px rgba(255, 0, 60, 0.3);
+      --glow-card: 0 8px 30px rgba(0,0,0,0.4);
+      --border-thin: 1px solid rgba(255,255,255,0.08);
+      
+      /* Spacing & Layout */
+      --max-width: 1200px;
+      --spacing-sm: 1rem;
+      --spacing-md: 2rem;
+      --spacing-lg: 4rem;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Noto Sans KR', sans-serif;
+      line-height: 1.6;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* 영문, 숫자에는 Outfit 폰트 적용 */
+    h1, h2, h3, h4, h5, h6, .outfit {
+      font-family: 'Outfit', 'Noto Sans KR', sans-serif;
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--neon-cyan);
+      transition: all 0.3s ease;
+    }
+    a:hover {
+      text-shadow: var(--glow-cyan);
+    }
+
+    /* ==========================================================================
+       2. Typography & Highlights
+       ========================================================================== */
+    .highlight-cyan {
+      color: var(--neon-cyan);
+      font-weight: 700;
+    }
+    .highlight-magenta {
+      color: var(--neon-magenta);
+      font-weight: 700;
+    }
+    .highlight-lime {
+      color: var(--neon-lime);
+      font-weight: 700;
+    }
+    .highlight-yellow {
+      color: var(--neon-yellow);
+      font-weight: 700;
+    }
+    .highlight-kr {
+      color: var(--accent-korea);
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+    /* ==========================================================================
+       3. Layout Container
+       ========================================================================== */
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--spacing-sm);
+    }
+
+    /* ==========================================================================
+       4. Header
+       ========================================================================== */
+    #main-header {
+      text-align: center;
+      padding: var(--spacing-lg) 0 var(--spacing-md) 0;
+      position: relative;
+    }
+
+    #main-header h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: var(--spacing-sm);
+      line-height: 1.2;
+    }
+
+    .neon-title {
+      background: var(--grad-cyan-blue);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+    }
+
+    #main-header .subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 800px;
+      margin: 0 auto;
+      font-weight: 300;
+      word-break: keep-all;
+    }
+    #main-header .subtitle strong {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    /* ==========================================================================
+       5. Sections & Grid Layouts
+       ========================================================================== */
+    section {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: var(--border-thin);
+      padding-bottom: 0.5rem;
+    }
+    .section-title span {
+      color: var(--neon-cyan);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 2.2rem;
+    }
+
+    /* Dashboard Cards (The main container for charts and text) */
+    .dashboard-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: var(--border-thin);
+      box-shadow: var(--glow-card);
+      padding: var(--spacing-md);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .dashboard-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    /* Bottom Grid (Two columns for secondary charts) */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+    @media (min-width: 900px) {
+      .bottom-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* ==========================================================================
+       6. Content Boxes (Insight Text)
+       ========================================================================== */
+    .insight-box {
+      margin-top: var(--spacing-md);
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.03);
+      border-left: 4px solid var(--neon-cyan);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    }
+    
+    .insight-box h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .insight-box p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      word-break: keep-all;
+    }
+
+    /* ==========================================================================
+       7. Flourish Embed Containers
+       ========================================================================== */
+    .flourish-embed-container {
+      width: 100%;
+      position: relative;
+      background: #fff; /* Flourish charts usually look better on white or need explicit dark mode in Flourish */
+      border-radius: var(--radius-md);
+      overflow: hidden; /* clip rounded corners */
+      padding: 10px; /* Optional slight padding inside the white card */
+    }
+
+    /* For specific dark-themed charts, you could remove the white bg.
+       Assuming default Flourish is light, white bg helps readability. */
+
+    /* ==========================================================================
+       8. Footer
+       ========================================================================== */
+    #main-footer {
+      text-align: center;
+      padding: var(--spacing-md) 0;
+      border-top: var(--border-thin);
+      color: var(--text-muted);
+      margin-top: var(--spacing-lg);
+    }
+
+    /* ==========================================================================
+       9. Responsive Overrides
+       ========================================================================== */
+    @media (max-width: 768px) {
+      .dashboard-card {
+        padding: var(--spacing-sm);
+      }
+      .insight-box {
+        padding: 1rem;
+      }
+      .section-title {
+        font-size: 1.4rem;
+      }
+      .section-title span {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header id="main-header">
+      <h1>행복과 불평등: <span class="neon-title">대한민국의 행복 역설</span></h1>
+      <p class="subtitle">
+        대한민국은 전 세계가 주목하는 눈부신 경제 성장을 이루었으나, 주관적 행복도는 여전히 경제 수준에 미치지 못하고 있습니다. 
+        데이터 시각화를 통해 <strong>물질적 풍요 속 가려진 사회적 불평등과 정신적 빈곤의 원인</strong>을 추적합니다.
+      </p>
+    </header>
+
+    <section class="methodology-section" style="margin-bottom: 4rem;">
+      <h2 class="section-title"><span>#</span> 데이터 전처리 및 분석 방법론</h2>
+      <div class="dashboard-card">
+        <div class="insight-box" style="border-left-color: var(--neon-lime);">
+          <h3>데이터 정제 및 교집합 병합 (Data Cleansing & Integration)</h3>
+          <p>
+            본 대시보드의 데이터는 <strong>세계불평등데이터베이스(WID), OECD 더 나은 삶 지수(BLI), 세계행복보고서(WHR)</strong> 등 3개의 이종 데이터셋을 통합하여 구축되었습니다. 
+            데이터 무결성을 위해 국가 코드(ISO-3166)를 표준화한 뒤, 3개 자료에 모두 존재하는 국가만 추출하는 내부 조인(Inner Join) 연산을 수행하여 통계적 편향을 통제했습니다.
+          </p>
+          <h3 style="margin-top: 1.5rem;">스케일링 및 결측치 대체 (Scaling & Imputation)</h3>
+          <p>
+            서로 다른 측정 단위를 가진 지표들을 비교하기 위해 <strong>최소-최대 정규화(Min-Max Normalization)</strong>를 적용했습니다 ($X_{norm} = \frac{X - X_{min}}{X_{max} - X_{min}}$). 
+            또한 누락된 데이터는 다차원 특성 공간에서 유클리디안 거리(Euclidean Distance)가 가장 가까운 국가들의 특성을 차용하는 <strong>k-NN 결측치 대체 알고리즘</strong>을 활용하여 보완했습니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="main-visualization">
+      <h2 class="section-title"><span>I.</span> 메인 분석: 경제 성장과 행복의 괴리</h2>
+      
+      <div class="dashboard-card" id="card-main-story">
+        <div class="flourish-embed-container">
+          <div class="flourish-embed flourish-story" data-src="story/3686473">
+            </div>
+        </div>
+        
+        <div class="insight-box">
+          <h3>
+            <span class="highlight-cyan">●</span> 인문학적 통찰: 한강의 기적, 그 이면의 그늘
+          </h3>
+          <p>
+            자본주의 사회에서 부(GDP)는 대체로 행복을 보장합니다. 하지만 데이터는 명백한 예외를 가리키고 있습니다. 바로 <span class="highlight-kr">대한민국</span>입니다. 대한민국은 세계에서 가장 빠른 속도로 빈곤을 탈출해 선진국 반열에 올랐습니다. 
+            그러나 이 '한강의 기적'이 남긴 청사진 뒷면에는 <span class="highlight-magenta">무한 경쟁과 서열화</span>라는 그림자가 짙게 깔려 있습니다. 
+            타인과의 끊임없는 비교 속에서 개인이 느끼는 <span class="highlight-cyan">상대적 박탈감</span>과 미래에 대한 극심한 불안은 사회적 스트레스를 증폭시킵니다. 
+            이 시각화 스토리는 경제 발전의 양적 지표가 어떻게 시민들의 실제 삶의 만족도와 엇갈리고 있는지를 명확히 보여줍니다. 
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="bottom-grid">
+      
+      <section class="secondary-visualization">
+        <h2 class="section-title"><span>II.</span> 수명과 행복: 삶의 질적 가치</h2>
+        <div class="dashboard-card" id="card-life-satisfaction">
+          <div class="flourish-embed-container">
+            <div class="flourish-embed flourish-chart" data-src="visualisation/29170654"></div>
+          </div>
+          <div class="insight-box">
+            <h3><span class="highlight-lime">●</span> 기대여명과 삶의 만족도의 괴리</h3>
+            <p>
+              대한민국의 기대여명은 세계 최고 수준이나, 단순한 생물학적 수명 연장이 주관적 만족감으로 이어지지는 않았습니다. 물리적 수명의 양적 연장과 내면적 만족감 사이의 깊은 간극은 우리 사회가 단순한 수명 연장을 넘어 '웰빙(Well-being)'을 핵심 가치로 삼아야 함을 가리킵니다.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="secondary-visualization">
+        <h2 class="section-title"><span>III.</span> 공동체의 붕괴: 사회적 안전망</h2>
+        <div class="dashboard-card" id="card-social-support">
+          <div class="flourish-embed-container">
+            <div class="flourish-embed flourish-chart" data-src="visualisation/29170690"></div>
+          </div>
+          <div class="insight-box">
+            <h3><span class="highlight-yellow">●</span> 기댈 곳 없는 사회, 외로운 개인</h3>
+            <p>
+              사회적 안전망과 인간적 연대가 부재한 사회에서 실패는 곧 벼랑 끝으로의 추락을 의미하므로, 시민들은 더욱 불안에 떨 수밖에 없습니다. 결국 행복은 혼자 쟁취하는 것이 아니라, 서로를 든든하게 지탱하는 <span class="highlight-yellow">신뢰의 관계망</span> 속에서 피어납니다.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="conclusion-section" style="margin-bottom: 4rem;">
+      <h2 class="section-title"><span>IV.</span> 시사점 및 연구의 한계 (회고)</h2>
+      
+      <div class="dashboard-card">
+        <div class="insight-box" style="border-left-color: var(--neon-magenta);">
+          <h3><span class="highlight-magenta">●</span> 시사점: 양적 팽창을 넘어 질적 성장으로</h3>
+          <p>
+            본 분석은 대한민국이 거시경제적 지표(1인당 GDP, 기대수명)에서는 세계 최고 수준에 도달했으나, 이를 온전히 수용할 미시적 사회 자본(사회적 지지, 자유 지수 등)은 현저히 부족함을 증명합니다. 이는 '낙수효과'를 기대하는 과거의 성장 모델이 한계에 직면했음을 시사하며, 이제는 경제 규모의 양적 팽창을 넘어 <strong>'분배의 정의와 사회적 신뢰 회복'이라는 질적 성장</strong>으로 국가 정책의 패러다임을 전환해야 할 시점임을 데이터로 역설하고 있습니다.
+          </p>
+          
+          <h3 style="margin-top: 2rem;"><span class="highlight-cyan">●</span> 한계점 및 향후 과제: 기계적 알고리즘과 도메인 지식의 맹점</h3>
+          <p>
+            본 프로젝트의 전처리 과정에서 적용한 <strong>기계적 정규화 및 k-NN 결측치 대체 기법의 한계</strong>를 명확히 밝힙니다. k-NN 알고리즘은 한국과 일본의 결측된 '장시간 근로자 비율' 데이터를 대체할 때, 거시 경제 지표가 유사한 유럽 선진국들의 수치를 그대로 차용함으로써 동아시아 특유의 살인적인 야근이라는 <strong>사회·문화적 맥락</strong>을 완전히 소거해 버렸습니다. 통계적 알고리즘에 대한 맹목적 의존이 초래하는 알고리즘 편향을 뼈저리게 확인하였으며, 향후 연구에서는 도메인 지식을 적극 반영한 정교한 모델링이 수반되어야 할 것입니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer id="main-footer">
+      <p>© 2026 행복과 불평등 대시보드. All Rights Reserved.</p>
+      <p style="margin-top: 0.5rem; font-size: 0.85rem;">
+        본 분석에 사용된 시각화 데이터의 출처는 <a href="https://flourish.studio" target="_blank" rel="noopener noreferrer">Flourish</a> 및 세계행복조사(World Happiness Report), OECD 통계 자료를 바탕으로 구성되었습니다.
+      </p>
+    </footer>
+  </div>
+
+  <script src="https://public.flourish.studio/resources/embed.js"></script>
+</body>
+</html>

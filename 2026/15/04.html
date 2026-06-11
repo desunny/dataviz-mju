@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>16억 원은 어디로 사라졌을까? — 물가 상승 시대의 자산배분 전략</title>
+<meta name="description" content="명목이 아닌 실질수익률로 본 6년. 예금·코스피200·금·물가채·S&P500을 해부하고 성향별 포트폴리오를 제안합니다.">
+<meta property="og:title" content="16억 원은 어디로 사라졌을까? — 물가 상승 시대의 자산배분 전략">
+<meta property="og:description" content="가만히 둔 100억의 실질 가치는 6년 만에 84억으로. 물가를 이기는 자산배분을 쉽게 풀어봅니다.">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ko_KR">
+<!-- Tailwind CSS & Google Fonts & Icons -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.1.0/dist/tabler-icons.min.css" rel="stylesheet">
+
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    serif: ['"Gowun Batang"', 'serif'],
+                    sans: ['"IBM Plex Sans KR"', 'sans-serif'],
+                },
+                colors: {
+                    bg: '#E8ECF3',  // 쿨 블루그레이 (페이지 배경)
+                    bg2: '#FFFFFF', // 카드 배경 (화이트)
+                    bg3: '#D3DAE4', // 쿨 보더/트랙 톤
+                    tx: '#1A2A3A',  // 네이비 잉크 (메인 텍스트)
+                    tx2: '#5A6B7C', // 뮤트 슬레이트
+                    tx3: '#8A96A3', // 캡션 슬레이트
+                    accent: '#0F2A49',  // 딥 네이비 (Primary)
+                    accent2: '#1F4B73', // 딥 미드블루 (강조)
+                    gold: '#BA7517',    // 금
+                    blue: '#185FA5',    // 코스피200
+                    teal: '#1D9E75',    // S&P500
+                    amber: '#BA7517',   // 금
+                    red: '#A32D2D',     // CPI/경고
+                    purple: '#534AB7',  // 예금
+                }
+            }
+        }
+    }
+</script>
+
+<style>
+/* ===== Global dark atmosphere ===== */
+body {
+    background-color: #E8ECF3;
+    /* Soft warm haze for depth on a light canvas */
+    background-image:
+        radial-gradient(120% 80% at 80% -10%, rgba(15,42,73,0.06) 0%, rgba(15,42,73,0) 55%),
+        radial-gradient(90% 60% at 10% 110%, rgba(15,42,73,0.05) 0%, rgba(15,42,73,0) 50%);
+    background-attachment: fixed;
+}
+
+/* Custom Ambient Shadows & Transitions */
+@keyframes glow-warm {
+    0%, 100% { opacity: 0.10; transform: scale(1); filter: blur(50px); }
+    50% { opacity: 0.20; transform: scale(1.12); filter: blur(70px); }
+}
+@keyframes bob {
+    0%, 100% { transform: translate(-50%, 0); }
+    50% { transform: translate(-50%, 8px); }
+}
+.animate-glow-warm { animation: glow-warm 6s ease-in-out infinite; }
+.animate-bob { animation: bob 2s ease-in-out infinite; }
+
+/* Scroll Reveal Base CSS (Strictly Premium Motion Styling) */
+.reveal {
+    opacity: 0;
+    transform: translateY(34px);
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Gold gradient text utility */
+.text-gold-grad {
+    background: linear-gradient(135deg, #C2871F 0%, #A6701A 45%, #7A4E10 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Soft gold glow for hero numerals */
+.glow-gold { text-shadow: none; }
+
+/* Staggered cell entrance (heatmap / quilt) */
+@keyframes cell-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.94); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.cell-anim { opacity: 0; }
+.cell-anim.go { animation: cell-in 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+
+/* Portfolio allocation bars grow on reveal */
+.alloc > * { transition: width 1.1s cubic-bezier(0.16,1,0.3,1); }
+
+/* Hooking section: melting / dissolving coin vibe */
+@keyframes melt-pulse {
+    0%, 100% { opacity: 0.5; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(3px); }
+}
+.melt-pulse { animation: melt-pulse 2.6s ease-in-out infinite; }
+
+/* Subtle Table Formatting to prevent overflows on mobile screens */
+table {
+    border-collapse: separate;
+    border-spacing: 3px;
+    width: 100%;
+}
+
+/* Cards: replace white shadows with subtle gold-tinted borders + inner depth */
+.card-dark {
+    background: #FFFFFF;
+    border: 1px solid rgba(15,42,73,0.14);
+    box-shadow: 0 10px 30px rgba(15,42,73,0.09), 0 1px 3px rgba(15,42,73,0.06);
+}
+.card-feat {
+    background: linear-gradient(180deg, rgba(15,42,73,0.06) 0%, rgba(15,42,73,0.015) 100%), #FFFFFF;
+    border: 1px solid rgba(15,42,73,0.40);
+    box-shadow: 0 12px 32px rgba(15,42,73,0.13), 0 1px 3px rgba(15,42,73,0.06);
+}
+::selection { background: rgba(15,42,73,0.16); }
+</style>
+</head>
+<body class="bg-bg text-tx font-sans antialiased selection:bg-accent/20">
+
+<!-- ===== SCROLL PROGRESS BAR ===== -->
+<div id="prog" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-accent to-accent2 z-50 transition-all duration-100" style="width: 0%;"></div>
+
+<!-- ===== HERO HEADER ===== -->
+<header class="relative min-h-screen flex flex-col justify-between items-center px-6 py-16 overflow-hidden">
+    <!-- Sophisticated Blue Ambient Glow -->
+    <div class="absolute top-1/3 right-1/4 -translate-y-1/2 w-[32rem] h-[32rem] bg-accent/10 rounded-full animate-glow-warm z-0"></div>
+    
+    <div class="w-full max-w-4xl flex justify-between items-center z-10">
+        <span class="text-xs font-semibold tracking-[0.25em] text-accent2 uppercase font-sans">Asset Allocation Guide · 2020–2026</span>
+        <div class="text-[11px] font-medium border border-accent/25 bg-accent/5 px-3 py-1 rounded-full text-accent2 tracking-wider">REAL ANALYSIS</div>
+    </div>
+
+    <div class="text-center max-w-4xl my-auto z-10 px-4 space-y-8">
+        <h1 class="font-serif text-4xl md:text-6xl font-bold tracking-tight leading-snug text-tx reveal active">
+            <span class="text-gold-grad">16억 원</span>은<br>
+            어디로 사라졌을까?
+        </h1>
+        <p class="font-serif text-xl md:text-2xl text-tx font-medium reveal active" style="transition-delay: 150ms;">
+            물가 상승 시대의 자산배분 전략
+        </p>
+        <p class="font-sans text-base md:text-lg text-tx2 font-light max-w-2xl mx-auto leading-relaxed reveal active" style="transition-delay: 280ms;">
+            물가가 갉아먹는 돈의 가치. 명목이 아닌 <strong class="text-tx font-medium underline decoration-accent/50">실질수익률</strong>의 눈으로 다섯 자산을 해부하고,<br>당신의 성향에 맞는 포트폴리오를 제안합니다.
+        </p>
+        
+        <div class="flex justify-center gap-8 md:gap-12 pt-6 text-xs text-tx3 font-sans tracking-wide border-t border-tx/5 max-w-md mx-auto reveal active" style="transition-delay: 400ms;">
+            <div>분석기간 <b class="text-tx font-medium block mt-1">2020.1 – 2026.4</b></div>
+            <div class="border-l border-tx/5 pl-8 md:pl-12">대상자산 <b class="text-tx font-medium block mt-1">예금·KOSPI200·금·TIPS·S&P500</b></div>
+            <div class="border-l border-tx/5 pl-8 md:pl-12">기준 <b class="text-tx font-medium block mt-1">2020.1 = 100</b></div>
+        </div>
+    </div>
+
+    <div class="flex flex-col items-center gap-1 z-10 text-tx3 text-[11px] tracking-widest uppercase cursor-pointer hover:text-tx transition-colors animate-bob">
+        <span class="font-serif mb-1">인플레이션의 진실 아래로</span>
+        <svg class="w-4 h-4 text-accent2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
+    </div>
+</header>
+
+<!-- ===== HOOK / ATTENTION SECTION ===== -->
+<section id="hook" class="relative min-h-screen flex flex-col justify-center items-center px-6 py-24 overflow-hidden border-t border-bg3">
+    <!-- Ambient gold haze -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[34rem] h-[34rem] bg-accent/10 rounded-full animate-glow-warm z-0"></div>
+
+    <div class="relative z-10 w-full max-w-3xl text-center space-y-14">
+
+        <!-- Question -->
+        <div class="reveal space-y-4">
+            <span class="text-[11px] font-semibold tracking-[0.3em] text-accent uppercase">잠깐, 질문 하나</span>
+            <h2 class="font-serif text-3xl md:text-5xl font-bold leading-snug text-tx">
+                2020년의 <span class="text-gold-grad">100억 원</span>,<br>
+                지금은 얼마의 가치일까요?
+            </h2>
+        </div>
+
+        <!-- The reveal: 1,000,000 → 838,000 -->
+        <div class="reveal space-y-10" style="transition-delay: 150ms;">
+
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10">
+                <!-- Then -->
+                <div class="space-y-1">
+                    <div class="text-[10px] uppercase tracking-widest text-tx3">2020년 1월</div>
+                    <div class="font-sans text-2xl md:text-3xl font-medium text-tx2 line-through decoration-tx3/60 decoration-1">100억 원</div>
+                </div>
+
+                <!-- Arrow / melt -->
+                <div class="melt-pulse text-accent text-3xl md:text-4xl rotate-90 md:rotate-0">
+                    <i class="ti ti-arrow-narrow-right"></i>
+                </div>
+
+                <!-- Now -->
+                <div class="space-y-1">
+                    <div class="text-[10px] uppercase tracking-widest text-accent">2026년 현재 · 실질 구매력</div>
+                    <div class="font-sans text-5xl md:text-7xl font-bold text-gold-grad glow-gold tracking-tight">
+                        <span class="countup" data-target="84" data-suffix="억 원" data-dec="0">0억 원</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="font-serif text-xl md:text-3xl font-bold text-tx leading-snug">
+                같은 돈인데 <span class="text-red">16억 원</span>이 사라졌습니다.<br>
+                여러분의 돈은, <span class="text-gold-grad">지금도 녹고 있습니다.</span>
+            </p>
+
+            <p class="font-sans text-sm md:text-base text-tx2 font-light max-w-xl mx-auto leading-relaxed">
+                가만히 통장에 둔 100억 원의 실질 가치는 6년 만에 약 <b class="text-tx font-medium">84억 원</b>으로 줄었습니다.
+                돈을 잃은 적이 없는데도, 살 수 있는 것이 줄어든 겁니다. — 왜 이런 일이 벌어질까요?
+            </p>
+        </div>
+    </div>
+
+    <!-- scroll hint -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 z-10 text-tx3 text-[11px] tracking-widest uppercase animate-bob">
+        <span class="font-serif mb-1">그 이유를 따라가 봅니다</span>
+        <svg class="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
+    </div>
+</section>
+
+<main class="w-full max-w-4xl mx-auto px-6 pb-24 space-y-36">
+
+    <!-- ===== STEP 1 ===== -->
+    <section class="reveal space-y-6 pt-12 border-t border-tx/5">
+        <div class="flex items-center gap-3 text-xs font-semibold tracking-wider text-accent2 uppercase">
+            <span class="w-8 h-8 rounded-full border border-accent/40 flex items-center justify-center font-serif text-sm">1</span>
+            물가의 습격
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+            <div class="md:col-span-7 space-y-4">
+                <h2 class="font-serif text-3xl font-bold leading-snug">만 원짜리가 만 이천 원이 되기까지</h2>
+                <p class="text-base text-tx2 leading-relaxed font-light">
+                    요즘 물가가 비싸다 비싸다 하는데, 실제로 얼마나 올랐을까요? 소비자가 체감하는 물가를 보여주는 <b>소비자물가지수(CPI)</b>는 2020년을 100으로 뒀을 때 <span class="text-accent2 font-semibold font-sans">2026년 119</span>를 기록했습니다.
+                </p>
+                <p class="text-base text-tx2 leading-relaxed font-light">
+                    2020년에 100만 원으로 사던 것을 지금은 약 <b class="text-tx font-medium">119만 원</b> 줘야 삽니다. 단위를 키우면, 100억이 가만히 있어도 <b class="text-tx font-medium">119억</b>의 가치를 내야 본전이라는 뜻이죠. 가만히 있으면 돈은 녹습니다.
+                </p>
+            </div>
+            
+            <div class="md:col-span-5 card-dark p-6 rounded-2xl text-center relative overflow-hidden">
+                <span class="text-[10px] uppercase tracking-wider text-tx3 font-sans block mb-2">6년간의 누적 소비자물가 상승률</span>
+                <span class="text-6xl md:text-7xl font-bold text-red font-sans tracking-tight block"><span class="countup" data-target="19.3" data-suffix="%" data-prefix="+" data-dec="1">+0%</span></span>
+                <p class="text-xs text-tx3 mt-4 leading-relaxed font-light">
+                    당신의 지갑 속에 갇혀 있던 원화의 구매력은<br>
+                    우리가 모르는 사이 이렇게 사라졌습니다.
+                </p>
+            </div>
+        </div>
+
+        <blockquote class="font-serif text-xl border-l-2 border-accent pl-6 py-1 text-tx my-8">
+            "가만히 있어도 내 돈의 가치는 <span class="text-accent2 font-bold">매년 깎이고</span> 있었습니다."
+        </blockquote>
+    </section>
+
+    <!-- ===== STEP 2 ===== -->
+    <section class="reveal space-y-6">
+        <div class="flex items-center gap-3 text-xs font-semibold tracking-wider text-accent2 uppercase">
+            <span class="w-8 h-8 rounded-full border border-accent/40 flex items-center justify-center font-serif text-sm">2</span>
+            예금의 함정
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+            <div class="md:col-span-7 space-y-4">
+                <h2 class="font-serif text-3xl font-bold leading-snug">은행에 맡겼으니 괜찮은 거 아닌가?</h2>
+                <p class="text-base text-tx2 leading-relaxed font-light">
+                    "돈을 방바닥에 둔 것도 아니고 은행에 맡겼는데, 예금이면 안전하잖아?" — 많은 분들이 그렇게 생각합니다. 예금의 <b>명목이자</b>는 분명 플러스니까요.
+                </p>
+                <p class="text-base text-tx2 leading-relaxed font-light">
+                    하지만 물가를 반영한 <b class="text-tx font-medium">실질수익률</b>로 보면 이야기가 달라집니다. 6년간 예금을 들고 있었다면 명목으로는 +17.7% 늘었지만, 물가를 빼면 <span class="text-red font-semibold font-sans">실질 −1.3%</span>. 통장에 묻어둔 돈은 조용히 구매력을 잃고 있었습니다.
+                </p>
+            </div>
+            
+            <!-- Elegant Nominal vs Real Display (Co-balt Blue & Electric Red updated) -->
+            <div class="md:col-span-5 card-dark p-6 rounded-2xl space-y-4">
+                <div class="space-y-1">
+                    <div class="flex justify-between text-xs text-tx3">
+                        <span>정기예금 명목수익률</span>
+                        <span class="font-semibold text-tx">+17.7%</span>
+                    </div>
+                    <div class="alloc w-full bg-bg3 h-3 rounded-full overflow-hidden">
+                        <div class="bg-purple h-full rounded-full" data-w="80%" style="width: 0%;"></div>
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <div class="flex justify-between text-xs text-tx3">
+                        <span>인플레이션 반영 실질수익률</span>
+                        <span class="font-semibold text-red">-1.3%</span>
+                    </div>
+                    <div class="alloc w-full bg-bg3 h-3 rounded-full overflow-hidden relative">
+                        <div class="bg-red h-full rounded-full" data-w="8%" style="width: 0%; margin-left: 0;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <blockquote class="font-serif text-xl border-l-2 border-accent pl-6 py-1 text-tx my-8">
+            명목은 플러스, 실질은 마이너스.<br class="md:hidden"> 이것이 우리가 빠지는 <span class="text-accent2 font-bold">'화폐 환상'</span>입니다.
+        </blockquote>
+    </section>
+
+    <!-- ===== STEP 3 ===== -->
+    <section class="reveal space-y-6">
+        <div class="flex items-center gap-3 text-xs font-semibold tracking-wider text-accent2 uppercase">
+            <span class="w-8 h-8 rounded-full border border-accent/40 flex items-center justify-center font-serif text-sm">3</span>
+            자산 배분의 시작
+        </div>
+        
+        <h2 class="font-serif text-3xl font-bold leading-snug">그렇다면, 어디에 담아야 했을까</h2>
+        <p class="text-base text-tx2 leading-relaxed font-light max-w-3xl">
+            물가를 이기려면 현명하게 자산을 배분해야 합니다. 비교 대상은 다섯 가지 — 각각 성격이 다릅니다.
+        </p>
+
+        <!-- Premium Asset Grid cards -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div class="card-dark rounded-xl p-4 border-t-2 border-t-purple space-y-2">
+                <div class="font-semibold text-xs flex items-center gap-1.5"><i class="ti ti-building-bank text-purple text-base"></i>예금</div>
+                <div class="text-[11px] text-tx2 leading-relaxed font-light">정기예금(1년). 원금 보장, 가장 안전하지만 수익은 가장 낮음.</div>
+            </div>
+            <div class="card-dark rounded-xl p-4 border-t-2 border-t-blue space-y-2">
+                <div class="font-semibold text-xs flex items-center gap-1.5"><i class="ti ti-chart-candle text-blue text-base"></i>KOSPI200</div>
+                <div class="text-[11px] text-tx2 leading-relaxed font-light">한국 대표 200개 기업. 국내 주식시장의 성장에 베팅.</div>
+            </div>
+            <div class="card-dark rounded-xl p-4 border-t-2 border-t-amber space-y-2">
+                <div class="font-semibold text-xs flex items-center gap-1.5"><i class="ti ti-coin text-amber text-base"></i>금</div>
+                <div class="text-[11px] text-tx2 leading-relaxed font-light">실물 안전자산. 위기 때 가치 저장 수단으로 주목받음.</div>
+            </div>
+            <div class="card-dark rounded-xl p-4 border-t-2 border-t-tx3 space-y-2">
+                <div class="font-semibold text-xs flex items-center gap-1.5"><i class="ti ti-shield text-tx3 text-base"></i>물가채(TIPS)</div>
+                <div class="text-[11px] text-tx2 leading-relaxed font-light">물가연동채권. 인플레만큼 원금이 조정되는 방어형 채권.</div>
+            </div>
+            <div class="card-dark rounded-xl p-4 border-t-2 border-t-teal space-y-2">
+                <div class="font-semibold text-xs flex items-center gap-1.5"><i class="ti ti-world text-teal text-base"></i>S&P500</div>
+                <div class="text-[11px] text-tx2 leading-relaxed font-light">미국 대표 500개 기업(원화환산). 환효과 포함 글로벌 성장.</div>
+            </div>
+        </div>
+
+        <p class="text-sm text-tx3 font-light">
+            2020년 1월을 100으로 두고, 물가를 반영한 <b class="text-tx">실질</b> 성장 추이를 그려봤습니다. 빨간 점선(물가)을 누가 뚫고 올라갔을까요?
+        </p>
+
+        <!-- Toggle Line/Bar Chart Wrapper -->
+        <div class="card-dark rounded-2xl p-6 space-y-6">
+            <div class="flex gap-2">
+                <button id="c3-btn-line" class="px-4 py-1.5 rounded-lg text-xs font-medium border-2 border-blue transition-all">성장 추이</button>
+                <button id="c3-btn-bar" class="px-4 py-1.5 rounded-lg text-xs font-medium border border-tx/10 hover:border-tx/30 transition-all">최종 성적표</button>
+            </div>
+
+            <div id="c3-legend" class="flex flex-wrap gap-x-4 gap-y-2 text-xs text-tx3 font-light"></div>
+
+            <div class="relative w-full h-[320px]">
+                <canvas id="c3-chart"></canvas>
+            </div>
+
+            <p id="c3-caption" class="text-xs text-tx3 leading-relaxed border-t border-tx/5 pt-4 font-light"></p>
+        </div>
+
+        <blockquote class="font-serif text-xl border-l-2 border-accent pl-6 py-1 text-tx my-8">
+            금 <span class="text-accent2 font-bold">+150%</span>, 코스피200 <span class="text-accent2 font-bold">+192%</span>, S&P500 <span class="text-accent2 font-bold">+131%</span>. 세 자산 모두 물가 상승률을 크게 웃돌았습니다.<br>
+            여기까지 보면 답은 간단해 보이죠 — <span class="text-accent2 font-bold">"주식과 금에 집중 투자하자."</span>
+        </blockquote>
+    </section>
+
+    <!-- ===== STEP 4 ===== -->
+    <section class="reveal space-y-6">
+        <div class="flex items-center gap-3 text-xs font-semibold tracking-wider text-accent2 uppercase">
+            <span class="w-8 h-8 rounded-full border border-accent/40 flex items-center justify-center font-serif text-sm">4</span>
+            청구서
+        </div>
+        
+        <h2 class="font-serif text-3xl font-bold leading-snug">그런데 말입니다, 수익엔 대가가 따릅니다</h2>
+        <p class="text-base text-tx2 leading-relaxed font-light max-w-3xl">
+            "다 때려박자"는 결론으로 가기 전에, 두 가지를 봐야 합니다. 먼저 — 어떤 자산이 매년 1등이었는지.
+        </p>
+
+        <!-- Yearly Winner Heatmap table card (High Contrast green/red gradient map) -->
+        <div class="card-dark rounded-2xl p-6 space-y-4">
+            <h3 class="text-sm font-semibold text-tx">연도별 실질수익률 히트맵</h3>
+            <p class="text-[11px] text-tx3 leading-relaxed font-light">
+                칸 색 = 그해 실질수익률. <span class="text-teal font-medium">초록</span>일수록 좋았던 해, <span class="text-red font-medium">빨강</span>일수록 나빴던 해. 별(★)은 그해 1등.
+            </p>
+
+            <div id="heat-heat" class="w-full overflow-x-auto"></div>
+
+            <div class="flex items-center gap-2 text-[10px] text-tx3 pt-2">
+                <span>나쁨</span>
+                <div class="flex h-3 rounded overflow-hidden">
+                    <span class="w-6 bg-[#A32D2D]"></span>
+                    <span class="w-6 bg-[#E24B4A]"></span>
+                    <span class="w-6 bg-[#F4C0D1]"></span>
+                    <span class="w-6 bg-[#F1EFE8]"></span>
+                    <span class="w-6 bg-[#C0DD97]"></span>
+                    <span class="w-6 bg-[#97C459]"></span>
+                    <span class="w-6 bg-[#3B6D11]"></span>
+                </div>
+                <span>좋음</span>
+            </div>
+
+            <p class="text-xs text-tx2 leading-relaxed border-t border-tx/5 pt-4 font-light">
+                별이 매년 다른 줄로 옮겨다닙니다 — 2021년 S&P500, 2022년 예금, 2025년 코스피200. 2022년엔 거의 전부 빨강, 다 같이 하락한 해였죠.
+            </p>
+        </div>
+
+        <p class="text-base text-tx2 leading-relaxed font-light max-w-3xl pt-4">
+            상위 3위만 추려 보면 이 ‘얼굴 바뀜’이 더 또렷해집니다.
+        </p>
+
+        <!-- Quilt table card -->
+        <div class="card-dark rounded-2xl p-6 space-y-4">
+            <h3 class="text-sm font-semibold text-tx">매년, 상위권의 얼굴이 바뀝니다</h3>
+            
+            <div class="flex flex-wrap gap-x-4 gap-y-2 text-xs text-tx3 font-light">
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-blue"></span>코스피200</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber"></span>금</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-teal"></span>S&P500</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#888780]"></span>물가채</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-purple"></span>예금</span>
+            </div>
+
+            <div id="quilt-quilt" class="w-full overflow-x-auto"></div>
+
+            <p class="text-xs text-tx2 leading-relaxed border-t border-tx/5 pt-4 font-light">
+                <strong>S&P500(초록)</strong>은 2021·2023·2024년 1위였지만 2025년엔 3등으로 밀렸고, <strong>코스피(파랑)</strong>는 2021·2022년엔 상위권에서 사라졌다가 2025년 1위로 복귀했습니다. 심지어 2022년엔 <strong>예금이 1위</strong>였죠. 올해의 승자가 내년에도 이긴다는 보장은 없습니다 — <strong>미래의 1등은 아무도 알 수 없습니다.</strong>
+            </p>
+        </div>
+
+        <p class="text-base text-tx2 leading-relaxed font-light max-w-3xl pt-4">
+            그리고 더 무서운 건, 그 수익을 손에 쥐려면 견뎌야 했던 <b>폭락</b>입니다. 코스피에 다 넣었다면 중간에 <span class="text-red font-semibold">−36%</span>까지 잃고 3년을 버텨야 했습니다.
+        </p>
+
+        <!-- Drawdown Chart Container -->
+        <div class="card-dark rounded-2xl p-6 space-y-4">
+            <h3 class="text-sm font-semibold text-tx">위기 방어력: 최고점에서 얼마나 떨어졌나</h3>
+            <p class="text-[11px] text-tx3 leading-relaxed font-light">
+                아래로 파인 면적이 넓고 깊을수록, 투자자가 그 기간 동안 떠안은 손실의 크기가 큽니다.
+            </p>
+
+            <div class="flex flex-wrap gap-x-4 gap-y-2 text-xs text-tx3 font-light">
+                <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-blue"></span>코스피200</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-teal"></span>S&P500</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-amber"></span>금</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-[#888780]"></span>물가채·예금 (저위험)</span>
+            </div>
+
+            <div class="relative w-full h-[340px]">
+                <canvas id="uw-uw"></canvas>
+            </div>
+
+            <p class="text-xs text-tx2 leading-relaxed border-t border-tx/5 pt-4 font-light">
+                코스피200(파랑)은 2022년 9월 <strong>−36%</strong>까지 파였고, 수면 위로 돌아오기까지 <strong>약 3년</strong>이 걸렸습니다. "+192% 벌었다"는 결과 뒤에는 이 긴 골짜기를 견뎌야 했다는 청구서가 있습니다. 반면 예금·물가채는 거의 수면에 붙어 있죠 — 안전한 대신, 앞서 봤듯 물가도 못 이겼습니다.
+            </p>
+        </div>
+
+        <blockquote class="font-serif text-xl border-l-2 border-accent pl-6 py-1 text-tx my-8">
+            올해의 1등이 내년에는 꼴찌가 될 수도 있습니다.<br>
+            <span class="text-accent2 font-bold">미래의 승자는, 아무도 알 수 없습니다.</span>
+        </blockquote>
+    </section>
+
+    <!-- ===== STEP 5 ===== -->
+    <section class="reveal space-y-6">
+        <div class="flex items-center gap-3 text-xs font-semibold tracking-wider text-accent2 uppercase">
+            <span class="w-8 h-8 rounded-full border border-accent/40 flex items-center justify-center font-serif text-sm">5</span>
+            대비의 힘
+        </div>
+        
+        <h2 class="font-serif text-3xl font-bold leading-snug">맞힐 수 없다면, 위험을 분산하면 됩니다</h2>
+        <p class="text-base text-tx2 leading-relaxed font-light max-w-3xl">
+            미래의 1등을 알 수 없다는 걸 인정하면, 해법은 <b>위험 분산</b>입니다. 주식이 하락할 때 금이 받쳐주고, 국내가 부진할 때 해외가 살아납니다(2021·2024년). 서로 다르게 움직이는 자산을 함께 보유하면, 어떤 해가 와도 충격이 완화됩니다.
+        </p>
+        <p class="text-base text-tx2 leading-relaxed font-light max-w-3xl">
+            증명해 보죠. 위험자산 셋 — 코스피·금·S&P500에 복잡한 계산 없이 <b class="text-tx font-medium">똑같이 ⅓씩</b> 나눠 담았습니다. 그 결과 가장 큰 손실이 났던 시점의 낙폭이 이렇게 달라집니다.
+        </p>
+
+        <!-- Scoreboard Comparison card -->
+        <div class="card-dark rounded-2xl p-6 space-y-6">
+            <h3 class="text-sm font-semibold text-tx">최악의 순간, 당신이 잃은 돈</h3>
+            <p class="text-[11px] text-tx3 leading-relaxed font-light">
+                두 방법의 결과를 나란히. 번 돈은 거의 같습니다. 그런데 <strong>가장 무서웠던 순간</strong>의 손실은 두 배 넘게 차이 납니다.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="border border-bg3 rounded-xl p-5 space-y-3">
+                    <span class="text-xs text-tx3 block">코스피에 다 넣었다면</span>
+                    <span class="text-5xl font-bold text-red font-sans block leading-none"><span class="countup" data-target="-36" data-suffix="%" data-dec="0">0%</span></span>
+                    <span class="text-[10px] text-tx3 block font-light">최악의 순간 손실 (2022)</span>
+                    <div class="relative h-[70px]"><canvas id="score-m1"></canvas></div>
+                    <div class="flex justify-between text-xs text-tx2 pt-2 border-t border-tx/5 font-light">
+                        <span>최종 수익 <b class="text-tx font-medium">+192%</b></span>
+                        <span>출렁임 <b class="text-tx font-medium">30%</b></span>
+                    </div>
+                </div>
+
+                <div class="border-2 border-blue rounded-xl p-5 space-y-3 shadow-sm">
+                    <span class="text-xs text-tx3 block">셋을 나눠 담았다면</span>
+                    <span class="text-5xl font-bold text-teal font-sans block leading-none"><span class="countup" data-target="-16" data-suffix="%" data-dec="0">0%</span></span>
+                    <span class="text-[10px] text-tx3 block font-light">최악의 순간 손실 (2022)</span>
+                    <div class="relative h-[70px]"><canvas id="score-m2"></canvas></div>
+                    <div class="flex justify-between text-xs text-tx2 pt-2 border-t border-tx/5 font-light">
+                        <span>최종 수익 <b class="text-tx font-medium">+174%</b></span>
+                        <span>출렁임 <b class="text-tx font-medium">15%</b></span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-xs text-tx2 leading-relaxed border-t border-tx/5 pt-4 font-light">
+                번 돈은 +192% vs +174%로 거의 같은데, 최악의 순간 손실은 −36% vs −16%. <strong>수익을 거의 그대로 지키면서 공포만 절반으로 줄인 겁니다.</strong>
+            </p>
+        </div>
+
+        <p class="text-base text-tx2 leading-relaxed font-light max-w-3xl pt-4">
+            낙폭의 골짜기를 겹쳐 보면 차이가 더 분명합니다. 회색(단독 보유)은 깊고 넓게 파이고, 파랑(분산 보유)은 절반 깊이에서 멈춥니다.
+        </p>
+
+        <!-- Drawdown overlay chart card -->
+        <div class="card-dark rounded-2xl p-6 space-y-4">
+            <h3 class="text-sm font-semibold text-tx">같은 위기, 다른 고통의 깊이</h3>
+            <p class="text-[11px] text-tx3 leading-relaxed font-light">
+                아래로 파인 면적 = 투자자가 견딘 손실의 고통. <span class="text-tx3 font-semibold">회색</span>(코스피 혼자)은 깊고 넓게 파이고, <span class="text-blue font-semibold">파랑</span>(셋을 섞음)은 절반 깊이에 머눕니다.
+            </p>
+
+            <div class="relative w-full h-[360px]">
+                <canvas id="mix-uwc"></canvas>
+            </div>
+
+            <p class="text-xs text-tx2 leading-relaxed border-t border-tx/5 pt-4 font-light">
+                2022년 위기 때 코스피 혼자였다면 <strong>−36%</strong>까지 잃고 3년을 버텨야 했지만, 섞었다면 <strong>−16%</strong>에서 멈췄고 훨씬 빨리 회복했습니다. 회색 골짜기와 파란 골짜기의 면적 차이 — <strong>그게 분산이 덜어준 공포의 크기</strong>입니다.
+            </p>
+        </div>
+
+        <blockquote class="font-serif text-xl border-l-2 border-accent pl-6 py-1 text-tx my-8">
+            수익을 포기한 것이 아닙니다.<br>
+            같은 수익을 추구하면서 <span class="text-accent2 font-bold">감수하는 위험만 절반으로 낮춘</span> 것입니다.
+        </blockquote>
+    </section>
+
+    <!-- ===== STEP 6 ===== -->
+    <section class="reveal space-y-6">
+        <div class="flex items-center gap-3 text-xs font-semibold tracking-wider text-accent2 uppercase">
+            <span class="w-8 h-8 rounded-full border border-accent/40 flex items-center justify-center font-serif text-sm">6</span>
+            당신의 선택
+        </div>
+        
+        <h2 class="font-serif text-3xl font-bold leading-snug">본인의 투자 성향에 맞게 선택하세요</h2>
+        <p class="text-base text-tx2 leading-relaxed font-light max-w-3xl">
+            위험자산만 섞어도 효과가 크지만, 여기에 예금·물가채 같은 안전자산을 형편에 맞게 조금 더하면 출렁임을 한층 낮출 수 있습니다. 아래 세 가지는 모두 6년간 물가 상승률을 넘어섰고, '위험 대비 효율'(같은 출렁임을 견디며 얼마나 더 버는지 — 숫자가 클수록 좋습니다)도 코스피에 다 넣었을 때(0.72)보다 전부 높습니다. 차이는 단 하나 — <b>내가 견딜 수 있는 출렁임의 크기</b>입니다.
+        </p>
+
+        <!-- Portfolios grid cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Port 1 -->
+            <div class="card-dark rounded-2xl p-5 space-y-4 transition-transform hover:-translate-y-1 duration-300">
+                <div class="flex items-center gap-2 font-semibold text-lg text-teal"><i class="ti ti-shield-half"></i>안정형</div>
+                <div class="font-serif text-xs text-tx2 font-light">"잠은 편히 자고 싶다"</div>
+                <div class="alloc flex h-5 rounded-md overflow-hidden bg-bg3">
+                    <span class="bg-purple" data-w="35%" style="width:0;"></span>
+                    <span class="bg-[#888780]" data-w="20%" style="width:0;"></span>
+                    <span class="bg-amber" data-w="20%" style="width:0;"></span>
+                    <span class="bg-teal" data-w="15%" style="width:0;"></span>
+                    <span class="bg-blue" data-w="10%" style="width:0;"></span>
+                </div>
+                <div class="text-[11px] text-tx2 leading-relaxed font-light">예금 35 · 물가채 20 · 금 20<br>S&P500 15 · 코스피 10</div>
+                <div class="space-y-1.5 pt-3 border-t border-tx/5 text-xs">
+                    <div class="flex justify-between text-tx2"><span>실질 수익</span><span class="font-bold text-teal">+57%</span></div>
+                    <div class="flex justify-between text-tx2"><span>최대 낙폭</span><span class="font-semibold text-tx">−6%</span></div>
+                    <div class="flex justify-between text-tx2"><span>위험 대비 효율</span><span class="font-semibold text-tx">1.15</span></div>
+                </div>
+            </div>
+
+            <!-- Port 2 (Feat) -->
+            <div class="card-feat rounded-2xl p-5 space-y-4 transition-transform hover:-translate-y-1 duration-300 relative">
+                <span class="absolute -top-3 left-4 bg-accent text-white text-[10px] font-semibold font-sans px-2.5 py-0.5 rounded-md">효율 최고</span>
+                <div class="flex items-center gap-2 font-semibold text-lg text-accent2 pt-1"><i class="ti ti-scale"></i>중립형</div>
+                <div class="font-serif text-xs text-tx2 font-light">"균형이 좋다"</div>
+                <div class="alloc flex h-5 rounded-md overflow-hidden bg-bg3">
+                    <span class="bg-purple" data-w="15%" style="width:0;"></span>
+                    <span class="bg-[#888780]" data-w="10%" style="width:0;"></span>
+                    <span class="bg-amber" data-w="25%" style="width:0;"></span>
+                    <span class="bg-teal" data-w="30%" style="width:0;"></span>
+                    <span class="bg-blue" data-w="20%" style="width:0;"></span>
+                </div>
+                <div class="text-[11px] text-tx2 leading-relaxed font-light">예금 15 · 물가채 10 · 금 25<br>S&P500 30 · 코스피 20</div>
+                <div class="space-y-1.5 pt-3 border-t border-tx/5 text-xs">
+                    <div class="flex justify-between text-tx2"><span>실질 수익</span><span class="font-bold text-teal">+112%</span></div>
+                    <div class="flex justify-between text-tx2"><span>최대 낙폭</span><span class="font-semibold text-tx">−11%</span></div>
+                    <div class="flex justify-between text-tx2"><span>위험 대비 효율</span><span class="font-bold text-accent2">1.18</span></div>
+                </div>
+            </div>
+
+            <!-- Port 3 -->
+            <div class="card-dark rounded-2xl p-5 space-y-4 transition-transform hover:-translate-y-1 duration-300">
+                <div class="flex items-center gap-2 font-semibold text-lg text-red"><i class="ti ti-rocket"></i>공격형</div>
+                <div class="font-serif text-xs text-tx2 font-light">"변동은 견딜 수 있다"</div>
+                <div class="alloc flex h-5 rounded-md overflow-hidden bg-bg3">
+                    <span class="bg-purple" data-w="5%" style="width:0;"></span>
+                    <span class="bg-amber" data-w="25%" style="width:0;"></span>
+                    <span class="bg-teal" data-w="40%" style="width:0;"></span>
+                    <span class="bg-blue" data-w="30%" style="width:0;"></span>
+                </div>
+                <div class="text-[11px] text-tx2 leading-relaxed font-light">예금 5 · 금 25<br>S&P500 40 · 코스피 30</div>
+                <div class="space-y-1.5 pt-3 border-t border-tx/5 text-xs">
+                    <div class="flex justify-between text-tx2"><span>실질 수익</span><span class="font-bold text-teal">+158%</span></div>
+                    <div class="flex justify-between text-tx2"><span>최대 낙폭</span><span class="font-semibold text-tx">−14%</span></div>
+                    <div class="flex justify-between text-tx2"><span>위험 대비 효율</span><span class="font-semibold text-tx">1.13</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap gap-x-4 gap-y-2 text-xs text-tx3 pt-2 font-light">
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple"></span>예금</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#888780]"></span>물가채</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber"></span>금</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-teal"></span>S&P500</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue"></span>코스피200</span>
+        </div>
+    </section>
+
+</main>
+
+<!-- ===== FINALE (STEP 7) ===== -->
+<section class="reveal border-y border-bg3 py-24 text-center relative overflow-hidden" style="background: linear-gradient(180deg, rgba(15,42,73,0.06) 0%, rgba(15,42,73,0.02) 50%, rgba(15,42,73,0.06) 100%), #E4E9F1;">
+    <!-- Ambient gold background element -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 w-96 h-96 bg-accent/10 rounded-full blur-3xl z-0"></div>
+    
+    <div class="max-w-3xl mx-auto px-6 space-y-6 relative z-10">
+        <p class="font-serif font-bold text-tx" style="line-height:2.15; font-size:clamp(14px,3.4vw,28px);">
+            아무것도 하지 않으면 내일 조금 더 가난해지고,<br>
+            <span class="text-gold-grad">무엇이든 선택한다면 내일 조금 더 부유해질 수 있습니다.</span>
+        </p>
+        <p class="font-sans text-sm md:text-base text-tx2 font-light leading-relaxed max-w-lg mx-auto">
+            무엇을 고르든, 아무것도 하지 않는 것보다는 낫습니다.<br>
+            통장에 그대로 둔 돈은 실질 −1.3%, 구매력을 잃었습니다.
+        </p>
+        <div class="text-xs text-tx3 tracking-widest font-serif pt-6">— 화폐가치 하락에 대응하는 자산배분 가이드</div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="w-full max-w-4xl mx-auto px-6 py-12 text-[11px] text-tx3 leading-relaxed font-light space-y-2">
+    <p>분석기간 2020.1–2026.4, 2020.1=100 기준. 실질수익률 = 명목 ÷ (CPI/100). 위험 대비 효율(샤프지수)은 실질 월수익률 기준, 무위험수익률 0으로 단순화. 포트폴리오는 월 리밸런싱 가정. 2026년은 4월까지의 부분 데이터. 과거 성과가 미래 수익을 보장하지 않습니다.</p>
+</footer>
+
+<!-- JavaScript Core Logic (Original Chart Scripts Unaltered) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+<script>
+/* ===== Dark theme chart defaults ===== */
+Chart.defaults.color = '#5A6B7C';
+Chart.defaults.borderColor = 'rgba(15,42,73,0.12)';
+Chart.defaults.font.family = "'IBM Plex Sans KR', sans-serif";
+Chart.defaults.animation.duration = 1100;
+Chart.defaults.animation.easing = 'easeOutQuart';
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(255,255,255,0.97)';
+Chart.defaults.plugins.tooltip.borderColor = 'rgba(15,42,73,0.45)';
+Chart.defaults.plugins.tooltip.borderWidth = 1;
+Chart.defaults.plugins.tooltip.titleColor = '#0F2A49';
+Chart.defaults.plugins.tooltip.bodyColor = '#1A2A3A';
+Chart.defaults.plugins.tooltip.padding = 10;
+Chart.defaults.plugins.tooltip.cornerRadius = 8;
+Chart.defaults.plugins.tooltip.displayColors = true;
+
+/* Neon glow on strong (thick) lines — gives the dark charts a premium luminous feel */
+const glowLines = {
+  id:'glowLines',
+  beforeDatasetDraw(chart, args){
+    const ds = chart.data.datasets[args.index];
+    const ctx = chart.ctx;
+    ctx.save();
+    const isLine = ds.type !== 'bar' && chart.config.type !== 'bar';
+    if (isLine && (ds.borderWidth >= 2) && typeof ds.borderColor === 'string'){
+      ctx.shadowColor = ds.borderColor;
+      ctx.shadowBlur = 13;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+    }
+  },
+  afterDatasetDraw(chart){ chart.ctx.restore(); }
+};
+/* glow disabled for light theme */
+</script>
+
+<script>
+/* Scroll progress engine */
+const prog = document.getElementById('prog');
+function onScroll() {
+    const h = document.documentElement;
+    const sc = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    prog.style.width = (sc * 100) + '%';
+}
+document.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+
+/* ===== Reusable motion helpers ===== */
+function runCountup(el){
+    if(el.dataset.done) return; el.dataset.done = '1';
+    const target = parseFloat(el.dataset.target);
+    const dec = parseInt(el.dataset.dec || '0');
+    const comma = el.dataset.comma === '1';
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const dur = 1500; const t0 = performance.now();
+    const fmt = v => prefix + (comma ? Math.round(v).toLocaleString('ko-KR') : v.toFixed(dec)) + suffix;
+    function step(t){
+        let p = Math.min((t - t0) / dur, 1);
+        p = 1 - Math.pow(1 - p, 3); // easeOutCubic
+        el.textContent = fmt(target * p);
+        if(p < 1) requestAnimationFrame(step); else el.textContent = fmt(target);
+    }
+    requestAnimationFrame(step);
+}
+function staggerCells(root){
+    const cells = root.querySelectorAll('.cell-anim:not(.go)');
+    cells.forEach((c, i) => { setTimeout(() => c.classList.add('go'), i * 22); });
+}
+function growAlloc(root){
+    root.querySelectorAll('.alloc [data-w]').forEach((s, i) => {
+        setTimeout(() => { s.style.width = s.dataset.w; }, 120 + i * 90);
+    });
+}
+
+/* Smooth Scroll Intersection Observer Engine */
+const io = new IntersectionObserver((es) => {
+    es.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.classList.add('active');
+            // Trigger numeric count-ups
+            e.target.querySelectorAll('.countup').forEach(runCountup);
+            // Stagger heatmap / quilt cells
+            staggerCells(e.target);
+            // Grow allocation bars
+            growAlloc(e.target);
+            // Force redraw of canvases on entrance to prevent ChartJS sizing bugs
+            const canvases = e.target.querySelectorAll('canvas');
+            canvases.forEach(canvas => {
+                const chartInstance = Chart.getChart(canvas);
+                if (chartInstance) {
+                    chartInstance.resize();
+                    chartInstance.update();
+                }
+            });
+        }
+    });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+<!-- 차트 스크립트들 (각각 IIFE) -->
+<script>(function(){
+
+const DATA = [{"t":"2020-01","CPI":100.0,"예금":100.0,"KOSPI":100.0,"금":100.0,"TIPS":100.0,"SP500":100.0},{"t":"2020-02","CPI":100.1,"예금":100.1,"KOSPI":94.1,"금":100.9,"TIPS":101.2,"SP500":91.9},{"t":"2020-03","CPI":99.9,"예금":100.4,"KOSPI":83.4,"금":103.0,"TIPS":101.1,"SP500":81.8},{"t":"2020-04","CPI":99.4,"예금":100.9,"KOSPI":91.3,"금":109.8,"TIPS":104.0,"SP500":92.2},{"t":"2020-05","CPI":99.4,"예금":101.1,"KOSPI":94.9,"금":113.6,"TIPS":106.1,"SP500":97.9},{"t":"2020-06","CPI":99.6,"예금":100.9,"KOSPI":98.8,"금":116.4,"TIPS":104.1,"SP500":96.8},{"t":"2020-07","CPI":99.5,"예금":101.1,"KOSPI":105.7,"금":128.5,"TIPS":106.1,"SP500":101.8},{"t":"2020-08","CPI":100.1,"예금":100.6,"KOSPI":107.8,"금":127.3,"TIPS":105.9,"SP500":107.8},{"t":"2020-09","CPI":100.6,"예금":100.1,"KOSPI":108.1,"금":121.3,"TIPS":102.9,"SP500":101.0},{"t":"2020-10","CPI":100.1,"예금":100.8,"KOSPI":105.9,"금":121.0,"TIPS":99.9,"SP500":96.3},{"t":"2020-11","CPI":100.0,"예금":100.9,"KOSPI":121.6,"금":114.7,"TIPS":98.6,"SP500":104.2},{"t":"2020-12","CPI":100.2,"예금":100.8,"KOSPI":136.5,"금":121.8,"TIPS":97.1,"SP500":105.4},{"t":"2021-01","CPI":100.9,"예금":100.2,"KOSPI":140.8,"금":118.1,"TIPS":99.6,"SP500":106.7},{"t":"2021-02","CPI":101.5,"예금":99.7,"KOSPI":142.0,"금":109.7,"TIPS":97.9,"SP500":109.5},{"t":"2021-03","CPI":101.7,"예금":99.5,"KOSPI":143.4,"금":108.6,"TIPS":97.7,"SP500":114.2},{"t":"2021-04","CPI":101.9,"예금":99.5,"KOSPI":145.7,"금":111.8,"TIPS":97.9,"SP500":118.9},{"t":"2021-05","CPI":102.0,"예금":99.5,"KOSPI":147.5,"금":120.4,"TIPS":97.5,"SP500":118.4},{"t":"2021-06","CPI":102.0,"예금":99.6,"KOSPI":151.3,"금":111.9,"TIPS":99.8,"SP500":123.6},{"t":"2021-07","CPI":102.2,"예금":99.5,"KOSPI":145.8,"금":114.6,"TIPS":103.4,"SP500":128.5},{"t":"2021-08","CPI":102.7,"예금":99.1,"KOSPI":143.7,"금":114.1,"TIPS":102.8,"SP500":132.4},{"t":"2021-09","CPI":103.1,"예금":98.8,"KOSPI":136.8,"금":109.8,"TIPS":103.1,"SP500":128.4},{"t":"2021-10","CPI":103.3,"예금":98.7,"KOSPI":132.2,"금":111.3,"TIPS":102.9,"SP500":135.9},{"t":"2021-11","CPI":103.8,"예금":98.4,"KOSPI":126.4,"금":110.3,"TIPS":103.9,"SP500":135.0},{"t":"2021-12","CPI":103.9,"예금":98.4,"KOSPI":133.3,"금":113.3,"TIPS":103.8,"SP500":141.3},{"t":"2022-01","CPI":104.8,"예금":97.7,"KOSPI":120.1,"금":110.5,"TIPS":102.3,"SP500":134.7},{"t":"2022-02","CPI":105.3,"예금":97.4,"KOSPI":120.6,"금":116.2,"TIPS":101.9,"SP500":129.3},{"t":"2022-03","CPI":106.0,"예금":96.9,"KOSPI":121.2,"금":118.6,"TIPS":100.3,"SP500":134.6},{"t":"2022-04","CPI":106.7,"예금":96.4,"KOSPI":116.9,"금":114.1,"TIPS":100.7,"SP500":126.9},{"t":"2022-05","CPI":107.4,"예금":96.0,"KOSPI":116.0,"금":110.7,"TIPS":96.7,"SP500":124.0},{"t":"2022-06","CPI":108.1,"예금":95.6,"KOSPI":99.9,"금":107.7,"TIPS":95.3,"SP500":117.0},{"t":"2022-07","CPI":108.6,"예금":95.4,"KOSPI":104.6,"금":104.0,"TIPS":99.7,"SP500":128.5},{"t":"2022-08","CPI":108.5,"예금":95.7,"KOSPI":104.6,"금":101.9,"TIPS":98.9,"SP500":126.8},{"t":"2022-09","CPI":108.7,"예금":95.9,"KOSPI":91.0,"금":98.6,"TIPS":97.7,"SP500":123.2},{"t":"2022-10","CPI":109.1,"예금":95.9,"KOSPI":96.5,"금":96.9,"TIPS":97.8,"SP500":131.3},{"t":"2022-11","CPI":109.0,"예금":96.4,"KOSPI":103.5,"금":103.6,"TIPS":91.0,"SP500":126.4},{"t":"2022-12","CPI":109.2,"예금":96.6,"KOSPI":93.7,"금":107.8,"TIPS":86.4,"SP500":115.1},{"t":"2023-01","CPI":110.0,"예금":96.2,"KOSPI":101.4,"금":113.4,"TIPS":85.6,"SP500":118.6},{"t":"2023-02","CPI":110.2,"예금":96.3,"KOSPI":100.4,"금":107.3,"TIPS":90.4,"SP500":123.6},{"t":"2023-03","CPI":110.4,"예금":96.4,"KOSPI":102.5,"금":116.0,"TIPS":91.7,"SP500":126.1},{"t":"2023-04","CPI":110.7,"예금":96.5,"KOSPI":103.7,"금":116.4,"TIPS":93.6,"SP500":130.8},{"t":"2023-05","CPI":111.0,"예금":96.5,"KOSPI":107.3,"금":114.5,"TIPS":90.5,"SP500":129.0},{"t":"2023-06","CPI":111.1,"예금":96.8,"KOSPI":106.9,"금":111.2,"TIPS":89.6,"SP500":136.7},{"t":"2023-07","CPI":111.2,"예금":96.9,"KOSPI":109.2,"금":114.7,"TIPS":86.6,"SP500":136.8},{"t":"2023-08","CPI":112.2,"예금":96.4,"KOSPI":104.9,"금":111.8,"TIPS":88.1,"SP500":138.1},{"t":"2023-09","CPI":112.7,"예금":96.2,"KOSPI":101.8,"금":106.8,"TIPS":87.4,"SP500":133.4},{"t":"2023-10","CPI":113.2,"예금":96.2,"KOSPI":94.9,"금":113.5,"TIPS":86.3,"SP500":130.0},{"t":"2023-11","CPI":112.6,"예금":97.0,"KOSPI":105.7,"금":117.2,"TIPS":85.3,"SP500":136.8},{"t":"2023-12","CPI":112.6,"예금":97.3,"KOSPI":111.7,"금":119.2,"TIPS":86.8,"SP500":142.2},{"t":"2024-01","CPI":113.1,"예금":97.2,"KOSPI":104.5,"금":117.2,"TIPS":89.4,"SP500":148.3},{"t":"2024-02","CPI":113.7,"예금":97.0,"KOSPI":109.9,"금":116.4,"TIPS":88.1,"SP500":155.3},{"t":"2024-03","CPI":113.8,"예금":97.1,"KOSPI":115.7,"금":124.6,"TIPS":89.2,"SP500":161.1},{"t":"2024-04","CPI":113.9,"예금":97.4,"KOSPI":112.7,"금":130.2,"TIPS":90.2,"SP500":158.9},{"t":"2024-05","CPI":114.0,"예금":97.6,"KOSPI":110.4,"금":133.1,"TIPS":90.9,"SP500":166.0},{"t":"2024-06","CPI":113.7,"예금":98.1,"KOSPI":118.7,"금":132.3,"TIPS":91.1,"SP500":172.0},{"t":"2024-07","CPI":114.0,"예금":98.1,"KOSPI":117.3,"금":137.8,"TIPS":91.3,"SP500":172.0},{"t":"2024-08","CPI":114.4,"예금":98.0,"KOSPI":111.0,"금":142.8,"TIPS":89.4,"SP500":171.2},{"t":"2024-09","CPI":114.5,"예금":98.2,"KOSPI":105.8,"금":148.9,"TIPS":89.3,"SP500":171.9},{"t":"2024-10","CPI":114.6,"예금":98.5,"KOSPI":104.1,"금":154.6,"TIPS":91.2,"SP500":177.3},{"t":"2024-11","CPI":114.3,"예금":99.0,"KOSPI":100.1,"금":149.5,"TIPS":93.3,"SP500":191.0},{"t":"2024-12","CPI":114.8,"예금":98.8,"KOSPI":97.3,"금":146.9,"TIPS":96.3,"SP500":196.3},{"t":"2025-01","CPI":115.6,"예금":98.4,"KOSPI":101.3,"금":158.5,"TIPS":95.7,"SP500":197.6},{"t":"2025-02","CPI":116.0,"예금":98.3,"KOSPI":101.3,"금":160.8,"TIPS":97.8,"SP500":194.7},{"t":"2025-03","CPI":116.2,"예금":98.4,"KOSPI":100.5,"금":174.7,"TIPS":99.0,"SP500":184.6},{"t":"2025-04","CPI":116.3,"예금":98.5,"KOSPI":102.4,"금":183.9,"TIPS":95.2,"SP500":177.0},{"t":"2025-05","CPI":116.2,"예금":98.8,"KOSPI":108.8,"금":185.4,"TIPS":91.5,"SP500":182.6},{"t":"2025-06","CPI":116.2,"예금":99.0,"KOSPI":125.4,"금":183.4,"TIPS":90.0,"SP500":187.4},{"t":"2025-07","CPI":116.4,"예금":99.0,"KOSPI":132.4,"금":185.3,"TIPS":92.2,"SP500":196.7},{"t":"2025-08","CPI":116.3,"예금":99.3,"KOSPI":129.9,"금":194.4,"TIPS":93.3,"SP500":200.1},{"t":"2025-09","CPI":117.0,"예금":99.0,"KOSPI":142.4,"금":213.3,"TIPS":93.9,"SP500":208.3},{"t":"2025-10","CPI":117.3,"예금":98.9,"KOSPI":173.6,"금":220.4,"TIPS":95.4,"SP500":216.2},{"t":"2025-11","CPI":117.1,"예금":99.3,"KOSPI":166.3,"금":234.1,"TIPS":98.0,"SP500":222.7},{"t":"2025-12","CPI":117.5,"예금":99.3,"KOSPI":181.3,"금":238.9,"TIPS":94.7,"SP500":217.8},{"t":"2026-01","CPI":117.9,"예금":99.1,"KOSPI":205.0,"금":242.0,"TIPS":95.5,"SP500":221.5},{"t":"2026-02","CPI":118.3,"예금":99.0,"KOSPI":235.0,"금":246.0,"TIPS":95.7,"SP500":217.2},{"t":"2026-03","CPI":118.7,"예금":98.9,"KOSPI":265.0,"금":248.0,"TIPS":98.5,"SP500":215.0},{"t":"2026-04","CPI":119.3,"예금":98.7,"KOSPI":292.4,"금":250.1,"TIPS":96.9,"SP500":231.2}];
+
+const SERIES = [
+  {key:"KOSPI", label:"코스피200", color:"#185FA5", dash:[]},
+  {key:"금",    label:"금",        color:"#BA7517", dash:[]},
+  {key:"SP500", label:"S&P500",   color:"#1D9E75", dash:[]},
+  {key:"CPI",   label:"물가(CPI)", color:"#A32D2D", dash:[6,4]},
+  {key:"TIPS",  label:"물가채",    color:"#888780", dash:[2,3]},
+  {key:"예금",  label:"예금",      color:"#534AB7", dash:[2,3]},
+];
+
+const labels = DATA.map(d=>d.t);
+const fmt = v => (v>=0?"+":"") + Math.round(v) + "%";
+
+// Progressive left-to-right line drawing animation
+const _pd = 1300 / labels.length;
+const drawAnim = {
+  x: { type:'number', easing:'easeOutQuart', duration:_pd, from:NaN,
+       delay(ctx){ if(ctx.type!=='data'||ctx.xStarted) return 0; ctx.xStarted=true; return ctx.index*_pd; } }
+};
+
+const legend = document.getElementById('c3-legend');
+legend.innerHTML = SERIES.map(s=>{
+  const dashStyle = s.dash.length ? 'border-top:2px dashed '+s.color : 'border-top:3px solid '+s.color;
+  return '<span style="display:flex;align-items:center;gap:5px;"><span style="width:18px;'+dashStyle+';display:inline-block;"></span>'+s.label+'</span>';
+}).join('');
+
+const lineDatasets = SERIES.map(s=>({
+  label:s.label,
+  data:DATA.map(d=>d[s.key]),
+  borderColor:s.color,
+  borderDash:s.dash,
+  borderWidth:(s.key==="CPI")?2:2.2,
+  pointRadius:0,
+  pointHoverRadius:4,
+  tension:0.25,
+  fill:false,
+}));
+
+const ctx = document.getElementById('c3-chart');
+let chart = new Chart(ctx, {
+  type:'line',
+  data:{labels, datasets:lineDatasets},
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    animation: {duration:900, easing:'easeOutQuart'},
+    interaction:{mode:'index', intersect:false},
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        callbacks:{
+          title:(items)=>items[0].label,
+          label:(item)=> item.dataset.label+': '+Math.round(item.parsed.y)
+        }
+      }
+    },
+    scales:{
+      y:{title:{display:true,text:'2020.1 = 100 (실질)'},
+         grid:{color:'rgba(15,42,73,0.08)'}},
+      x:{ticks:{maxTicksLimit:8,maxRotation:0}, grid:{display:false}}
+    }
+  }
+});
+
+const last = DATA[DATA.length-1];
+const capLine = "물가(빨간 점선)는 6년간 19% 올랐습니다. 코스피200·금·S&P500은 그 선을 한참 뚫고 올라갔고, 예금·물가채는 선 아래에 머물렀습니다. — 여기까지 보면 답은 간단해 보이죠.";
+const capBar  = "실질수익률 최종 성적. 코스피200·금·S&P500은 물가 상승률을 크게 웃돌았고, 예금과 물가채는 오히려 마이너스 — 6년을 묻어둬도 구매력이 줄었습니다.";
+document.getElementById('c3-caption').textContent = capLine;
+
+const barColorOf = v => v>=0 ? "#1D9E75" : "#A32D2D";
+const barSeries = [
+  {label:"코스피200", v:last.KOSPI-100},
+  {label:"금", v:last.금-100},
+  {label:"S&P500", v:last.SP500-100},
+  {label:"예금", v:last.예금-100},
+  {label:"물가채", v:last.TIPS-100},
+];
+
+function showLine(){
+  chart.destroy();
+  legend.style.display='flex';
+  chart = new Chart(ctx,{type:'line',data:{labels,datasets:lineDatasets},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:900,easing:'easeOutQuart'},interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{callbacks:{title:(i)=>i[0].label,label:(it)=>it.dataset.label+': '+Math.round(it.parsed.y)}}},
+      scales:{y:{title:{display:true,text:'2020.1 = 100 (실질)'},grid:{color:'rgba(15,42,73,0.08)'}},x:{ticks:{maxTicksLimit:8,maxRotation:0},grid:{display:false}}}}});
+  document.getElementById('c3-caption').textContent=capLine;
+}
+function showBar(){
+  chart.destroy();
+  legend.style.display='none';
+  chart = new Chart(ctx,{type:'bar',
+    data:{labels:barSeries.map(b=>b.label),datasets:[{label:'실질수익률',data:barSeries.map(b=>Math.round(b.v)),backgroundColor:barSeries.map(b=>barColorOf(b.v)),borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:(it)=>fmt(it.parsed.x)}}},
+      scales:{x:{title:{display:true,text:'전 기간 실질수익률 (%)'},grid:{color:'rgba(15,42,73,0.08)'},ticks:{callback:v=>fmt(v)}},y:{grid:{display:false}}}}});
+  document.getElementById('c3-caption').textContent=capBar;
+}
+
+const bL=document.getElementById('c3-btn-line'), bB=document.getElementById('c3-btn-bar');
+function setActive(active){
+  [bL,bB].forEach(b=>{b.style.border='0.5px solid var(--color-border-secondary)';b.style.fontWeight='400';b.className='px-4 py-1.5 rounded-lg text-xs font-medium border border-tx/10 hover:border-tx/30 transition-all';});
+  active.className='px-4 py-1.5 rounded-lg text-xs font-medium border-2 border-blue transition-all';
+}
+bL.onclick=()=>{showLine();setActive(bL);};
+bB.onclick=()=>{showBar();setActive(bB);};
+
+})();</script>
+<script>(function(){
+
+const assets=["코스피200","금","S&P500","물가채","예금"];
+const years=[2020,2021,2022,2023,2024,2025,2026];
+const D={
+  "코스피200":{2020:36.5,2021:-5.4,2022:-22.0,2023:10.2,2024:-6.9,2025:78.9,2026:27.7},
+  "금":{2020:21.8,2021:-4.0,2022:-2.5,2023:5.0,2024:25.3,2025:50.7,2026:-3.2},
+  "S&P500":{2020:5.4,2021:32.5,2022:-14.6,2023:19.9,2024:32.4,2025:10.3,2026:4.4},
+  "물가채":{2020:-2.9,2021:4.2,2022:-15.5,2023:1.4,2024:7.7,2025:-1.0,2026:1.4},
+  "예금":{2020:0.8,2021:-1.8,2022:-1.2,2023:1.1,2024:1.7,2025:0.9,2026:-0.4},
+};
+function color(v){
+  if(v>=40) return "#3B6D11";  // 짙은 초록 (강한 +)
+  if(v>=20) return "#639922";
+  if(v>=8)  return "#97C459";
+  if(v>=2)  return "#C0DD97";  // 옅은 초록 (약한 +)
+  if(v>-2)  return "#F1EFE8";  // 중립 (크림)
+  if(v>-8)  return "#F4C0D1";  // 옅은 적 (약한 −)
+  if(v>-18) return "#E24B4A";
+  return "#A32D2D";            // 짙은 적 (강한 −)
+}
+function txtColor(v){ return (v>=20 || v<-8) ? "#fff" : "#2C2C2A"; }
+// 연도별 1등
+const best={};
+years.forEach(y=>{let mx=-1e9,who=null;assets.forEach(a=>{if(D[a][y]>mx){mx=D[a][y];who=a;}});best[y]=who;});
+
+let html='<table class="min-w-[440px] text-center">';
+html+='<thead><tr><th style="width:78px;"></th>';
+years.forEach(y=>html+='<th class="text-xs text-tx3 font-semibold pb-2">'+y+(y===2026?'*':'')+'</th>');
+html+='</tr></thead><tbody>';
+assets.forEach(a=>{
+  html+='<tr><td class="font-sans text-xs font-semibold text-tx text-right pr-3 py-1.5">'+a+'</td>';
+  years.forEach(y=>{
+    const v=D[a][y]; const isBest=best[y]===a;
+    const tc=txtColor(v);
+    const star=isBest?'<span style="color:'+tc+';">★</span> ':'';
+    html+='<td style="background:'+color(v)+';color:'+tc+';" class="cell-anim text-xs h-10 rounded-md font-medium">'+star+(v>=0?'+':'')+v.toFixed(0)+'</td>';
+  });
+  html+='</tr>';
+});
+html+='</tbody></table>';
+document.getElementById('heat-heat').innerHTML=html;
+
+})();</script>
+<script>(function(){
+
+const DATA = [{"t":"2020-01","예금":0,"KOSPI":0,"금":0,"TIPS":0,"SP500":0},{"t":"2020-02","예금":0,"KOSPI":-5.8,"금":0,"TIPS":0,"SP500":-8},{"t":"2020-03","예금":0,"KOSPI":-16.8,"금":0,"TIPS":-0.3,"SP500":-18.3},{"t":"2020-04","예금":0,"KOSPI":-9.3,"금":0,"TIPS":0,"SP500":-8.3},{"t":"2020-05","예금":0,"KOSPI":-5.7,"금":0,"TIPS":0,"SP500":-2.7},{"t":"2020-06","예금":0,"KOSPI":-1.6,"금":0,"TIPS":-1.7,"SP500":-3.5},{"t":"2020-07","예금":0,"KOSPI":0,"금":0,"TIPS":0,"SP500":0},{"t":"2020-08","예금":0,"KOSPI":0,"금":-0.4,"TIPS":0,"SP500":0},{"t":"2020-09","예금":0,"KOSPI":0,"금":-4.6,"TIPS":-2.3,"SP500":-5.8},{"t":"2020-10","예금":0,"KOSPI":-2.5,"금":-5.3,"TIPS":-5.6,"SP500":-10.6},{"t":"2020-11","예금":0,"KOSPI":0,"금":-10.3,"TIPS":-7,"SP500":-3.4},{"t":"2020-12","예금":0,"KOSPI":0,"금":-4.6,"TIPS":-8.2,"SP500":-2},{"t":"2021-01","예금":0,"KOSPI":0,"금":-6.8,"TIPS":-5.2,"SP500":-0.2},{"t":"2021-02","예금":0,"KOSPI":0,"금":-12.9,"TIPS":-6.2,"SP500":0},{"t":"2021-03","예금":0,"KOSPI":0,"금":-13.6,"TIPS":-6.2,"SP500":0},{"t":"2021-04","예금":0,"KOSPI":0,"금":-11,"TIPS":-6,"SP500":0},{"t":"2021-05","예금":0,"KOSPI":0,"금":-4.1,"TIPS":-6.3,"SP500":-0.4},{"t":"2021-06","예금":0,"KOSPI":0,"금":-10.8,"TIPS":-4.1,"SP500":0},{"t":"2021-07","예금":0,"KOSPI":-3.4,"금":-8.5,"TIPS":-0.3,"SP500":0},{"t":"2021-08","예금":0,"KOSPI":-4.3,"금":-8.4,"TIPS":-0.5,"SP500":0},{"t":"2021-09","예금":0,"KOSPI":-8.6,"금":-11.5,"TIPS":0,"SP500":-2.7},{"t":"2021-10","예금":0,"KOSPI":-11.5,"금":-10.2,"TIPS":-0.1,"SP500":0},{"t":"2021-11","예금":0,"KOSPI":-14.9,"금":-10.5,"TIPS":0,"SP500":-0.1},{"t":"2021-12","예금":0,"KOSPI":-10.2,"금":-7.9,"TIPS":0,"SP500":0},{"t":"2022-01","예금":0,"KOSPI":-18.4,"금":-9.5,"TIPS":-0.7,"SP500":-3.9},{"t":"2022-02","예금":0,"KOSPI":-17.6,"금":-4.3,"TIPS":-0.6,"SP500":-7.3},{"t":"2022-03","예금":0,"KOSPI":-16.7,"금":-1.8,"TIPS":-1.5,"SP500":-2.8},{"t":"2022-04","예금":0,"KOSPI":-19.1,"금":-4.8,"TIPS":-0.4,"SP500":-7.8},{"t":"2022-05","예금":0,"KOSPI":-19.2,"금":-7.1,"TIPS":-3.7,"SP500":-9.3},{"t":"2022-06","예금":0,"KOSPI":-30,"금":-9,"TIPS":-4.4,"SP500":-13.9},{"t":"2022-07","예금":0,"KOSPI":-26.3,"금":-11.7,"TIPS":0,"SP500":-5},{"t":"2022-08","예금":0,"KOSPI":-26.4,"금":-13.5,"TIPS":-0.8,"SP500":-6.3},{"t":"2022-09","예금":0,"KOSPI":-35.9,"금":-16.2,"TIPS":-1.9,"SP500":-8.8},{"t":"2022-10","예금":0,"KOSPI":-31.7,"금":-17.4,"TIPS":-1.5,"SP500":-2.5},{"t":"2022-11","예금":0,"KOSPI":-26.9,"금":-11.7,"TIPS":-8.5,"SP500":-6.2},{"t":"2022-12","예금":0,"KOSPI":-33.7,"금":-8.1,"TIPS":-12.9,"SP500":-14.5},{"t":"2023-01","예금":0,"KOSPI":-27.7,"금":-2.5,"TIPS":-13,"SP500":-11.2},{"t":"2023-02","예금":0,"KOSPI":-28.3,"금":-7.5,"TIPS":-8,"SP500":-7.2},{"t":"2023-03","예금":0,"KOSPI":-26.6,"금":0,"TIPS":-6.5,"SP500":-5.2},{"t":"2023-04","예금":0,"KOSPI":-25.6,"금":0,"TIPS":-4.3,"SP500":-1.5},{"t":"2023-05","예금":0,"KOSPI":-22.7,"금":-1.3,"TIPS":-7.2,"SP500":-2.5},{"t":"2023-06","예금":0,"KOSPI":-23,"금":-4.1,"TIPS":-8.1,"SP500":0},{"t":"2023-07","예금":0,"KOSPI":-21.2,"금":-1,"TIPS":-11.1,"SP500":0},{"t":"2023-08","예금":0,"KOSPI":-23.7,"금":-2.6,"TIPS":-8.8,"SP500":0},{"t":"2023-09","예금":0,"KOSPI":-25.6,"금":-6.5,"TIPS":-9,"SP500":-2.9},{"t":"2023-10","예금":0,"KOSPI":-30.4,"금":-0.2,"TIPS":-9.8,"SP500":-5.1},{"t":"2023-11","예금":0,"KOSPI":-22.9,"금":0,"TIPS":-11.3,"SP500":-0.6},{"t":"2023-12","예금":0,"KOSPI":-18.4,"금":0,"TIPS":-9.7,"SP500":0},{"t":"2024-01","예금":0,"KOSPI":-23.4,"금":-1.3,"TIPS":-6.6,"SP500":0},{"t":"2024-02","예금":0,"KOSPI":-19,"금":-1.4,"TIPS":-7.5,"SP500":0},{"t":"2024-03","예금":0,"KOSPI":-14.6,"금":0,"TIPS":-6.2,"SP500":0},{"t":"2024-04","예금":0,"KOSPI":-16.8,"금":0,"TIPS":-5.1,"SP500":-1.3},{"t":"2024-05","예금":0,"KOSPI":-18.4,"금":0,"TIPS":-4.3,"SP500":0},{"t":"2024-06","예금":0,"KOSPI":-12.5,"금":-0.8,"TIPS":-4.3,"SP500":0},{"t":"2024-07","예금":0,"KOSPI":-13.3,"금":0,"TIPS":-3.9,"SP500":0},{"t":"2024-08","예금":0,"KOSPI":-17.6,"금":0,"TIPS":-5.5,"SP500":-0.1},{"t":"2024-09","예금":0,"KOSPI":-21.4,"금":0,"TIPS":-5.6,"SP500":0},{"t":"2024-10","예금":0,"KOSPI":-22.7,"금":0,"TIPS":-3.5,"SP500":0},{"t":"2024-11","예금":0,"KOSPI":-25.8,"금":-3.5,"TIPS":-1.5,"SP500":0},{"t":"2024-12","예금":0,"KOSPI":-27.6,"금":-4.8,"TIPS":0,"SP500":0},{"t":"2025-01","예금":0,"KOSPI":-24,"금":0,"TIPS":0,"SP500":0},{"t":"2025-02","예금":0,"KOSPI":-23.8,"금":0,"TIPS":0,"SP500":-1.1},{"t":"2025-03","예금":0,"KOSPI":-24.3,"금":0,"TIPS":0,"SP500":-6.1},{"t":"2025-04","예금":0,"KOSPI":-22.8,"금":0,"TIPS":-3.8,"SP500":-9.9},{"t":"2025-05","예금":0,"KOSPI":-18.1,"금":0,"TIPS":-7.6,"SP500":-7.1},{"t":"2025-06","예금":0,"KOSPI":-5.5,"금":-1.1,"TIPS":-9,"SP500":-4.6},{"t":"2025-07","예금":0,"KOSPI":-0.1,"금":0,"TIPS":-6.7,"SP500":0},{"t":"2025-08","예금":0,"KOSPI":-2,"금":0,"TIPS":-5.6,"SP500":0},{"t":"2025-09","예금":0,"KOSPI":0,"금":0,"TIPS":-4.6,"SP500":0},{"t":"2025-10","예금":0,"KOSPI":0,"금":0,"TIPS":-2.7,"SP500":0},{"t":"2025-11","예금":0,"KOSPI":-4.4,"금":0,"TIPS":-0.2,"SP500":0},{"t":"2025-12","예금":0,"KOSPI":0,"금":0,"TIPS":-3.2,"SP500":-1.9},{"t":"2026-01","예금":0,"KOSPI":0,"금":0,"TIPS":-2.1,"SP500":0},{"t":"2026-02","예금":0,"KOSPI":0,"금":0,"TIPS":-1.6,"SP500":-1.6},{"t":"2026-03","예금":0,"KOSPI":-20.2,"금":-11.2,"TIPS":0,"SP500":-2.3},{"t":"2026-04","예금":0,"KOSPI":0,"금":-11.8,"TIPS":-1.1,"SP500":0}];
+const labels = DATA.map(d=>d.t);
+const hex2rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')';};
+const SERIES=[
+  {key:"예금",  color:"#888780", strong:false},
+  {key:"TIPS",  color:"#888780", strong:false},
+  {key:"금",    color:"#BA7517", strong:true},
+  {key:"SP500", color:"#1D9E75", strong:true},
+  {key:"KOSPI", color:"#185FA5", strong:true},
+];
+const datasets = SERIES.map(s=>({
+  label:s.key,
+  data:DATA.map(d=>d[s.key]),
+  borderColor: s.strong ? s.color : hex2rgba(s.color,0.22),
+  backgroundColor: s.strong ? hex2rgba(s.color,0.13) : hex2rgba(s.color,0.04),
+  borderWidth: s.strong ? 2 : 1,
+  pointRadius:0, pointHoverRadius:4, fill:true, tension:0.2,
+  order: s.strong ? 1 : 2,
+}));
+const lowPoint={id:'lowPoint',afterDatasetsDraw(chart){
+  const {ctx,scales:{x,y},chartArea}=chart;
+  const ix=DATA.findIndex(d=>d.t==='2022-09');
+  const px=x.getPixelForValue(ix), py=y.getPixelForValue(-35.9);
+  const labelY=y.getPixelForValue(-39);
+  ctx.save();
+  ctx.fillStyle='#185FA5'; ctx.beginPath(); ctx.arc(px,py,4,0,7); ctx.fill();
+  ctx.strokeStyle=hex2rgba('#185FA5',0.5); ctx.setLineDash([3,3]); ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(px,py+5); ctx.lineTo(px,labelY-6); ctx.stroke(); ctx.setLineDash([]);
+  ctx.font='500 12px sans-serif'; ctx.textAlign='center';
+  ctx.fillText('코스피200  −36%  (2022.09)', px, labelY);
+  ctx.restore();
+}};
+new Chart(document.getElementById('uw-uw'),{
+  type:'line', data:{labels,datasets},
+  options:{
+    responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{title:(i)=>i[0].label,label:(it)=>{const m={예금:'예금',TIPS:'물가채',금:'금',SP500:'S&P500',KOSPI:'코스피200'};return m[it.dataset.label]+': '+Math.round(it.parsed.y)+'%';}}}},
+    scales:{
+      y:{title:{display:true,text:'고점 대비 하락폭 (%)'},max:2,min:-42,grid:{color:'rgba(15,42,73,0.07)'}},
+      x:{ticks:{maxTicksLimit:8,maxRotation:0},grid:{display:false}}
+    }
+  },
+  plugins:[lowPoint]
+});
+
+})();</script>
+<script>(function(){
+
+const years=[2020,2021,2022,2023,2024,2025,2026];
+const META={KOSPI:{n:"코스피200",c:"#185FA5"},금:{n:"금",c:"#BA7517"},SP500:{n:"S&P500",c:"#1D9E75"},TIPS:{n:"물가채",c:"#888780"},예금:{n:"예금",c:"#534AB7"}};
+const RET={KOSPI:{2020:36,2021:-5,2022:-22,2023:10,2024:-7,2025:79,2026:28},금:{2020:22,2021:-4,2022:-2,2023:5,2024:25,2025:51,2026:-3},SP500:{2020:5,2021:32,2022:-15,2023:20,2024:32,2025:10,2026:4},TIPS:{2020:-3,2021:4,2022:-16,2023:1,2024:8,2025:-1,2026:1},예금:{2020:1,2021:-2,2022:-1,2023:1,2024:2,2025:1,2026:0}};
+const assets=Object.keys(META);
+const medals=['🥇','🥈','🥉'];
+const colByYear={};
+years.forEach(y=>{colByYear[y]=assets.slice().sort((a,b)=>RET[b][y]-RET[a][y]).slice(0,3);});
+
+let html='<table class="min-w-[480px] text-center">';
+html+='<thead><tr><th style="width:40px;"></th>';
+years.forEach(y=>html+='<th class="text-xs text-tx3 font-semibold pb-2">'+y+(y===2026?'*':'')+'</th>');
+html+='</tr></thead><tbody>';
+const rankLabels=['1등','2등','3등'];
+for(let r=0;r<3;r++){
+  html+='<tr><td class="text-xs text-tx3 text-right pr-2 font-medium">'+rankLabels[r]+'</td>';
+  years.forEach(y=>{
+    const a=colByYear[y][r]; const m=META[a]; const v=RET[a][y];
+    html+='<td style="background:'+m.c+';color:#fff;" class="cell-anim text-xs h-14 rounded-lg leading-tight">'
+        +'<div class="font-bold">'+m.n+'</div>'
+        +'<div class="text-[10px] opacity-75 font-semibold">'+(v>=0?'+':'')+v+'%</div></td>';
+  });
+  html+='</tr>';
+}
+html+='</tbody></table>';
+document.getElementById('quilt-quilt').innerHTML=html;
+
+})();</script>
+<script>(function(){
+
+const DATA=[{"t":"2020-01","solo":0,"mix":0},{"t":"2020-02","solo":-5.8,"mix":-4.3},{"t":"2020-03","solo":-16.8,"mix":-11},{"t":"2020-04","solo":-9.3,"mix":-2.9},{"t":"2020-05","solo":-5.7,"mix":0},{"t":"2020-06","solo":-1.6,"mix":0},{"t":"2020-07","solo":0,"mix":0},{"t":"2020-08","solo":0,"mix":0},{"t":"2020-09","solo":0,"mix":-3.1},{"t":"2020-10","solo":-2.5,"mix":-5.8},{"t":"2020-11","solo":0,"mix":-0.3},{"t":"2020-12","solo":0,"mix":0},{"t":"2021-01","solo":0,"mix":0},{"t":"2021-02","solo":0,"mix":-0.7},{"t":"2021-03","solo":0,"mix":0},{"t":"2021-04","solo":0,"mix":0},{"t":"2021-05","solo":0,"mix":0},{"t":"2021-06","solo":0,"mix":0},{"t":"2021-07","solo":-3.4,"mix":0},{"t":"2021-08","solo":-4.3,"mix":0},{"t":"2021-09","solo":-8.6,"mix":-3.5},{"t":"2021-10","solo":-11.5,"mix":-2.1},{"t":"2021-11","solo":-14.9,"mix":-3.5},{"t":"2021-12","solo":-10.2,"mix":0},{"t":"2022-01","solo":-18.4,"mix":-5},{"t":"2022-02","solo":-17.6,"mix":-3.9},{"t":"2022-03","solo":-16.7,"mix":-1.2},{"t":"2022-04","solo":-19.1,"mix":-4.8},{"t":"2022-05","solo":-19.2,"mix":-6.2},{"t":"2022-06","solo":-30,"mix":-12.6},{"t":"2022-07","solo":-26.3,"mix":-8.8},{"t":"2022-08","solo":-26.4,"mix":-10},{"t":"2022-09","solo":-35.9,"mix":-15.6},{"t":"2022-10","solo":-31.7,"mix":-12.2},{"t":"2022-11","solo":-26.9,"mix":-9.2},{"t":"2022-12","solo":-33.7,"mix":-13.4},{"t":"2023-01","solo":-27.7,"mix":-8},{"t":"2023-02","solo":-28.3,"mix":-8.4},{"t":"2023-03","solo":-26.6,"mix":-4.5},{"t":"2023-04","solo":-25.6,"mix":-2.7},{"t":"2023-05","solo":-22.7,"mix":-2.2},{"t":"2023-06","solo":-23,"mix":-1.2},{"t":"2023-07","solo":-21.2,"mix":0},{"t":"2023-08","solo":-23.7,"mix":-1},{"t":"2023-09","solo":-25.6,"mix":-4},{"t":"2023-10","solo":-30.4,"mix":-4.7},{"t":"2023-11","solo":-22.9,"mix":0},{"t":"2023-12","solo":-18.4,"mix":0},{"t":"2024-01","solo":-23.4,"mix":-0.9},{"t":"2024-02","solo":-19,"mix":0},{"t":"2024-03","solo":-14.6,"mix":0},{"t":"2024-04","solo":-16.8,"mix":0},{"t":"2024-05","solo":-18.4,"mix":0},{"t":"2024-06","solo":-12.5,"mix":0},{"t":"2024-07","solo":-13.3,"mix":0},{"t":"2024-08","solo":-17.6,"mix":-0.4},{"t":"2024-09","solo":-21.4,"mix":-0.3},{"t":"2024-10","solo":-22.7,"mix":0},{"t":"2024-11","solo":-25.8,"mix":-0.1},{"t":"2024-12","solo":-27.6,"mix":-0.2},{"t":"2025-01","solo":-24,"mix":0},{"t":"2025-02","solo":-23.8,"mix":0},{"t":"2025-03","solo":-24.3,"mix":0},{"t":"2025-04","solo":-22.8,"mix":0},{"t":"2025-05","solo":-18.1,"mix":0},{"t":"2025-06","solo":-5.5,"mix":0},{"t":"2025-07","solo":-0.1,"mix":0},{"t":"2025-08","solo":-2,"mix":0},{"t":"2025-09","solo":0,"mix":0},{"t":"2025-10","solo":0,"mix":0},{"t":"2025-11","solo":-4.4,"mix":0},{"t":"2025-12","solo":0,"mix":0},{"t":"2026-01","solo":0,"mix":0},{"t":"2026-02","solo":0,"mix":0},{"t":"2026-03","solo":-20.2,"mix":-10.7},{"t":"2026-04","solo":0,"mix":0}];
+const labels=DATA.map(d=>d.t);
+const ann={id:'ann',afterDatasetsDraw(c){
+  const {ctx,scales:{x,y}}=c;
+  const ix=DATA.findIndex(d=>d.t==='2022-09');
+  const px=x.getPixelForValue(ix);
+  // solo -36 라벨
+  let py=y.getPixelForValue(-35.9);
+  ctx.save();
+  ctx.fillStyle='#888780'; ctx.beginPath(); ctx.arc(px,py,4,0,7); ctx.fill();
+  ctx.font='500 13px sans-serif'; ctx.textAlign='left';
+  ctx.fillText('혼자라면  −36%', px+8, py+4);
+  // mix -16 라벨
+  let py2=y.getPixelForValue(-15.6);
+  ctx.fillStyle='#185FA5'; ctx.beginPath(); ctx.arc(px,py2,4,0,7); ctx.fill();
+  ctx.fillText('섞으면  −16%', px+8, py2-6);
+  ctx.restore();
+}};
+new Chart(document.getElementById('mix-uwc'),{
+  type:'line', data:{labels,datasets:[
+    {label:'코스피 혼자',data:DATA.map(d=>d.solo),borderColor:'#888780',backgroundColor:(c)=>{const{ctx,chartArea}=c.chart;if(!chartArea)return 'rgba(148,163,184,0.18)';const g=ctx.createLinearGradient(0,chartArea.top,0,chartArea.bottom);g.addColorStop(0,'rgba(148,163,184,0.04)');g.addColorStop(1,'rgba(148,163,184,0.30)');return g;},borderWidth:1.5,pointRadius:0,pointHoverRadius:4,fill:true,tension:0.15,order:2},
+    {label:'셋을 섞음',data:DATA.map(d=>d.mix),borderColor:'#185FA5',backgroundColor:(c)=>{const{ctx,chartArea}=c.chart;if(!chartArea)return 'rgba(86,199,240,0.18)';const g=ctx.createLinearGradient(0,chartArea.top,0,chartArea.bottom);g.addColorStop(0,'rgba(86,199,240,0.03)');g.addColorStop(1,'rgba(86,199,240,0.34)');return g;},borderWidth:2,pointRadius:0,pointHoverRadius:4,fill:true,tension:0.15,order:1},
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{title:(i)=>i[0].label,label:(it)=>it.dataset.label+': '+Math.round(it.parsed.y)+'%'}}},
+    scales:{y:{title:{display:true,text:'고점 대비 하락폭 (%)'},max:2,min:-40,grid:{color:'rgba(15,42,73,0.07)'}},
+      x:{ticks:{maxTicksLimit:8,maxRotation:0},grid:{display:false}}}},
+  plugins:[ann]
+});
+
+})();</script>
+<script>(function(){
+
+const solo=[0,-5.8,-16.8,-9.3,-5.7,-1.6,0,0,0,-2.5,0,0,0,0,0,0,0,0,-3.4,-4.3,-8.6,-11.5,-14.9,-10.2,-18.4,-17.6,-16.7,-19.1,-19.2,-30,-26.3,-26.4,-35.9,-31.7,-26.9,-33.7,-27.7,-28.3,-26.6,-25.6,-22.7,-23,-21.2,-23.7,-25.6,-30.4,-22.9,-18.4,-23.4,-19,-14.6,-16.8,-18.4,-12.5,-13.3,-17.6,-21.4,-22.7,-25.8,-27.6,-24,-23.8,-24.3,-22.8,-18.1,-5.5,-0.1,-2,0,0,-4.4,0,0,0,-20.2,0];
+const mix=[0,-4.3,-11,-2.9,0,0,0,0,-3.1,-5.8,-0.3,0,0,-0.7,0,0,0,0,0,0,-3.5,-2.1,-3.5,0,-5,-3.9,-1.2,-4.8,-6.2,-12.6,-8.8,-10,-15.6,-12.2,-9.2,-13.4,-8,-8.4,-4.5,-2.7,-2.2,-1.2,0,-1,-4,-4.7,0,0,-0.9,0,0,0,0,0,0,-0.4,-0.3,0,-0.1,-0.2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-10.7,0];
+function mini(id,data,color){
+  new Chart(document.getElementById(id),{type:'line',
+    data:{labels:data.map((_,i)=>i),datasets:[{data,borderColor:color,backgroundColor:color+'33',borderWidth:1.5,pointRadius:0,fill:true,tension:0.15}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},
+      scales:{x:{display:false},y:{display:false,min:-40,max:2}}}});
+}
+mini('score-m1',solo,'#A32D2D');
+mini('score-m2',mix,'#1D9E75');
+
+})();</script>
+</body>
+</html>

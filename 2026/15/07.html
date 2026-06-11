@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Youth Job Insight | 쉬었음 청년 데이터 스토리</title>
+<style>
+:root{
+  --primary:#2563EB;
+  --deep:#1E40AF;
+  --light:#EFF6FF;
+  --bg:#F5F7FB;
+  --card:#FFFFFF;
+  --text:#111827;
+  --sub:#6B7280;
+  --line:#D9E2F2;
+  --red:#EF4444;
+  --green:#10B981;
+  --yellow:#F59E0B;
+  --shadow:0 18px 45px rgba(37,99,235,.10);
+  --radius:24px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR","Segoe UI",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.65;
+}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.nav{
+  position:sticky;top:0;z-index:30;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{height:70px;display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900;color:var(--primary);font-size:22px;letter-spacing:-.03em}
+.logo-mark{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--deep));display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px}
+.menu{display:flex;gap:26px;color:var(--sub);font-size:14px;font-weight:700}
+.menu a:hover{color:var(--primary)}
+.hero{padding:76px 0 56px}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:34px;align-items:center}
+.badge{display:inline-flex;gap:8px;align-items:center;background:var(--light);color:var(--deep);font-weight:900;border-radius:999px;padding:9px 14px;margin-bottom:18px}
+h1{font-size:58px;line-height:1.12;letter-spacing:-.06em;margin-bottom:20px;color:#0F172A}
+.hero p{font-size:20px;color:#374151;max-width:720px;margin-bottom:28px}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn{padding:13px 18px;border-radius:14px;font-weight:900;transition:.2s}
+.btn.primary{background:var(--primary);color:white;box-shadow:0 12px 30px rgba(37,99,235,.25)}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(37,99,235,.30)}
+.btn.light{background:white;color:var(--primary);border:1px solid var(--line)}
+.dashboard{
+  background:white;border:1px solid var(--line);border-radius:30px;padding:24px;box-shadow:var(--shadow);
+}
+.dash-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.dash-title strong{font-size:20px;color:var(--deep)}
+.chip{font-size:12px;background:#ECFDF5;color:#047857;padding:6px 10px;border-radius:999px;font-weight:900}
+.metrics{display:grid;gap:14px}
+.metric{border:1px solid var(--line);border-radius:20px;padding:18px;background:#FBFDFF}
+.metric span{display:block;color:var(--sub);font-size:14px;margin-bottom:4px}
+.metric b{font-size:30px;color:var(--text);letter-spacing:-.04em}
+.metric small{color:var(--red);font-weight:900;margin-left:8px}
+.search-card{margin-top:14px;border-radius:20px;background:var(--light);padding:16px;border:1px solid #BFDBFE}
+.search-bar{background:white;border:1px solid #C7D2FE;border-radius:14px;padding:12px 14px;color:var(--sub);font-weight:700}
+.section{padding:36px 0}
+.panel{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:34px;box-shadow:0 12px 36px rgba(15,23,42,.05)}
+.section-head{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.num{background:var(--primary);color:white;border-radius:10px;padding:6px 10px;font-weight:900}
+h2{font-size:30px;letter-spacing:-.04em;color:#0F172A}
+.lead{font-size:19px;color:#374151}
+.question{font-size:32px;font-weight:900;letter-spacing:-.04em;color:var(--deep);margin-bottom:12px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:#FBFDFF;border:1px solid var(--line);border-radius:20px;padding:20px;min-height:150px}
+.icon{width:48px;height:48px;border-radius:16px;background:var(--light);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:12px}
+.card strong{display:block;font-size:18px;color:var(--deep);margin-bottom:8px}
+.card p,.card li{color:var(--sub);font-size:15px}
+ul{padding-left:18px}
+.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.step{position:relative;background:#FBFDFF;border:1px solid #CFE0F8;border-radius:18px;padding:18px;min-height:170px}
+.step b{display:block;color:var(--primary);font-size:13px;margin-bottom:8px}
+.step strong{display:block;color:#0F172A;margin-bottom:8px}
+.step p{font-size:14px;color:var(--sub)}
+.logic{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:stretch}
+.logic-box{background:var(--light);border:1px solid #BFDBFE;border-radius:18px;padding:18px;text-align:center;font-weight:900;color:var(--deep)}
+.chart-chapter{margin-top:26px}
+.chapter-title{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:18px;
+  padding:18px 20px;border-radius:22px;background:linear-gradient(135deg,#EFF6FF,#FFFFFF);
+  border:1px solid #BFDBFE;margin-bottom:16px;
+}
+.chapter-title h3{font-size:23px;color:#0F172A;letter-spacing:-.04em}
+.chapter-title p{color:var(--sub);font-size:15px;margin-top:4px}
+.chapter-tag{flex-shrink:0;background:var(--primary);color:white;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:900}
+.live-chart{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;margin:16px 0;box-shadow:0 12px 30px rgba(37,99,235,.07)}
+.live-chart h4{font-size:20px;color:#0F172A;margin-bottom:8px;letter-spacing:-.03em}
+.live-chart-desc{color:var(--sub);font-size:15px;margin-bottom:14px;line-height:1.7}
+.interpret{margin:14px 0 28px}
+.interpret summary{
+  list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+  background:var(--primary);color:white;border-radius:14px;padding:12px 16px;font-weight:900;
+  box-shadow:0 10px 24px rgba(37,99,235,.22);
+}
+.interpret summary::-webkit-details-marker{display:none}
+.interpret summary::after{content:"＋";font-weight:900}
+.interpret[open] summary::after{content:"－"}
+.interpret-box{
+  margin-top:14px;background:#F8FBFF;border:1px solid #BFDBFE;border-radius:20px;
+  padding:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+}
+.point{
+  background:white;border:1px solid var(--line);border-radius:16px;padding:16px;
+}
+.point b{display:block;color:var(--deep);font-size:15px;margin-bottom:6px}
+.point span{display:block;color:#374151;font-size:14px;line-height:1.65}
+.point.warning{border-color:#FCA5A5;background:#FFF7F7}
+.point.warning b{color:#DC2626}
+.bridge{
+  margin:20px 0 6px;padding:16px 18px;border-radius:18px;background:#F8FAFC;border:1px dashed #CBD5E1;
+  color:#334155;font-size:15px;
+}
+.bridge strong{color:var(--deep)}
+.viz-wrap{background:#FBFDFF;border:1px solid var(--line);border-radius:22px;padding:18px;min-height:420px}
+.insight{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.source-note{margin-top:14px;color:var(--sub);font-size:13px}
+.final{background:linear-gradient(135deg,#2563EB,#1E40AF);color:white;border-radius:30px;padding:44px;text-align:center}
+.final h2{color:white;font-size:42px;margin-bottom:14px}
+.final p{color:#DBEAFE;font-size:18px;max-width:780px;margin:0 auto}
+.footer{padding:30px 0 50px;color:var(--sub);text-align:center;font-size:14px}
+@media(max-width:900px){
+  .menu{display:none}
+  .hero-grid,.grid-4,.grid-3,.flow,.logic,.interpret-box,.insight{grid-template-columns:1fr}
+  h1{font-size:40px}
+  .panel{padding:24px}
+  .chapter-title{display:block}
+  .chapter-tag{display:inline-block;margin-top:12px}
+}
+
+/* audience-first refinements */
+.bridge{display:none}
+.interpret summary{font-size:14px}
+.interpret-box.compact{grid-template-columns:repeat(2,1fr)}
+.scatter-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.55fr);gap:18px;align-items:start}
+.scatter-help{background:#FBFDFF;border:1px solid var(--line);border-radius:22px;padding:18px;position:sticky;top:90px}
+.scatter-help h4{font-size:18px;color:#0F172A;margin-bottom:12px}
+.side-detail{margin-bottom:10px}
+.side-detail summary{list-style:none;cursor:pointer;border:1px solid #BFDBFE;background:#EFF6FF;color:#1E40AF;border-radius:14px;padding:12px 14px;font-weight:900;font-size:14px}
+.side-detail summary::-webkit-details-marker{display:none}
+.side-detail summary::after{content:"＋";float:right}
+.side-detail[open] summary::after{content:"－"}
+.side-detail div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:8px;color:#374151;font-size:14px;line-height:1.6}
+.scene-kicker{display:inline-block;background:#EEF2FF;color:#1E40AF;border-radius:999px;padding:6px 10px;font-weight:900;font-size:12px;margin-bottom:10px}
+@media(max-width:900px){.scatter-layout{grid-template-columns:1fr}.scatter-help{position:static}.interpret-box.compact{grid-template-columns:1fr}}
+
+/* ── 목차 TOC ── */
+.toc-item{
+  display:block;background:var(--card);border:1.5px solid var(--line);border-radius:16px;
+  padding:18px 20px;transition:.2s;text-decoration:none;color:var(--text);
+}
+.toc-item:hover{border-color:var(--primary);background:var(--light);transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,99,235,.10)}
+.toc-step{display:inline-block;font-size:11px;font-weight:900;color:var(--primary);letter-spacing:.06em;margin-bottom:6px}
+.toc-item strong{display:block;font-size:15px;margin-bottom:4px}
+.toc-item p{font-size:13px;color:var(--sub);margin:0}
+.toc-conclusion{border-color:var(--primary);background:var(--light)}
+
+/* ── 구조 증거 카드 ── */
+.evidence-block{
+  margin-top:28px;background:#FFF7ED;border:1.5px solid #FED7AA;
+  border-radius:20px;padding:24px;
+}
+.evidence-title{font-size:14px;font-weight:900;color:#92400E;margin-bottom:16px}
+.evidence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.evidence-card{
+  background:white;border-radius:14px;padding:18px;
+  border:1px solid #FDE68A;
+}
+.evidence-num{font-size:32px;font-weight:900;color:var(--primary);line-height:1;margin-bottom:6px}
+.evidence-label{font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px}
+.evidence-desc{font-size:13px;color:#374151;line-height:1.6;margin-bottom:8px}
+.evidence-src{font-size:11px;color:var(--sub)}
+@media(max-width:768px){.evidence-grid{grid-template-columns:1fr}}
+
+/* ── logic 개선 (화살표) ── */
+.logic{display:flex;flex-wrap:wrap;gap:6px;margin:20px 0 28px;align-items:center}
+.logic-box{
+  flex:1;min-width:110px;padding:14px 10px;border-radius:14px;
+  background:var(--light);border:1.5px solid #BFDBFE;
+  font-size:13px;font-weight:700;color:var(--deep);text-align:center;line-height:1.4;
+}
+.logic-arrow{
+  flex:0 0 auto;min-width:auto;padding:0;background:none;border:none;
+  color:var(--sub);font-size:18px;font-weight:400;
+}
+.logic-highlight{background:var(--primary);color:white;border-color:var(--primary)}
+
+/* ── 정책 카드 ── */
+.policy-block{margin-top:28px;background:var(--light);border-radius:20px;padding:28px;border:1.5px solid #BFDBFE}
+.policy-title{font-size:15px;font-weight:900;color:var(--deep);margin-bottom:6px}
+.policy-intro{font-size:13px;color:var(--sub);margin-bottom:20px;line-height:1.6}
+
+.policy-card-full{
+  background:white;border-radius:16px;padding:24px;
+  border:1px solid var(--line);margin-bottom:14px;
+}
+.policy-card-full:last-child{margin-bottom:0}
+
+.policy-card-header{
+  display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;
+}
+.policy-num{
+  flex-shrink:0;width:32px;height:32px;border-radius:50%;
+  background:var(--primary);color:white;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:900;margin-top:2px;
+}
+.policy-icon-inline{font-size:16px;margin-bottom:4px}
+.policy-card-header strong{font-size:15px;font-weight:900;color:var(--text);line-height:1.4;display:block}
+
+.policy-evidence-row{
+  display:flex;align-items:baseline;gap:10px;
+  background:#EFF6FF;border-radius:10px;padding:10px 14px;
+  margin-bottom:14px;font-size:13px;color:#1e3a5f;line-height:1.6;
+}
+.pe-badge{
+  flex-shrink:0;font-size:10px;font-weight:900;
+  background:var(--primary);color:white;
+  border-radius:6px;padding:2px 8px;letter-spacing:.04em;white-space:nowrap;
+}
+
+.policy-body{display:grid;grid-template-columns:1fr 1.4fr;gap:16px}
+.policy-why{
+  background:#F8FAFC;border-radius:10px;padding:14px 16px;
+  font-size:13px;color:#374151;line-height:1.7;
+}
+.policy-why b{display:block;font-size:11px;font-weight:900;color:var(--sub);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.policy-how{font-size:13px;color:#374151;line-height:1.7}
+.policy-how b{display:block;font-size:11px;font-weight:900;color:var(--sub);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.policy-how ul{padding-left:16px;margin:0}
+.policy-how li{margin-bottom:7px}
+.policy-how li:last-child{margin-bottom:0}
+.policy-how li b{display:inline;font-size:inherit;text-transform:none;letter-spacing:0;color:var(--primary)}
+
+@media(max-width:768px){
+  .policy-body{grid-template-columns:1fr}
+  .policy-card-header{flex-wrap:wrap}
+}
+
+/* ── final 마무리 ── */
+.final{
+  background:linear-gradient(135deg,var(--primary),var(--deep));
+  color:white;border-radius:28px;padding:52px 48px;margin-top:32px;text-align:center;
+}
+.final h2{font-size:clamp(22px,3.5vw,34px);font-weight:900;letter-spacing:-.03em;margin-bottom:16px;line-height:1.25}
+.final p{font-size:16px;opacity:.88;max-width:580px;margin:0 auto 20px;line-height:1.7}
+.final-meta{font-size:13px;opacity:.6;margin-top:8px}
+
+</style>
+</head>
+
+<body>
+<header class="nav">
+  <div class="wrap nav-inner">
+    <div class="logo"><span class="logo-mark">Y</span>Youth Job Insight</div>
+    <nav class="menu">
+      <a href="#problem">문제의식</a>
+      <a href="#data">데이터</a>
+      <a href="#story">스토리</a>
+      <a href="#analysis">분석</a>
+      <a href="#conclusion">결론</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="badge">💼 청년 고용 데이터 리포트</div>
+      <h1>멈춘 것이 아니라,<br>밀려난 것일까?</h1>
+      <p>‘쉬었음 청년’을 개인의 무기력 문제가 아니라 지역별 고용 기회 격차와 노동시장 이탈의 관점에서 설명하는 데이터 스토리입니다.</p>
+      <div class="btns">
+        <a class="btn primary" href="#story">스토리 보기</a>
+        <a class="btn light" href="#analysis">분석 보기</a>
+      </div>
+    </div>
+    <aside class="dashboard">
+      <div class="dash-title"><strong>Insight Dashboard</strong><span class="chip">Updated Data</span></div>
+      <div class="metrics">
+        <div class="metric"><span>청년 고용률 (15~29세)</span><b>44.5%</b><small>↓ 23개월 연속 하락 중</small></div>
+        <div class="metric"><span>2030세대 쉬었음</span><b>70만+</b><small>부산 20대 전체와 맞먹는 규모</small></div>
+        <div class="metric"><span>지역 격차</span><b>1.9배</b><small>전남(27.1%) vs 서울(14.2%)</small></div>
+      </div>
+      <div class="search-card"><div class="search-bar">🔎 청년 노동시장 이탈 위험 지역 찾기</div></div>
+    </aside>
+  </div>
+</section>
+
+<section class="section" id="problem">
+  <div class="wrap">
+    <div class="panel">
+      <div class="section-head"><span class="num">01</span><h2>문제의식</h2></div>
+      <div class="question">청년들은 정말 쉬고 있는 걸까?</div>
+      <p class="lead">고용률만 보면 청년 노동시장이 어느 정도 유지되는 것처럼 보일 수 있습니다. 하지만 비경제활동 청년 중 ‘쉬었음’ 비율과 지역별 격차를 함께 보면, 문제는 단순 취업난을 넘어 노동시장 이탈로 확장됩니다.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="data">
+  <div class="wrap">
+    <div class="panel">
+      <div class="section-head"><span class="num">02</span><h2>사용할 데이터</h2></div>
+      <div class="grid-4">
+        <div class="card"><div class="icon">📈</div><strong>청년 고용률</strong><p>표면 지표. 노동시장 진입 흐름 확인.</p><p>출처: 통계청 KOSIS</p></div>
+        <div class="card"><div class="icon">📊</div><strong>쉬었음 비율</strong><p>핵심 지표. 구직 바깥으로 이동한 청년 확인.</p><p>출처: 통계청 KOSIS</p></div>
+        <div class="card"><div class="icon">🗺️</div><strong>지역별 쉬었음</strong><p>공간 지표. 수도권과 비수도권 격차 확인.</p><p>연 1회 하반기 발표</p></div>
+        <div class="card"><div class="icon">📝</div><strong>쉬었음 이유</strong><p>맥락 지표. 왜 쉬게 되었는지 설명.</p><p>2024 청년층 분포</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="story">
+  <div class="wrap">
+    <div class="panel">
+      <div class="section-head"><span class="num">03</span><h2>분석 목차</h2></div>
+      <p style="color:var(--sub);font-size:15px;margin-bottom:20px;">각 항목을 클릭하면 해당 분석으로 바로 이동합니다.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+        <a href="#chart-1" class="toc-item">
+          <span class="toc-step">01</span>
+          <strong>표면 지표</strong>
+          <p>고용률은 무엇을 말해주는가</p>
+        </a>
+        <a href="#chart-2" class="toc-item">
+          <span class="toc-step">02</span>
+          <strong>균열 지표</strong>
+          <p>2030세대 쉬었음은 얼마나 커졌나</p>
+        </a>
+        <a href="#chart-3" class="toc-item">
+          <span class="toc-step">03</span>
+          <strong>공간 지표</strong>
+          <p>쉬었음 청년은 어디에 집중되는가</p>
+        </a>
+        <a href="#chart-4" class="toc-item">
+          <span class="toc-step">04</span>
+          <strong>구조 지표</strong>
+          <p>고용률과 쉬었음 비율의 관계</p>
+        </a>
+        <a href="#chart-5" class="toc-item">
+          <span class="toc-step">05</span>
+          <strong>맥락 지표</strong>
+          <p>청년들은 왜 쉬게 되었나</p>
+        </a>
+        <a href="#conclusion" class="toc-item toc-conclusion">
+          <span class="toc-step">→</span>
+          <strong>결론</strong>
+          <p>데이터가 말하는 정책 방향</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="analysis">
+  <div class="wrap">
+    <div class="panel">
+      <div class="section-head"><span class="num">04</span><h2>데이터 스토리 분석</h2></div>
+
+      <div class="chart-chapter" id="chart-1">
+        <div class="chapter-title">
+          <div>
+            <h3>1. 표면 지표: 고용률은 무엇을 말해주는가</h3>
+            <p>고용률은 청년 노동시장의 출발점이지만, 이것만으로 ‘쉬었음’ 문제를 설명할 수는 없다.</p>
+          </div>
+          <span class="chapter-tag">도입</span>
+        </div>
+        <div class="live-chart">
+          <h4>청년 고용률 추이 (2020~2025)</h4>
+          <p class="live-chart-desc">청년 고용률의 흐름을 먼저 보여주고, 이후 ‘쉬었음’ 지표와 비교할 기준선을 만든다.</p>
+          <div class="flourish-embed flourish-chart" data-src="visualisation/29221492"><script src="https://public.flourish.studio/resources/embed.js"></script></div>
+        </div>
+        <details class="interpret">
+          <summary>핵심만 보기</summary>
+          <div class="interpret-box compact">
+            <div class="point"><b>읽는 법</b><span>고용률은 ‘일하는 청년’의 흐름을 보여준다.</span></div>
+            <div class="point"><b>한계</b><span>구직을 멈춘 청년은 이 지표만으로 보이지 않는다.</span></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="bridge"><strong>다음 장면:</strong> 고용률만 보면 노동시장에 남아 있는 청년만 보인다. 그래서 다음에는 노동시장 바깥으로 이동한 흐름을 본다.</div>
+
+      <div class="chart-chapter" id="chart-2">
+        <div class="chapter-title">
+          <div>
+            <h3>2. 균열 지표: 2030세대 ‘쉬었음’은 얼마나 커졌나</h3>
+            <p>청년층과 청년 인접 세대의 쉬었음 규모가 커지는 흐름을 통해 문제의 크기를 보여준다.</p>
+          </div>
+          <span class="chapter-tag">증가 추이</span>
+        </div>
+        <div class="live-chart">
+          <h4>2030세대 ‘쉬었음’ 비율 추이 (2020~2025)</h4>
+          <p class="live-chart-desc">2025년 합산 기준 역대 최고, 처음 70만 명 돌파라는 메시지를 중심으로 노동시장 이탈의 규모를 보여준다.</p>
+          <div class="flourish-embed flourish-chart" data-src="visualisation/29222009"><script src="https://public.flourish.studio/resources/embed.js"></script></div>
+        </div>
+        <details class="interpret">
+          <summary>핵심만 보기</summary>
+          <div class="interpret-box compact">
+            <div class="point warning"><b>70만+</b><span>2025년 2030세대 ‘쉬었음’ 합산 규모가 처음 70만 명을 넘어섰다.</span></div>
+            <div class="point"><b>의미</b><span>실업률 바깥의 비경제활동 영역이 커지고 있다.</span></div>
+          </div>
+        </details>
+
+        <div class="live-chart">
+          <h4>비경제활동 청년 중 ‘쉬었음’ 비율 추이</h4>
+          <p class="live-chart-desc">단순 인원 증가가 아니라, 비경제활동 청년 내부에서 ‘쉬었음’이 차지하는 비중 변화를 확인한다.</p>
+          <div class="flourish-embed flourish-chart" data-src="visualisation/29219134"><script src="https://public.flourish.studio/resources/embed.js"></script></div>
+        </div>
+        <details class="interpret">
+          <summary>해석 열어보기</summary>
+          <div class="interpret-box">
+            <div class="point"><b>비교 기준</b><span>비경제활동 청년 전체 중 ‘쉬었음’이 얼마나 커졌는지를 본다.</span></div>
+            <div class="point"><b>분석 의미</b><span>취업 준비·학업 등 다른 비경제활동 사유와 달리, ‘쉬었음’은 구직 바깥의 정지 상태를 보여준다.</span></div>
+            <div class="point"><b>다음 질문</b><span>이 흐름은 전국에 균일하게 나타날까, 특정 지역에 집중될까?</span></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="bridge"><strong>다음 장면:</strong> 이제 문제의 규모를 확인했으니, 이 현상이 어느 지역에서 더 심각한지 공간적으로 확인한다.</div>
+
+      <div class="chart-chapter" id="chart-3">
+        <div class="chapter-title">
+          <div>
+            <h3>3. 공간 지표: 쉬었음 청년은 어디에 집중되는가</h3>
+            <p>지도는 ‘전국 평균’에 가려진 지역별 차이를 드러내는 핵심 시각화다.</p>
+          </div>
+          <span class="chapter-tag">지역 지도</span>
+        </div>
+        <div class="live-chart">
+          <h4>지역별 쉬었음 청년 비율</h4>
+          <p class="live-chart-desc">색이 짙을수록 쉬었음 비율이 높은 지역이다. 수도권과 비수도권 대비, 특정 지역의 집중 여부를 확인한다.</p>
+          <div class="flourish-embed flourish-chart" data-src="visualisation/29219242"><script src="https://public.flourish.studio/resources/embed.js"></script></div>
+        </div>
+        <details class="interpret">
+          <summary>지도 해석 보기</summary>
+          <div class="interpret-box compact">
+            <div class="point warning"><b>심각</b><span>전라남도: 최고 수준, 서울의 약 1.9배</span></div>
+            <div class="point warning"><b>경고</b><span>경상북도·강원도·전라북도</span></div>
+            <div class="point"><b>비교</b><span>색 대비로 수도권과 비수도권 차이를 먼저 확인</span></div>
+            <div class="point"><b>예외</b><span>제주: 관광업 특수 / 세종: 행정수도 특수</span></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="bridge"><strong>다음 장면:</strong> 지도가 ‘어디가 심각한지’를 보여줬다면, 산점도는 ‘왜 구조적 이탈로 볼 수 있는지’를 보여준다.</div>
+
+      <div class="chart-chapter" id="chart-4">
+        <div class="chapter-title">
+          <div>
+            <h3>4. 구조 지표: 고용률과 쉬었음 비율은 어떤 관계인가</h3>
+            <p>지역별 고용률과 쉬었음 비율을 함께 놓으면 단순한 취업난이 아니라 구조적 이탈 가능성을 확인할 수 있다.</p>
+          </div>
+          <span class="chapter-tag">산점도</span>
+        </div>
+        <div class="scatter-layout">
+          <div class="live-chart">
+            <h4>지역별 청년 고용률과 쉬었음 비율 (2025)</h4>
+            <p class="live-chart-desc">각 점은 하나의 지역이다. 위치가 높고 왼쪽일수록 노동시장 이탈 위험이 큰 지역으로 볼 수 있다.</p>
+            <div class="flourish-embed flourish-chart" data-src="visualisation/29219338"><script src="https://public.flourish.studio/resources/embed.js"></script></div>
+          </div>
+          <aside class="scatter-help">
+            <span class="scene-kicker">그래프 읽는 법</span>
+            <h4>클릭해서 확인</h4>
+            <details class="side-detail">
+              <summary>X축</summary>
+              <div>청년 고용률. 오른쪽으로 갈수록 고용률이 높고, 왼쪽으로 갈수록 낮다.</div>
+            </details>
+            <details class="side-detail">
+              <summary>Y축</summary>
+              <div>쉬었음 비율. 위로 갈수록 노동시장 밖에 머무는 청년 비율이 높다.</div>
+            </details>
+            <details class="side-detail" open>
+              <summary>왼쪽 위</summary>
+              <div>고용률 낮음 + 쉬었음 높음. 노동시장 진입이 약한 위험 구간이다.</div>
+            </details>
+            <details class="side-detail">
+              <summary>오른쪽 아래</summary>
+              <div>고용률 높음 + 쉬었음 낮음. 상대적으로 청년 흡수력이 높은 구간이다.</div>
+            </details>
+          </aside>
+        </div>
+      </div>
+
+      <div class="bridge"><strong>다음 장면:</strong> 구조적 이탈 가능성을 확인했다면, 마지막으로 청년들이 왜 쉬게 되었는지 원인 분포를 확인한다.</div>
+
+      <div class="chart-chapter" id="chart-5">
+        <div class="chapter-title">
+          <div>
+            <h3>5. 맥락 지표: 청년들은 왜 쉬게 되었나</h3>
+            <p>원인 분포는 쉬었음 청년을 개인의 무기력으로만 보는 해석을 보완한다.</p>
+          </div>
+          <span class="chapter-tag">이유 분포</span>
+        </div>
+        <div class="live-chart">
+          <h4>2024년도 청년층 쉬었음 이유 분포</h4>
+          <p class="live-chart-desc">앞선 차트들이 ‘어디서, 얼마나’를 보여줬다면, 이 표는 ‘왜 쉬게 되는가’를 설명한다.</p>
+          <iframe title="2024년도 청년층 쉬었음 이유 분포" aria-label="Chart" id="datawrapper-chart-iVB7K" src="https://datawrapper.dwcdn.net/iVB7K/1/" scrolling="no" frameborder="0" style="width:100%;min-width:100%!important;border:none;" height="520" data-external="1"></iframe>
+        </div>
+        <details class="interpret">
+          <summary>이유 분포 해석 열어보기</summary>
+          <div class="interpret-box">
+            <div class="point"><b>역할</b><span>지역 지도와 산점도가 구조를 보여준다면, 이유 분포는 개인 경험의 맥락을 보완한다.</span></div>
+            <div class="point"><b>해석 방향</b><span>원하는 일자리 부족, 취업 준비 장기화, 건강·불안 요인을 함께 보아야 한다.</span></div>
+            <div class="point warning"><b>주의</b><span>‘그냥 쉼’으로 단정하면 안 된다. 쉬었음은 노동시장 진입 실패와 연결될 수 있다.</span></div>
+          </div>
+        </details>
+
+        <!-- 구조 증거 카드 -->
+        <div class="evidence-block">
+          <div class="evidence-title">📌 "원하는 일자리가 없어서"가 눈높이 문제가 아닌 이유 — 구조 증거 3가지</div>
+          <div class="evidence-grid">
+            <div class="evidence-card">
+              <div class="evidence-num">2.6%</div>
+              <div class="evidence-label">신입 전용 채용 공고 비중 (2025 상반기)</div>
+              <div class="evidence-desc">전체 채용 중 경력직 비중은 82%. 갓 졸업한 청년이 지원할 수 있는 자리 자체가 없다.</div>
+              <div class="evidence-src">출처: 대한상공회의소, 2025</div>
+            </div>
+            <div class="evidence-card">
+              <div class="evidence-num">~40만</div>
+              <div class="evidence-label">취업 경험 있는 쉬었음 청년 (25~34세)</div>
+              <div class="evidence-desc">처음부터 포기한 게 아니다. 일했다가 밀려난 것이다. 취업 무경험 쉬었음은 5만 명 미만.</div>
+              <div class="evidence-src">출처: 한국은행 경제전망보고서, 2024.12</div>
+            </div>
+            <div class="evidence-card">
+              <div class="evidence-num">17.9만</div>
+              <div class="evidence-label">대졸 이상 쉬었음 청년 (2025)</div>
+              <div class="evidence-desc">2023년 15.3만 → 2025년 17.9만. 고학력자가 증가세를 주도한다. 눈높이가 아닌 구조의 문제다.</div>
+              <div class="evidence-src">출처: 한국경영자총협회, 2026.04</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 통합 결론 -->
+<section class="section" id="conclusion">
+  <div class="wrap">
+    <div class="panel">
+      <div class="section-head"><span class="num">05</span><h2>데이터가 말하는 것</h2></div>
+      <p style="color:var(--sub);font-size:15px;margin-bottom:20px;">5개 차트가 귀납적으로 쌓아온 논거를 하나의 결론으로 연결한다.</p>
+      <div class="logic">
+        <div class="logic-box">고용률만 보면<br>문제가 작아 보임</div>
+        <div class="logic-box logic-arrow">→</div>
+        <div class="logic-box">쉬었음 추이에서<br>이탈 규모 확인</div>
+        <div class="logic-box logic-arrow">→</div>
+        <div class="logic-box">지도에서<br>지역 격차 확인</div>
+        <div class="logic-box logic-arrow">→</div>
+        <div class="logic-box">산점도에서<br>구조적 패턴 확인</div>
+        <div class="logic-box logic-arrow">→</div>
+        <div class="logic-box logic-highlight">청년 문제 =<br>구조의 문제</div>
+      </div>
+
+      <div class="policy-block">
+        <div class="policy-title">📋 데이터가 제시하는 정책 방향 — 3가지 구조 개입</div>
+        <p class="policy-intro">각 정책은 데이터가 드러낸 구조적 원인에 직접 대응한다. 원인 없는 처방은 숫자를 바꾸지 못한다.</p>
+
+        <!-- 정책 1 -->
+        <div class="policy-card-full">
+          <div class="policy-card-header">
+            <span class="policy-num">01</span>
+            <div>
+              <div class="policy-icon-inline">🔄</div>
+              <strong>통계 기준 재정의 — '쉬었음'을 공식 노동시장 이탈 지표로</strong>
+            </div>
+          </div>
+          <div class="policy-evidence-row">
+            <div class="pe-badge">근거 데이터</div>
+            <span>취업 경험 있는 쉬었음 청년 <b>~40만 명</b> (전체의 88%↑) — 처음부터 포기한 게 아니라 나갔다가 돌아온 것</span>
+          </div>
+          <div class="policy-body">
+            <div class="policy-why">
+              <b>왜 필요한가</b>
+              현행 통계는 '쉬었음'을 단순 비경제활동으로만 분류한다. 이 때문에 고용률은 오르는데 청년 노동시장 이탈은 보이지 않는 통계 사각지대가 생긴다.
+            </div>
+            <div class="policy-how">
+              <b>구체적 방안</b>
+              <ul>
+                <li>통계청 경제활동인구조사 내 '쉬었음' 항목을 <b>취업경험 유무 / 이탈 기간 / 이탈 사유</b>로 세분화</li>
+                <li>쉬었음 청년을 실업률과 병기하는 <b>'청년 노동시장 이탈률'</b> 공식 지표 신설</li>
+                <li>고용률 대신 이탈률을 청년 정책 성과 지표로 전환해 정책 효과를 투명하게 측정</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 정책 2 -->
+        <div class="policy-card-full">
+          <div class="policy-card-header">
+            <span class="policy-num">02</span>
+            <div>
+              <div class="policy-icon-inline">📍</div>
+              <strong>지역별 차등 개입 — 비수도권 청년 노동시장 재진입 프로그램</strong>
+            </div>
+          </div>
+          <div class="policy-evidence-row">
+            <div class="pe-badge">근거 데이터</div>
+            <span>전남 <b>27.1%</b> vs 서울 <b>14.2%</b> — 쉬었음 비율 최대 <b>1.9배</b> 격차 / 산점도에서 취업률↓ 지역 = 쉬었음↑ 지역 확인</span>
+          </div>
+          <div class="policy-body">
+            <div class="policy-why">
+              <b>왜 필요한가</b>
+              지역별 쉬었음 비율 격차는 개인 의지의 차이가 아니라 접근 가능한 일자리의 질·양 차이다. 전국 단일 정책으로는 이 격차가 좁혀지지 않는다.
+            </div>
+            <div class="policy-how">
+              <b>구체적 방안</b>
+              <ul>
+                <li>쉬었음 비율 <b>25% 초과 시도(전남·전북·강원)</b>를 청년 고용 특별관리구역으로 지정</li>
+                <li>해당 지역에 <b>청년 재진입 원스톱 센터</b> 설치 — 심리상담·직업훈련·취업연계를 단일 창구로</li>
+                <li>지역 기업 청년 신규 채용 시 <b>세제 혜택 차등 적용</b> (비수도권 2배 가중치)</li>
+                <li>지역 내 공공기관·지자체 청년 인턴십 비율 <b>법정 할당제</b> 도입</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 정책 3 -->
+        <div class="policy-card-full">
+          <div class="policy-card-header">
+            <span class="policy-num">03</span>
+            <div>
+              <div class="policy-icon-inline">🚪</div>
+              <strong>신입 채용 구조 개선 — 경력직 편중 채용 관행 규제</strong>
+            </div>
+          </div>
+          <div class="policy-evidence-row">
+            <div class="pe-badge">근거 데이터</div>
+            <span>2025년 신입 전용 채용 <b>2.6%</b> / 경력직 비중 <b>82%</b> — 진입할 문 자체가 없다</span>
+          </div>
+          <div class="policy-body">
+            <div class="policy-why">
+              <b>왜 필요한가</b>
+              쉬었음 이유 1위 '원하는 일자리가 없어서(28.3%)'는 눈높이 문제가 아니다. 신입 공고가 2.6%뿐인 구조에서 막 졸업한 청년은 지원 자체를 포기할 수밖에 없다.
+            </div>
+            <div class="policy-how">
+              <b>구체적 방안</b>
+              <ul>
+                <li>공공기관·대기업 신입 채용 비율 <b>최소 20% 의무화</b> (300인 이상 사업체 적용)</li>
+                <li><b>'경력 없음 우대'</b> 채용 공고에 인센티브 제공 — 고용장려금 신입 가중치 2배</li>
+                <li>직무 중심 채용으로 전환 시 지원하는 <b>NCS 기반 블라인드 채용 확산</b> 로드맵 수립</li>
+                <li>대졸 이상 쉬었음 증가(15.3→17.9만) 추이를 <b>연 1회 국회 보고 의무화</b>해 정책 실효성 점검</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="final">
+        <h2>쉬었음 청년은 멈춘 것이 아니라,<br>밀려난 것이다.</h2>
+        <p>데이터는 청년 문제가 개인의 의지 부족만으로 설명될 수 없음을 보여준다.<br>지역별 고용 기회 격차와 노동시장 구조를 바꾸지 않으면, 숫자는 계속 늘어날 것이다.</p>
+        <div class="final-meta">정치외교학전공 60231117 최한결 · 융데시 기말 프로젝트</div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">Youth Job Insight · Data Storytelling Project</footer>
+
+<script type="text/javascript">
+(function() {
+  "use strict";
+  window.addEventListener("message", function(event) {
+    if (event.data["datawrapper-height"] !== undefined) {
+      var iframes = document.querySelectorAll("iframe");
+      for (var chartId in event.data["datawrapper-height"]) {
+        for (var i = 0; i < iframes.length; i++) {
+          if (iframes[i].contentWindow === event.source) {
+            iframes[i].style.height = event.data["datawrapper-height"][chartId] + "px";
+          }
+        }
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

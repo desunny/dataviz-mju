@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>해외여행지 선택 대시보드</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', 'Noto Sans KR', sans-serif; background: #f0f4f8; color: #1a2332; }
+
+  .header { background: #1a3a5c; color: white; padding: 24px 32px; display: flex; align-items: flex-end; justify-content: space-between; }
+  .header-left h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+  .header-left p { margin-top: 4px; font-size: 13px; color: #a8c4e0; }
+  .header-right { font-size: 12px; color: #7bafd4; background: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 20px; white-space: nowrap; }
+
+  .filter-section { background: white; padding: 16px 32px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .filter-label { font-size: 12px; font-weight: 600; color: #64748b; margin-right: 4px; }
+  .filter-btn { padding: 7px 16px; border: 1.5px solid #cbd5e1; border-radius: 20px; background: white; cursor: pointer; font-size: 13px; color: #475569; transition: all 0.2s; font-family: inherit; }
+  .filter-btn:hover { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+  .filter-btn.active { background: #1a3a5c; color: white; border-color: #1a3a5c; font-weight: 600; }
+
+  .main { padding: 24px 32px; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+  .kpi-card { background: white; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); border-left: 4px solid #3b82f6; }
+  .kpi-card:nth-child(2) { border-left-color: #10b981; }
+  .kpi-card:nth-child(3) { border-left-color: #f59e0b; }
+  .kpi-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: #94a3b8; margin-bottom: 8px; }
+  .kpi-value { font-size: 22px; font-weight: 700; color: #1e293b; }
+
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .chart-card { background: white; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); overflow: hidden; }
+  .chart-card.full { grid-column: 1 / -1; }
+  .chart-header { padding: 16px 20px 12px; border-bottom: 1px solid #f1f5f9; }
+  .chart-header h3 { font-size: 14px; font-weight: 700; color: #1e293b; }
+  .chart-header p { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+  .chart-body { padding: 16px; }
+
+  .fare-legend { display: flex; gap: 16px; flex-wrap: wrap; padding: 0 0 12px 0; }
+  .fare-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #475569; }
+  .fare-legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+  .fare-notes { display: flex; gap: 16px; flex-wrap: wrap; padding: 8px 0 0 0; font-size: 11px; color: #64748b; }
+  .fare-notes span { display: flex; align-items: center; gap: 4px; }
+  .fare-notes span::before { content: "•"; color: #3b82f6; }
+
+  .weather-legend { display: flex; gap: 16px; justify-content: flex-end; padding: 0 20px 4px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>🌏 해외여행지 선택 대시보드</h1>
+    <p>인기 여행지 TOP 10 · 항공 · 날씨 · 인기도 한눈에 알아보기</p>
+  </div>
+  <div class="header-right">📅 2025년 기준</div>
+</div>
+
+<div class="filter-section">
+  <span class="filter-label">여행지 선택</span>
+  <button class="filter-btn active" onclick="selectCountry(this, 'japan')">🇯🇵 일본</button>
+  <button class="filter-btn" onclick="selectCountry(this, 'vietnam')">🇻🇳 베트남</button>
+  <button class="filter-btn" onclick="selectCountry(this, 'usa')">🇺🇸 미국</button>
+  <button class="filter-btn" onclick="selectCountry(this, 'thailand')">🇹🇭 태국</button>
+  <button class="filter-btn" onclick="selectCountry(this, 'philippines')">🇵🇭 필리핀</button>
+  <button class="filter-btn" onclick="selectCountry(this, 'taiwan')">🇹🇼 대만</button>
+  <button class="filter-btn" onclick="selectCountry(this, 'hongkong')">🇭🇰 홍콩</button>
+  <button class="filter-btn" onclick="selectCountry(this, 'singapore')">🇸🇬 싱가포르</button>
+  <button class="filter-btn" onclick="selectCountry(this, 'macau')">🇲🇴 마카오</button>
+  <button class="filter-btn" onclick="selectCountry(this, 'indonesia')">🇮🇩 인도네시아</button>
+</div>
+
+<div class="main">
+
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">✈️ 베스트 여행 시기</div>
+      <div class="kpi-value" id="kpi-season">5–6월, 10–11월</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">🕐 시차</div>
+      <div class="kpi-value" id="kpi-timezone">±0시간</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">🛫 항공 소요 시간</div>
+      <div class="kpi-value" id="kpi-flight">약 2시간 10분</div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3>📍 여행지 확인</h3>
+        <p id="map-city-label">출처: 한국관광공사</p>
+      </div>
+      <div id="map-container" style="padding:0; position:relative;">
+        <div class="flourish-embed flourish-map" data-src="visualisation/29311474" style="min-height:300px;"><script src="https://public.flourish.studio/resources/embed.js"></script><noscript><img src="https://public.flourish.studio/visualisation/29311474/thumbnail" width="100%" alt="map visualization" /></noscript></div>
+
+        <div id="map-info-panel" style="margin:0 16px 16px; background:#f8fafc; border-radius:8px; padding:12px 16px; border:1px solid #e2e8f0;">
+          <div style="display:flex; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+            <span style="font-size:20px; margin-top:1px;">📍</span>
+            <div style="display:flex; gap:24px; flex-wrap:wrap;">
+              <div>
+                <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.6px;">Name</div>
+                <div id="info-name" style="font-size:15px;font-weight:700;color:#1e293b;margin-top:2px;">Japan</div>
+              </div>
+              <div>
+                <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.6px;">Capital</div>
+                <div id="info-capital" style="font-size:15px;font-weight:600;color:#1e293b;margin-top:2px;">Tokyo</div>
+              </div>
+              <div>
+                <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.6px;">Attraction</div>
+                <div id="info-attractions" style="font-size:14px;color:#475569;margin-top:2px;">도쿄 스카이 트리</div>
+              </div>
+              <div>
+                <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.6px;">Official Site</div>
+                <a id="info-link" href="#" target="_blank" style="font-size:14px;color:#3b82f6;font-weight:600;text-decoration:none;margin-top:2px;display:inline-block;">외교부 안내 바로가기</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3>💰 항공 최저가 비교</h3>
+        <p id="fare-city-label">도쿄 (Tokyo) — 출처: 스카이스캐너</p>
+        <div class="fare-notes">
+          <span>직항 기준</span>
+          <span>성인 1명 기준</span>
+          <span>8월 3일~9일 기준</span>
+        </div>
+      </div>
+      <div class="chart-body">
+        <div class="fare-legend">
+          <div class="fare-legend-item"><div class="fare-legend-dot" style="background:#1a3a5c"></div>국적기 오전</div>
+          <div class="fare-legend-item"><div class="fare-legend-dot" style="background:#2e86c1"></div>외항사 오전</div>
+          <div class="fare-legend-item"><div class="fare-legend-dot" style="background:#7fb3d3"></div>국적기 오후</div>
+          <div class="fare-legend-item"><div class="fare-legend-dot" style="background:#aed6f1"></div>외항사 오후</div>
+        </div>
+        <canvas id="fareChart" height="180"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card full">
+      <div class="chart-header">
+        <h3>🌡️ 월별 기온 및 강수량 비교</h3>
+        <p id="weather-city-label">도쿄 (Tokyo) 기준 — 평균기온(°C) · 강수량(mm) 출처: Climates to travel</p>
+      </div>
+      <div class="weather-legend">
+        <div class="fare-legend-item"><div class="fare-legend-dot" style="background:#5dade2"></div>강수량 (mm)</div>
+        <div class="fare-legend-item"><div class="fare-legend-dot" style="background:#e67e22; border-radius:50%;"></div>평균기온 (°C)</div>
+      </div>
+      <div class="chart-body" style="position: relative; height:280px; width:100%;">
+        <canvas id="weatherChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const weatherColors = {
+  precipitation: '#5dade2',
+  temperature: '#e67e22'
+};
+
+const countryData = {
+  japan: { 
+    season: '5–6월, 10–11월', timezone: '±0시간', flight: '약 2시간 10분', city: '도쿄 (Tokyo)', fareCity: '일본 (Tokyo)', fares: [472700, 608300, 487200, 522045],
+    temp: [6.1, 6.7, 9.7, 14.7, 19.4, 22.6, 26.6, 27.9, 24.2, 18.7, 13.3, 8.4],
+    rain: [60,55,115,135,140,170,155,155,225,235,95,60]
+  },
+  vietnam: { 
+    season: '10월–1월', timezone: '2시간 느림', flight: '약 4시간 50분', city: '하노이 (Hanoi)', fareCity: '베트남 (Hanoi)', fares: [720100, 569800, 462600, 574089],
+    temp: [17.1,18.6,21.0,24.9,28.2,30.0,29.9,29.3,28.4,26.0,22.6,18.6],
+    rain: [20,20,35,105,165,265,255,275,245,155,60,20]
+  },
+  usa: { 
+    season: '5–6월, 8–10월', timezone: '13시간 느림', flight: '약 14시간', city: '워싱턴 (Washington D.C.)', fareCity: '미국 (Washington D.C.)', fares: [1964800, 3917700, null, null],
+    temp: [3.0,4.5,8.6,14.6,19.6,24.6,27.2,26.4,22.5,16.1,10.0,5.4],
+    rain: [75,65,90,80,100,105,110,85,100,95,75,85]
+  },
+  thailand: { 
+    season: '12월–2월', timezone: '2시간 느림', flight: '약 5시간 40분', city: '방콕 (Bangkok)', fareCity: '태국 (Bangkok)', fares: [730271, 775289, 576435, 585633],
+    temp: [28.0,29.2,30.5,31.5,31.0,30.2,29.8,29.6,29.3,29.0,28.9,27.7],
+    rain: [13,20,40,90,250,155,175,220,335,290,50,6]
+  },
+  philippines: { 
+    season: '12월–3월', timezone: '1시간 느림', flight: '약 4시간 5분', city: '마닐라 (Manila)', fareCity: '필리핀 (Manila)', fares: [571100, 475700, 490200, 560300],
+    temp: [26.5,27.0,28.3,29.8,30.0,29.2,28.2,27.9,28.0,28.0,27.8,27.0],
+    rain: [20,20,20,25,160,255,430,475,395,220,120,100]
+  },
+  taiwan: { 
+    season: '11월–4월', timezone: '1시간 느림', flight: '약 2시간 30분', city: '타이베이 (Taipei)', fareCity: '대만 (Taipei)', fares: [387400, 297146, 411200, 600800],
+    temp: [19,20,22,26,29,32,34,34,31,28,25,21],
+    rain: [95,130,160,150,245,355,215,335,335,165,90,95]
+  },
+  hongkong: { 
+    season: '11월–4월', timezone: '1시간 느림', flight: '약 3시간 35분', city: '홍콩 (Hong Kong)', fareCity: '홍콩 (Hong Kong)', fares: [397300, 349000, 343600, 364000],
+    temp: [20,20,23,27,30,32,33,32,32,30,26,21],
+    rain: [35,40,75,155,290,490,385,455,320,120,40,30]
+  },
+  singapore: { 
+    season: '6월–8월', timezone: '1시간 느림', flight: '약 6시간 15분', city: '싱가포르 (Singapore)', fareCity: '싱가포르 (Singapore)', fares: [1859900, 569858, 560100, 732600],
+    temp: [31,32,32,32,32,32,31,31,32,32,31,30],
+    rain: [220,105,150,165,165,135,145,150,125,165,255,330]
+  },
+  macau: { 
+    season: '11월–4월', timezone: '1시간 느림', flight: '약 3시간 45분', city: '마카오 (Macau)', fareCity: '마카오 (Macau)', fares: [721900, 896700, 585200, 645400],
+    temp: [19,19,21,25,29,30,31,32,31,28,25,20],
+    rain: [35,45,80,155,285,375,290,330,230,75,40,30]
+  },
+  indonesia: { 
+    season: '7월–9월', timezone: '2시간 느림', flight: '약 7시간', city: '자카르타 (Jakarta)', fareCity: '인도네시아 (Jakarta)', fares: [987000, 896700, 568900, null],
+    temp: [27.4,27.0,27.8,28.2,28.4,28.0,27.7,27.8,28.4,28.4,28.3,27.9],
+    rain: [300,300,210,145,115,95,65,45,65,110,140,205]
+  }
+};
+
+const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+
+const weatherCtx = document.getElementById('weatherChart').getContext('2d');
+const weatherChart = new Chart(weatherCtx, {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: '강수량 (mm)',
+        data: countryData.japan.rain,
+        backgroundColor: weatherColors.precipitation,
+        yAxisID: 'yRain',
+        order: 2,
+        borderRadius: 4
+      },
+      {
+        label: '평균기온 (°C)',
+        data: countryData.japan.temp,
+        borderColor: weatherColors.temperature,
+        backgroundColor: weatherColors.temperature,
+        type: 'line',
+        yAxisID: 'yTemp',
+        order: 1,
+        tension: 0.2,
+        borderWidth: 3,
+        pointRadius: 4
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false } },
+      yRain: {
+        type: 'linear',
+        position: 'left',
+        title: { display: true, text: '강수량 (mm)', font: { size: 11 } },
+        grid: { color: '#f1f5f9' },
+        min: 0
+      },
+      yTemp: {
+        type: 'linear',
+        position: 'right',
+        title: { display: true, text: '평균기온 (°C)', font: { size: 11 } },
+        grid: { display: false },
+        min: -5,
+        max: 40
+      }
+    }
+  }
+});
+
+const fareLabels = ['국적기 오전', '외항사 오전', '국적기 오후', '외항사 오후'];
+const fareColors = ['#1a3a5c', '#2e86c1', '#7fb3d3', '#aed6f1'];
+
+const fareCtx = document.getElementById('fareChart').getContext('2d');
+const fareChart = new Chart(fareCtx, {
+  type: 'bar',
+  data: {
+    labels: fareLabels,
+    datasets: [{
+      data: countryData.japan.fares,
+      backgroundColor: fareColors,
+      borderRadius: 6,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.raw ? ctx.raw.toLocaleString() + '원' : '해당 없음'
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          callback: v => (v/10000).toFixed(0) + '만',
+          font: { size: 11 }
+        },
+        grid: { color: '#f1f5f9' }
+      },
+      y: {
+        ticks: { font: { size: 12 } },
+        grid: { display: false }
+      }
+    }
+  }
+});
+
+// 📌 https://context.reverso.net/translation/korean-english/%EC%A7%81%EC%A0%91+%EC%9E%85%EB%A0%A5%ED%95%A0 여기에 각 국가별로 연결하고 싶은 URL 주소를 넣어주세요!
+const mapInfo = {
+  japan:       { name: 'Japan',         capital: 'Tokyo',       attraction: '도쿄 스카이 트리',          url: 'https://www.0404.go.kr/ntnSafetyInfo/183/detail' },
+  vietnam:     { name: 'Vietnam',       capital: 'Hanoi',       attraction: '못꼿 사원',                url: 'https://www.0404.go.kr/ntnSafetyInfo/86/detail' },
+  usa:         { name: 'United States', capital: 'Washington D.C.',  attraction: '워싱턴 기념탑',            url: 'https://www.0404.go.kr/ntnSafetyInfo/69/detail' },
+  thailand:    { name: 'Thailand',      capital: 'Bangkok',     attraction: '시암 파라곤',              url: 'https://www.0404.go.kr/ntnSafetyInfo/260/detail' },
+  philippines: { name: 'Philippines',   capital: 'Manila',      attraction: '마닐라 산 아구스틴 성당',    url: 'https://www.0404.go.kr/ntnSafetyInfo/252/detail' },
+  taiwan:      { name: 'Taiwan',        capital: 'Taipei',      attraction: '타이베이 101',             url: 'https://www.0404.go.kr/ntnSafetyInfo/372/detail' },
+  hongkong:    { name: 'Hong Kong',     capital: 'Hong Kong',   attraction: '빅토리아 피크',            url: 'https://www.0404.go.kr/ntnSafetyInfo/377/detail' },
+  singapore:   { name: 'Singapore',     capital: 'Singapore',   attraction: '보타닉 가든',              url: 'https://www.0404.go.kr/ntnSafetyInfo/134/detail' },
+  macau:       { name: 'Macau',         capital: 'Macau',       attraction: '더 하우스 오브 댄싱워터',   url: 'https://www.0404.go.kr/ntnSafetyInfo/378/detail' },
+  indonesia:   { name: 'Indonesia',     capital: 'Jakarta',     attraction: '파타힐라 광장',            url: 'https://www.0404.go.kr/ntnSafetyInfo/181/detail' },
+};
+
+function highlightMap(key) {
+  const info = mapInfo[key];
+  if (!info) return;
+  document.getElementById('info-name').textContent = info.name;
+  document.getElementById('info-capital').textContent = info.capital;
+  document.getElementById('info-attractions').textContent = info.attraction;
+  document.getElementById('info-link').href = info.url; // 실시간 변경된 URL 바인딩
+}
+
+function selectCountry(btn, key) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const d = countryData[key];
+
+  document.getElementById('kpi-season').textContent = d.season;
+  document.getElementById('kpi-timezone').textContent = d.timezone;
+  document.getElementById('kpi-flight').textContent = d.flight;
+  
+  document.getElementById('weather-city-label').textContent = d.city + ' 기준 — 평균기온(°C) · 강수량(mm)';
+  document.getElementById('fare-city-label').textContent = d.fareCity + ' — 국적기·외항사 오전/오후 (원)';
+  document.getElementById('map-city-label').textContent = d.city + ' — 위치 지도';
+
+  weatherChart.data.datasets[0].data = d.rain;
+  weatherChart.data.datasets[1].data = d.temp;
+  weatherChart.update();
+
+  highlightMap(key);
+
+  fareChart.data.datasets[0].data = d.fares.map(v => v ?? 0);
+  fareChart.data.datasets[0].backgroundColor = d.fares.map((v, i) => v ? fareColors[i] : '#e2e8f0');
+  fareChart.update();
+}
+
+// 첫 페이지 진입 시 초기값 세팅
+highlightMap('japan');
+</script>
+
+</body>
+</html>

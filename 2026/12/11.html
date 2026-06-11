@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>내 전셋집, 괜찮을까?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg:          #F7F4EF;
+      --ink:         #1A1714;
+      --ink-mid:     #3D3835;
+      --ink-light:   #6B635D;
+      --accent:      #C0392B;
+      --accent-soft: #F0D5D1;
+      --accent-dark: #922B21;
+      --safe:        #2E6B5E;
+      --safe-soft:   #D0E9E4;
+      --rule:        #D6D0C8;
+      --dark-bg:     #16130F;
+      --font-serif:  'Gowun Batang', serif;
+      --font-sans:   'IBM Plex Sans KR', sans-serif;
+      --col:         880px;
+      --gap-section: 110px;
+      --gap-block:   52px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-size: 19px;
+      line-height: 1.9;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── LAYOUT ── */
+    .col {
+      max-width: var(--col);
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    section { padding: var(--gap-section) 0; }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── TYPOGRAPHY ── */
+    .section-label {
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: block;
+    }
+    h2.section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(32px, 4.5vw, 44px);
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 30px;
+    }
+    p.body-text {
+      font-size: 19px;
+      color: var(--ink-mid);
+      margin-bottom: 22px;
+      line-height: 1.95;
+    }
+    p.body-text strong { color: var(--ink); font-weight: 700; }
+    hr.rule {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: var(--gap-block) 0;
+    }
+
+    /* ── NAV (목차) ── */
+    #toc {
+      background: white;
+      border-bottom: 1px solid var(--rule);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0 40px;
+    }
+    .toc-inner {
+      max-width: var(--col);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    .toc-brand {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+      padding: 16px 24px 16px 0;
+      border-right: 1px solid var(--rule);
+      margin-right: 8px;
+      white-space: nowrap;
+    }
+    .toc-links {
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .toc-links::-webkit-scrollbar { display: none; }
+    .toc-links a {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--ink-light);
+      text-decoration: none;
+      padding: 16px 18px;
+      white-space: nowrap;
+      transition: color 0.2s;
+      border-bottom: 2px solid transparent;
+    }
+    .toc-links a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ── PULL QUOTE ── */
+    .pull-quote {
+      border-left: 3px solid var(--accent);
+      padding: 24px 30px;
+      margin: var(--gap-block) 0;
+      background: var(--accent-soft);
+      border-radius: 0 6px 6px 0;
+    }
+    .pull-quote p {
+      font-family: var(--font-serif);
+      font-size: 21px;
+      line-height: 1.75;
+      color: var(--ink);
+      margin: 0;
+    }
+
+    /* ── STAT INLINE ── */
+    .stat-inline {
+      display: flex;
+      gap: 18px;
+      margin: var(--gap-block) 0;
+      flex-wrap: wrap;
+    }
+    .stat-box {
+      flex: 1;
+      min-width: 160px;
+      background: white;
+      border-radius: 8px;
+      padding: 26px 22px;
+      text-align: center;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    }
+    .stat-box .s-num {
+      font-family: var(--font-sans);
+      font-size: 36px;
+      font-weight: 600;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .stat-box .s-label {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      color: var(--ink-light);
+      line-height: 1.55;
+    }
+
+    /* ── CHART BLOCK ── */
+    .chart-block { margin: var(--gap-block) 0; }
+    .chart-label {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 8px;
+    }
+    .chart-title {
+      font-family: var(--font-sans);
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 5px;
+    }
+    .chart-desc {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      color: var(--ink-light);
+      margin-bottom: 18px;
+      line-height: 1.65;
+    }
+    .chart-wrap {
+      background: white;
+      border-radius: 8px;
+      padding: 28px 24px 22px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+    .chart-caption {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      color: var(--ink-light);
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+
+    /* ── INSIGHT BOX ── */
+    .insight-box {
+      background: var(--accent-soft);
+      border-radius: 8px;
+      padding: 26px 30px;
+      margin: 28px 0;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      color: var(--ink-mid);
+      line-height: 1.8;
+    }
+    .insight-box strong { color: var(--accent-dark); }
+    .insight-box.green { background: var(--safe-soft); }
+    .insight-box.green strong { color: var(--safe); }
+
+    /* ── RANK LIST (light bg용) ── */
+    .rank-list { list-style: none; margin: 24px 0; }
+    .rank-list li {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--rule);
+      font-family: var(--font-sans);
+      font-size: 17px;
+    }
+    .rank-list li:last-child { border-bottom: none; }
+    .rank-num {
+      flex-shrink: 0;
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600;
+    }
+    .rank-num.low { background: var(--safe); }
+    .rank-name { flex: 1; font-weight: 500; }
+    .rank-val { font-weight: 600; color: var(--accent); font-size: 17px; }
+    .rank-val.low { color: var(--safe); }
+
+    /* ════════════════════════════
+       MAP SECTION — 다크 배경
+    ════════════════════════════ */
+    #map-section {
+      background: var(--dark-bg);
+      color: var(--bg);
+    }
+    /* 섹션 레이블 */
+    #map-section .section-label { color: #F0A89E; }
+    /* 제목 */
+    #map-section h2.section-title { color: #FFFFFF; }
+    /* 본문 */
+    #map-section p.body-text { color: rgba(247,244,239,0.82); }
+    #map-section p.body-text strong { color: #FFFFFF; }
+    /* 구분선 */
+    #map-section hr.rule { border-color: rgba(255,255,255,0.12); }
+    /* 인사이트 박스 */
+    #map-section .insight-box {
+      background: rgba(240,168,158,0.15);
+      border: 1px solid rgba(240,168,158,0.3);
+    }
+    #map-section .insight-box strong { color: #F0A89E; }
+    /* chart 메타텍스트 */
+    #map-section .chart-label  { color: rgba(255,255,255,0.5); }
+    #map-section .chart-title  { color: #FFFFFF; }
+    #map-section .chart-desc   { color: rgba(255,255,255,0.6); }
+    #map-section .chart-caption{ color: rgba(255,255,255,0.4); }
+    /* chart 컨테이너 — 흰 배경 유지해서 차트 가독성 확보 */
+    #map-section .chart-wrap {
+      background: #FFFFFF;
+      box-shadow: none;
+    }
+    /* rank list — 다크 배경 */
+    #map-section .rank-list li {
+      border-color: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.88);
+    }
+    /* flourish embed wrapper */
+    .flourish-wrap {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: none;
+    }
+
+    /* ── FACTOR ROW ── */
+    .factor-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+    .factor-badge {
+      flex-shrink: 0;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-sans);
+      font-size: 15px; font-weight: 600;
+      margin-top: 2px;
+    }
+    .factor-text h3 {
+      font-family: var(--font-sans);
+      font-size: 18px; font-weight: 600;
+      margin-bottom: 6px; color: var(--ink);
+    }
+    .factor-text p {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      color: var(--ink-light);
+      line-height: 1.85;
+    }
+
+    /* ── CHECKLIST SECTION ── */
+    #checklist-section { background: #F0EBE3; }
+    .term-card {
+      background: white;
+      border-radius: 8px;
+      padding: 30px 34px;
+      margin-bottom: 18px;
+      border-left: 4px solid var(--accent);
+      box-shadow: 0 1px 5px rgba(0,0,0,0.06);
+    }
+    .term-card h3 {
+      font-family: var(--font-sans);
+      font-size: 18px; font-weight: 600;
+      color: var(--accent-dark);
+      margin-bottom: 10px;
+    }
+    .term-card p {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      color: var(--ink-mid);
+      line-height: 1.9;
+    }
+    .term-card.green { border-left-color: var(--safe); }
+    .term-card.green h3 { color: var(--safe); }
+
+    .checklist { list-style: none; margin: var(--gap-block) 0; }
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--rule);
+      font-family: var(--font-serif);
+      font-size: 18px;
+      color: var(--ink-mid);
+      line-height: 1.8;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .check-num {
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-sans);
+      font-size: 13px; font-weight: 600;
+      margin-top: 3px;
+    }
+
+    /* ── OUTRO ── */
+    #outro {
+      background: var(--dark-bg);
+      color: var(--bg);
+      text-align: center;
+      padding: 110px 40px;
+    }
+    .outro-title {
+      font-family: var(--font-serif);
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 26px;
+    }
+    .outro-body {
+      font-family: var(--font-serif);
+      font-size: 19px;
+      color: rgba(247,244,239,0.62);
+      line-height: 1.9;
+      max-width: 520px;
+      margin: 0 auto 52px;
+    }
+    .outro-cta {
+      display: inline-block;
+      font-family: var(--font-sans);
+      font-size: 15px; font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--bg);
+      border: 1px solid rgba(247,244,239,0.3);
+      padding: 15px 40px;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .outro-cta:hover { background: var(--bg); color: var(--ink); }
+
+    /* ── FOOTER ── */
+    footer { background: #0E0C09; padding: 60px 40px; }
+    .footer-inner { max-width: var(--col); margin: 0 auto; }
+    .footer-label {
+      font-family: var(--font-sans);
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+      margin-bottom: 20px;
+    }
+    .source-list { list-style: none; }
+    .source-list li {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      color: rgba(255,255,255,0.42);
+      line-height: 1.7;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .source-list li:last-child { border-bottom: none; }
+    .source-list li strong { color: rgba(255,255,255,0.68); font-weight: 500; }
+    .footer-credit {
+      margin-top: 36px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 40px;
+      background: var(--dark-bg);
+      color: var(--bg);
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.03) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.03) 40px);
+      pointer-events: none;
+    }
+    .hero-inner { max-width: var(--col); margin: 0 auto; position: relative; z-index: 1; }
+    .hero-eyebrow {
+      font-family: var(--font-sans);
+      font-size: 14px; font-weight: 400;
+      letter-spacing: 0.18em;
+      color: rgba(247,244,239,0.4);
+      margin-bottom: 32px;
+    }
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(48px, 9vw, 88px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      margin-bottom: 24px;
+    }
+    .hero-title .accent-word { color: var(--accent); }
+    .hero-subtitle {
+      font-family: var(--font-sans);
+      font-size: clamp(16px, 2vw, 18px);
+      font-weight: 300;
+      color: rgba(247,244,239,0.6);
+      max-width: 500px;
+      line-height: 1.85;
+      margin-bottom: 64px;
+    }
+    .hero-stats { display: flex; gap: 40px; flex-wrap: wrap; }
+    .hero-stat { display: flex; flex-direction: column; gap: 6px; }
+    .hero-stat .stat-num {
+      font-family: var(--font-sans);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 600;
+      color: var(--bg);
+      line-height: 1;
+    }
+    .hero-stat .stat-num.red { color: var(--accent); }
+    .hero-stat .stat-label {
+      font-family: var(--font-sans);
+      font-size: 13px; font-weight: 400;
+      letter-spacing: 0.06em;
+      color: rgba(247,244,239,0.45);
+    }
+    .scroll-hint {
+      position: absolute;
+      bottom: 36px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
+      z-index: 1;
+    }
+    .scroll-hint span {
+      font-family: var(--font-sans);
+      font-size: 11px; letter-spacing: 0.2em;
+      color: rgba(247,244,239,0.3);
+    }
+    .scroll-arrow {
+      width: 18px; height: 18px;
+      border-right: 1.5px solid rgba(247,244,239,0.3);
+      border-bottom: 1.5px solid rgba(247,244,239,0.3);
+      transform: rotate(45deg);
+      animation: bounce 1.6s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: rotate(45deg) translateY(0); }
+      50%       { transform: rotate(45deg) translateY(5px); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      :root { --gap-section: 80px; --gap-block: 40px; }
+      .col { padding: 0 20px; }
+      .hero-stats { gap: 24px; }
+      #toc { padding: 0 16px; }
+      .stat-inline { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════
+     HERO
+════════════════════════════ -->
+<section id="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">서울시 자치구별 전세사기 위험도 시각화</p>
+    <h1 class="hero-title">내 전셋집,<br><span class="accent-word">괜찮을까?</span></h1>
+    <p class="hero-subtitle">
+      전세 계약을 앞두고 있다면, 지금 계약하려는 그 동네가 얼마나<br> 위험한지 알고 있나요?
+      숫자가 말하는 진짜 위험 지도를 확인하세요.
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="stat-num red">20,941건</span>
+        <span class="stat-label">2024년 전세사기 접수 건수</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-num red">4조 4,896억</span>
+        <span class="stat-label">2024년 추정 피해 금액</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-num">25개 구</span>
+        <span class="stat-label">서울시 자치구 전수 분석</span>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════
+     목차 (sticky nav)
+════════════════════════════ -->
+<nav id="toc">
+  <div class="toc-inner">
+    <span class="toc-brand">내 전셋집, 괜찮을까?</span>
+    <div class="toc-links">
+      <a href="#context">01. 얼마나 심각한가?</a>
+      <a href="#map-section">02. 서울, 어디가 위험한가?</a>
+      <a href="#why-section">03. 왜 위험한가?</a>
+      <a href="#checklist-section">04. 예방 가이드!</a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ════════════════════════════
+     PART 01 — 전세사기 심각성
+════════════════════════════ -->
+<section id="context">
+  <div class="col">
+
+    <span class="section-label reveal">PART 01 — 전세사기, 얼마나 심각해졌나?</span>
+    <h2 class="section-title reveal">불과 6년 사이,<br>전세사기는 56배 폭증했다</h2>
+
+    <p class="body-text reveal">
+      2018년 372건이던 전세사기 접수 건수는 2024년 <strong>20,941건</strong>으로,
+      불과 6년 만에 56배 이상 급증했습니다. 피해 금액도 792억 원에서
+      <strong>4조 4,896억 원</strong>으로 함께 치솟았습니다.
+    </p>
+
+    <p class="body-text reveal">
+      특히 2022년에서 2023년 사이 발생 건수가 <strong>3.6배</strong> 수직 상승하며
+      전세사기는 일부의 문제가 아닌 사회 전반의 구조적 위기로 자리잡았습니다.
+    </p>
+
+    <div class="pull-quote reveal">
+      <p><strong>"이 동네 계약해도 괜찮을까?"</strong> — 매년 2만 명에 가까운 피해자들이 계약서에 도장을 찍은 뒤에야 이 질문을 던집니다.</p>
+    </div>
+
+    <div class="stat-inline reveal">
+      <div class="stat-box">
+        <span class="s-num">56배</span>
+        <span class="s-label">발생 건수 증가<br>(2018→2024)</span>
+      </div>
+      <div class="stat-box">
+        <span class="s-num">57배</span>
+        <span class="s-label">피해 금액 증가<br>(2018→2024)</span>
+      </div>
+      <div class="stat-box">
+        <span class="s-num">3.6배</span>
+        <span class="s-label">1년 새 급증<br>(2022→2023)</span>
+      </div>
+    </div>
+
+    <hr class="rule reveal" />
+
+    <!-- Chart 1-A -->
+    <div class="chart-block reveal">
+      <p class="chart-label">Chart 1-A</p>
+      <p class="chart-title">전국 전세사기 발생 건수 추이 (2018–2024)</p>
+      <p class="chart-desc">매년 가파르게 증가하는 발생 건수. 2022→2023년 구간의 수직 급증이 눈에 띕니다.</p>
+      <div class="chart-wrap">
+        <canvas id="chartCases" height="240"></canvas>
+      </div>
+      <p class="chart-caption">출처: 주택도시보증공사(HUG)</p>
+    </div>
+
+    <!-- Chart 1-B -->
+    <div class="chart-block reveal">
+      <p class="chart-label">Chart 1-B</p>
+      <p class="chart-title">전국 전세사기 피해 금액 추이 (2018–2024, 단위: 억 원)</p>
+      <p class="chart-desc">건수가 늘어난 만큼 피해 금액도 동반 급증했습니다. 2024년 피해 금액은 약 4조 5천억 원에 달합니다.</p>
+      <div class="chart-wrap">
+        <canvas id="chartAmount" height="240"></canvas>
+      </div>
+      <p class="chart-caption">출처: 주택도시보증공사(HUG)</p>
+    </div>
+
+    <div class="insight-box reveal">
+      <strong>핵심 인사이트</strong><br>
+      전세사기는 특정 개인이 조심하지 않아서 생기는 우연한 사고가 아닙니다. <br>마구 지어진 빌라·다세대 주택들, 집값 부진으로 인해 집을 팔아도 보증금을 돌려주지 못하는 '깡통전세' 현상, 여기에 이러한 제도의 빈틈을 노린 사기 등이 맞물린 
+      <strong>구조적 사회 문제</strong>입니다.<br>그렇다면 <strong>서울 안에서는 어디가 특히 위험</strong>할까요?
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════════
+     PART 02 — 서울 어디가 위험한가? (다크)
+════════════════════════════ -->
+<section id="map-section">
+  <div class="col">
+
+    <span class="section-label reveal">PART 02 — 서울, 어디가 위험한가?</span>
+    <h2 class="section-title reveal">같은 서울이라도<br>자치구마다 위험도는 크게 다르다</h2>
+
+    <p class="body-text reveal">
+      2024년 서울에서 발생한 전세사기는 총 <strong>4,198건</strong>입니다.
+      그런데 이 피해가 25개 자치구에 고르게 분포된 것이 아닙니다.
+      특정 몇 개 자치구에 피해가 집중되는 뚜렷한 편중 현상이 나타납니다.
+    </p>
+
+    <!-- Top 3 / Bottom 3 -->
+    <div class="chart-block reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <div>
+        <p class="chart-label">위험 상위 3개 구</p>
+        <ul class="rank-list">
+          <li><span class="rank-num">1</span><span class="rank-name">관악구</span><span class="rank-val">1,108건</span></li>
+          <li><span class="rank-num">2</span><span class="rank-name">강서구</span><span class="rank-val">585건</span></li>
+          <li><span class="rank-num">3</span><span class="rank-name">동작구</span><span class="rank-val">392건</span></li>
+        </ul>
+      </div>
+      <div>
+        <p class="chart-label">상대적으로 안전한 구</p>
+        <ul class="rank-list">
+          <li><span class="rank-num low">23</span><span class="rank-name">서초구</span><span class="rank-val low">10건</span></li>
+          <li><span class="rank-num low">24</span><span class="rank-name">성동구</span><span class="rank-val low">9건</span></li>
+          <li><span class="rank-num low">25</span><span class="rank-name">용산구</span><span class="rank-val low">1건</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="insight-box reveal" style="color: #FFFFFF;">
+      <strong>1위의 관악구</strong><br>
+      관악구는 2위인 강서구의 거의 <strong>2배</strong>에 달하는 압도적 1위입니다.
+      3위 동작구와 5위 금천구는 관악구와 지리적으로 인접해 있어, 특정 권역에 위험이 집중되는 경향을 보입니다.
+      반면 용산구, 성동구, 서초구 등은 상대적으로 안전합니다.
+    </div>
+
+    <!-- Chart 2-A: 수평 바 -->
+    <div class="chart-block reveal">
+      <p class="chart-label">Chart 2-A</p>
+      <p class="chart-title">서울 자치구별 전세사기 발생 건수 (2024년)</p>
+      <p class="chart-desc">25개 자치구 전수 비교. 관악구의 압도적인 수치가 한눈에 확인됩니다.</p>
+      <div class="chart-wrap">
+        <canvas id="chartGuBars" height="420"></canvas>
+      </div>
+      <p class="chart-caption">출처: 서울 열린데이터광장</p>
+    </div>
+
+    <!-- Chart 2-B: Flourish 프로젝션 맵 -->
+    <div class="chart-block reveal">
+      <p class="chart-label">Chart 2-B</p>
+      <p class="chart-title">서울 자치구별 전세사기 위험도 지도</p>
+      <p class="chart-desc">색이 짙을수록 전세사기 발생 건수가 많은 자치구입니다. 계약 전 내가 가려는 구의 색을 확인하세요.</p>
+      <div class="flourish-wrap">
+        <div class="flourish-embed flourish-map" data-src="visualisation/29318961"><script src="https://public.flourish.studio/resources/embed.js"></script><noscript><img src="https://public.flourish.studio/visualisation/29318961/thumbnail" width="100%" alt="map visualization" /></noscript></div>
+      </div>
+      <p class="chart-caption">출처: 서울 열린데이터광장</p>
+    </div>
+
+    <hr class="rule" />
+
+    <p class="body-text reveal">
+      특정 자치구에 피해가 몰리는 현상은 우연이 아닙니다.
+      그 배경에는 <strong>세 가지 구조적 요인</strong>이 있습니다.
+    </p>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════════
+     PART 03 — 왜 이 동네가 위험한가?
+════════════════════════════ -->
+<section id="why-section">
+  <div class="col">
+
+    <span class="section-label reveal">PART 03 — 왜 이 동네가 위험한가?</span>
+    <h2 class="section-title reveal">위험한 지역에는<br>공통된 구조가 있다</h2>
+
+    <p class="body-text reveal">
+      전세사기 발생이 많은 자치구에는 공통적으로 나타나는 <strong>세 가지 패턴</strong>이 있습니다.
+      이 요인들은 전세사기 건수와 완전한 인과관계를 갖는 것은 아니지만,
+      <strong>구조적으로 취약한 환경을 만드는 경향성</strong>을 보여줍니다.
+    </p>
+
+    <hr class="rule reveal" />
+
+    <!-- ── 요인 1: 1인가구 ── -->
+    <div class="factor-row reveal">
+      <div class="factor-badge">1</div>
+      <div class="factor-text">
+        <h3>1인 가구 밀집 — 정보 취약 계층이 많은 지역</h3>
+        <p>사회적 연결망이 약한 1인 가구는 계약 과정에서 정보가 부족하고, 검증 없이 계약하는 경우가 많습니다. <strong>1인 가구가 많은 자치구일수록</strong> 전세사기의 주요 타겟이 되는 경향이 있습니다.</p>
+      </div>
+    </div>
+
+    <div class="chart-block reveal">
+      <p class="chart-label">Chart 3-A</p>
+      <p class="chart-title">서울 자치구별 1인 가구 수 (2024년)</p>
+      <p class="chart-desc">전세사기 1위 관악구는 1인 가구 수도 압도적 1위입니다.</p>
+      <div class="chart-wrap">
+        <canvas id="chartSingle" height="400"></canvas>
+      </div>
+      <p class="chart-caption">출처: 서울데이터허브</p>
+    </div>
+
+    <div class="insight-box reveal">
+      <strong>1인 가구와 전세사기의 관계</strong><br>
+      전세사기 발생 최상위 관악구·강서구는 1인 가구 수 또한 최상위입니다.<br>
+      반면 전세사기 하위인 종로구·중구는 1인 가구 수 또한 최하위입니다.<br><strong>다만,</strong> 1인 가구가 많다고 해서
+      반드시 전세사기가 많은 것은 아닙니다. 송파구는 1인 가구 3위이지만
+      전세사기는 중하위권이며, 다른 구조적 요인들과 함께 볼 필요가 있습니다.
+    </div>
+
+    <hr class="rule reveal" />
+
+    <!-- ── 요인 2: 전세가격지수 ── -->
+    <div class="factor-row reveal">
+      <div class="factor-badge">2</div>
+      <div class="factor-text">
+        <h3>전세가격지수 하락 — 깡통전세 위험이 높은 지역</h3>
+        <p><strong>전세가격지수가 낮다는 것</strong>은 전세 시세가 많이 떨어졌다는 의미입니다. 집값보다 전세 보증금이 더 높아지는 <strong>'깡통전세'</strong> 상황이 되면, 집이 경매에 넘어가도 세입자가 보증금을 돌려받지 못할 수 있습니다.</p>
+      </div>
+    </div>
+
+    <div class="chart-block reveal">
+      <p class="chart-label">Chart 3-B</p>
+      <p class="chart-title">서울 자치구별 전세가격지수 (2025년 1월 기준)</p>
+      <p class="chart-desc"><strong>수치가 낮을수록</strong> 전세 시세 하락폭이 크고 깡통전세 <strong>위험</strong>이 높습니다.</p>
+      <div class="chart-wrap">
+        <canvas id="chartJeonseIdx" height="400"></canvas>
+      </div>
+      <p class="chart-caption">출처: 서울 열린데이터광장</p>
+    </div>
+
+    <div class="insight-box reveal">
+      <strong>수치로 보는 격차</strong><br>
+      전세사기 최다 발생 3개 구의 전세가격지수는 관악구 <strong>90.9</strong>,
+      강서구 <strong>91.7</strong>, 동작구 <strong>93.4</strong>로 하락폭이 큽니다.<br>
+      반면 상대적으로 안전한 성동구는 <strong>98.6</strong>, 종로구는 <strong>97.0</strong>으로
+      전세 시세가 비교적 안정적입니다. <br>전세가격지수 하락은 깡통전세 위험을 높이는 큰 요인입니다.
+    </div>
+
+    <hr class="rule reveal" />
+
+    <!-- ── 요인 3: 주택유형 ── -->
+    <div class="factor-row reveal">
+      <div class="factor-badge">3</div>
+      <div class="factor-text">
+        <h3>다세대·연립주택 밀집 — 사기가 숨기 쉬운 지역</h3>
+        <p>아파트는 전체가 하나로 관리되지만, 다세대·연립주택은 집마다 주인이 따로 있고 <strong>권리 관계가 훨씬 복잡</strong>합니다. 이미 빚이 잔뜩 쌓인 집인데도 겉은 멀쩡해 보여서, <strong>사기꾼들이 악용</strong>하기 좋은 구조입니다.</p>
+      </div>
+    </div>
+
+    <div class="chart-block reveal">
+      <p class="chart-label">Chart 3-C</p>
+      <p class="chart-title">서울 자치구별 다세대·연립주택 총 수</p>
+      <p class="chart-desc">연립주택과 다세대주택 수를 합산한 수치입니다. 해당 주택 유형이 많을수록 사기에 악용될 수 있는 환경이 형성됩니다.</p>
+      <div class="chart-wrap">
+        <canvas id="chartHousing" height="400"></canvas>
+      </div>
+      <p class="chart-caption">출처: 서울 열린데이터광장</p>
+    </div>
+
+    <div class="insight-box reveal">
+      <strong>주택 유형 수가 전부를 설명하지는 않는다</strong><br>
+      <strong>역시</strong> 관악·강서는 다세대·연립주택 또한 많은 것으로 확인됩니다.<br>
+      <strong>그러나</strong> 주택이 더 많은 송파·은평의 전세사기 발생 건수는 중하위권에 머뭅니다.<br>은평구는 전세가격지수가 안정적이며, 송파구는 지수가 중간임에도 높은 매매가가 버퍼 역할을 하기 때문입니다.
+      <br>결국 앞선 세 가지 요인이
+      <strong>동시에 겹치는 지역</strong>일수록 전세사기 위험이 높아집니다.
+    </div>
+
+    <div class="insight-box green reveal">
+      <strong>정리하면</strong><br>
+      결국 위험한 지역에는 공통점이 있습니다. 혼자 사는 사람이 많고, 전세 시세는 떨어졌으며, 복잡한 빌라·연립이 밀집해 있습니다. 관악구·강서구가 가장 대표적입니다. <br><strong>계약 전, 내가 가려는 동네가 이 세 가지에 해당하는지 먼저 확인해보세요.</strong>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════════
+     PART 04 — 예방 가이드
+════════════════════════════ -->
+<section id="checklist-section">
+  <div class="col">
+
+    <span class="section-label reveal">PART 04 — 계약 전 반드시 알아야 할 것들</span>
+    <h2 class="section-title reveal">알면 피할 수 있다.<br>모르면 당한다.</h2>
+
+    <p class="body-text reveal">
+      전세 계약은 대부분의 청년들에게 생애 처음으로 거치는 큰 금융 거래입니다.
+      낯선 용어와 복잡한 절차 앞에서 당황하지 않도록,
+      <strong>꼭 알아야 할 개념과 체크리스트</strong>를 정리했습니다.
+    </p>
+
+    <hr class="rule reveal" />
+    <span class="section-label reveal" style="margin-top:0">꼭 알아야 할 용어</span>
+
+    <div class="term-card reveal">
+      <h3>전세사기</h3>
+      <p>집주인이 처음부터 보증금을 돌려줄 생각 없이 계약하거나, 이미 빚이 많은 집에 전세 계약을 유도해 세입자의 보증금을 가로채는 행위입니다. "기획 전세사기"의 경우 여러 채를 동시에 노리는 조직적 수법이 많습니다.</p>
+    </div>
+
+    <div class="term-card reveal">
+      <h3>깡통전세</h3>
+      <p>집의 매매 시세가 전세 보증금보다 낮거나 비슷해진 상태입니다. 이 경우 집이 경매에 넘어가도 세입자가 보증금 전액을 돌려받지 못할 수 있습니다. <strong>전세가율(전세 보증금 ÷ 매매가)</strong>이 80%를 넘으면 주의 신호입니다.</p>
+    </div>
+
+    <div class="term-card reveal">
+      <h3>역전세</h3>
+      <p>전세 시세가 내가 낸 보증금보다 낮아진 상황입니다. 집주인이 새 세입자를 구해도 기존 보증금만큼 받지 못해, 나에게 차액을 돌려주지 못하는 일이 생깁니다. 전세가격지수가 낮은 지역일수록 역전세 위험이 큽니다.</p>
+    </div>
+
+    <div class="term-card reveal">
+      <h3>전세가격지수</h3>
+      <p>특정 기준 시점의 전세 시세를 100으로 놓고 현재 시세를 비교한 수치입니다. 수치가 낮을수록 전세 시세가 많이 떨어진 것입니다. 계약하려는 지역의 전세가격지수가 낮다면 역전세·깡통전세 위험 신호입니다.</p>
+    </div>
+
+    <div class="term-card reveal">
+      <h3>쪼개기 계약 (전세사기 수법)</h3>
+      <p>집주인이 하나의 건물을 여러 세입자에게 전세로 쪼개 계약한 뒤, 전체 전세 보증금 합계가 건물 가격을 초과해도 도주하는 수법입니다. 다세대·연립주택에서 자주 발생하며, 등기부등본에 선순위 채권이 많다면 의심해야 합니다.</p>
+    </div>
+
+    <div class="term-card green reveal">
+      <h3>전세보증금 반환보증 (HUG)</h3>
+      <p>주택도시보증공사(HUG)가 운영하는 보험으로, 계약 기간이 끝났는데도 집주인이 보증금을 돌려주지 않으면 HUG가 대신 지급해주는 제도입니다. 가입 조건이 있으므로 계약 전 반드시 가입 가능 여부를 확인하세요. 보증금을 지킬 수 있는 가장 확실한 안전망입니다.</p>
+    </div>
+
+    <hr class="rule reveal" />
+    <span class="section-label reveal" style="margin-top:0">전세 계약 전 체크리스트</span>
+    <p class="body-text reveal">계약서에 도장을 찍기 전, 아래 항목을 하나씩 직접 확인하세요.</p>
+
+    <ul class="checklist reveal">
+      <li>
+        <span class="check-num">1</span>
+        <div><strong>등기부등본 직접 확인</strong> — 계약 직전 직접 발급해서 선순위 근저당·가압류·가처분이 있는지 확인하세요. 이미 빚이 많은 집이라면 내 보증금이 위험합니다.</div>
+      </li>
+      <li>
+        <span class="check-num">2</span>
+        <div><strong>전세가율 계산</strong> — 전세 보증금 ÷ 실제 매매 시세를 계산해서 80%가 넘으면 깡통전세 위험이 있습니다. 국토교통부 실거래가 공개시스템에서 시세를 확인하세요.</div>
+      </li>
+      <li>
+        <span class="check-num">3</span>
+        <div><strong>HUG 전세보증금 반환보증 가입 가능 여부 확인</strong> — 가입 조건(전세가율 등)을 미리 확인하고, 가능하다면 반드시 가입하세요. 계약 후 일정 기간 내에만 가입 가능합니다.</div>
+      </li>
+      <li>
+        <span class="check-num">4</span>
+        <div><strong>전입신고 + 확정일자 즉시 받기</strong> — 이사 당일 주민센터 또는 인터넷에서 전입신고와 확정일자를 받아야 법적 보호를 받을 수 있습니다. 하루라도 늦으면 순위가 밀릴 수 있습니다.</div>
+      </li>
+      <li>
+        <span class="check-num">5</span>
+        <div><strong>집주인 신분 확인</strong> — 계약 당사자가 등기부등본에 나오는 실제 소유자인지 신분증과 직접 대조하세요. 대리인이라면 위임장·인감증명서를 꼭 확인하세요.</div>
+      </li>
+      <li>
+        <span class="check-num">6</span>
+        <div><strong>세금 체납 여부 확인</strong> — 집주인이 세금을 많이 밀렸다면 경매 시 국가가 먼저 회수해 내 보증금이 위험합니다. 주민센터에서 미납 지방세 열람을 요청할 수 있습니다.</div>
+      </li>
+      <li>
+        <span class="check-num">7</span>
+        <div><strong>건물 내 다른 세입자 전세 현황 파악</strong> — 같은 건물에 전세 세입자가 많다면 쪼개기 계약 수법일 수 있습니다. 건물 전체 선순위 채권 합계가 건물 가치를 넘지 않는지 따져보세요.</div>
+      </li>
+    </ul>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════════
+     OUTRO
+════════════════════════════ -->
+<section id="outro">
+  <div class="col" style="text-align:center;">
+    <h2 class="outro-title reveal">도장 찍기 전, <br>딱 한 번만 더 확인하세요.</h2>
+    <p class="outro-body reveal">
+      이 페이지가 계약을 앞둔 여러분의 판단에 작은 도움이 되길 바랍니다.
+      지역을 확인하고, 용어를 이해하고, 체크리스트를 실천하는 것.
+      완벽한 예방은 없지만, 아는 것과 모르는 것의 차이는 큽니다.
+    </p>
+    <a href="#hero" class="outro-cta reveal">처음으로 돌아가기 ↑</a>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════
+     FOOTER
+════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <p class="footer-label">데이터 출처</p>
+    <ul class="source-list">
+      <li><strong>전세사기 발생 건수 및 피해 금액</strong> — 주택도시보증공사(HUG)</li>
+      <li><strong>서울 자치구별 전세사기 발생 건수</strong> — 서울 열린데이터광장</li>
+      <li><strong>자치구별 1인 가구 수</strong> — 서울데이터허브</li>
+      <li><strong>자치구별 전세가격지수</strong> — 서울 열린데이터광장</li>
+      <li><strong>자치구별 다세대·연립주택 수</strong> — 서울 열린데이터광장</li>
+    </ul>
+    <p class="footer-credit">명지대학교 경영정보학과 21학번 정민혁 · 데이터 시각화 프로젝트</p>
+  </div>
+</footer>
+
+
+<!-- ════════════════════════════
+     CHART.JS
+════════════════════════════ -->
+<script>
+const RED        = '#C0392B';
+const RED_ALPHA  = (a) => `rgba(192,57,43,${a})`;
+const SAFE       = '#2E6B5E';
+const SAFE_ALPHA = (a) => `rgba(46,107,94,${a})`;
+const INK_LIGHT  = '#6B635D';
+const baseFont   = { family: "'IBM Plex Sans KR', sans-serif" };
+const tickOpts   = { color: INK_LIGHT, font: { ...baseFont, size: 13 } };
+const gridOpts   = { color: 'rgba(0,0,0,0.06)', drawBorder: false };
+
+/* ── Chart 1-A: 발생 건수 바 ── */
+new Chart(document.getElementById('chartCases'), {
+  type: 'bar',
+  data: {
+    labels: ['2018', '2019', '2020', '2021', '2022', '2023', '2024'],
+    datasets: [{
+      label: '전세사기 발생 건수',
+      data: [372, 1630, 2408, 2799, 5443, 19350, 20941],
+      backgroundColor: [
+        RED_ALPHA(0.22), RED_ALPHA(0.30), RED_ALPHA(0.38),
+        RED_ALPHA(0.46), RED_ALPHA(0.58), RED_ALPHA(0.82), RED_ALPHA(1)
+      ],
+      borderColor: 'transparent',
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => `  ${c.parsed.y.toLocaleString()}건` }, titleFont: baseFont, bodyFont: baseFont }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: tickOpts },
+      y: { grid: gridOpts, ticks: { ...tickOpts, callback: v => v.toLocaleString() + '건' } }
+    }
+  }
+});
+
+/* ── Chart 1-B: 피해 금액 라인 ── */
+new Chart(document.getElementById('chartAmount'), {
+  type: 'line',
+  data: {
+    labels: ['2018', '2019', '2020', '2021', '2022', '2023', '2024'],
+    datasets: [{
+      label: '피해 금액 (억 원)',
+      data: [792, 3442, 4682, 5790, 11726, 43347, 44896],
+      borderColor: RED,
+      backgroundColor: RED_ALPHA(0.1),
+      borderWidth: 2.5,
+      pointBackgroundColor: RED,
+      pointRadius: 5, pointHoverRadius: 7,
+      fill: true, tension: 0.3,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => `  ${c.parsed.y.toLocaleString()}억 원` }, titleFont: baseFont, bodyFont: baseFont }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: tickOpts },
+      y: { grid: gridOpts, ticks: { ...tickOpts, callback: v => v.toLocaleString() + '억' } }
+    }
+  }
+});
+
+/* ── Chart 2-A: 자치구 수평 바 ── */
+const guData = [
+  {n:'관악구',v:1108},{n:'강서구',v:585},{n:'동작구',v:392},
+  {n:'동대문구',v:275},{n:'금천구',v:271},{n:'영등포구',v:213},
+  {n:'구로구',v:209},{n:'은평구',v:182},{n:'양천구',v:138},
+  {n:'성북구',v:123},{n:'서대문구',v:109},{n:'중랑구',v:103},
+  {n:'마포구',v:86},{n:'강동구',v:79},{n:'송파구',v:69},
+  {n:'강북구',v:67},{n:'도봉구',v:60},{n:'광진구',v:44},
+  {n:'강남구',v:30},{n:'종로구',v:14},{n:'노원구',v:11},
+  {n:'서초구',v:10},{n:'중구',v:10},{n:'성동구',v:9},{n:'용산구',v:1}
+].reverse();
+
+new Chart(document.getElementById('chartGuBars'), {
+  type: 'bar',
+  data: {
+    labels: guData.map(d => d.n),
+    datasets: [{
+      label: '전세사기 발생 건수',
+      data: guData.map(d => d.v),
+      backgroundColor: guData.map(d =>
+        d.v >= 392 ? RED_ALPHA(0.9) : d.v <= 14 ? SAFE_ALPHA(0.65) : RED_ALPHA(0.5)
+      ),
+      borderRadius: 3, borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => `  ${c.parsed.x.toLocaleString()}건` }, titleFont: baseFont, bodyFont: baseFont }
+    },
+    scales: {
+      x: { grid: gridOpts, ticks: { ...tickOpts, callback: v => v.toLocaleString() + '건' } },
+      y: { grid: { display: false }, ticks: { ...tickOpts, font: { ...baseFont, size: 13 } } }
+    }
+  }
+});
+
+/* ── Chart 3-A: 1인 가구 수평 바 ── */
+const singleData = [
+  {n:'관악구',v:153605},{n:'강서구',v:106748},{n:'송파구',v:89720},
+  {n:'영등포구',v:79698},{n:'강남구',v:79274},{n:'동작구',v:75148},
+  {n:'마포구',v:73327},{n:'광진구',v:72933},{n:'동대문구',v:72355},
+  {n:'은평구',v:70568},{n:'성북구',v:70230},{n:'중랑구',v:69149},
+  {n:'노원구',v:67182},{n:'강동구',v:65601},{n:'구로구',v:62632},
+  {n:'서대문구',v:56770},{n:'금천구',v:53858},{n:'강북구',v:53705},
+  {n:'서초구',v:49443},{n:'성동구',v:48442},{n:'양천구',v:47886},
+  {n:'도봉구',v:43347},{n:'용산구',v:40445},{n:'종로구',v:29779},{n:'중구',v:28968}
+].reverse();
+
+new Chart(document.getElementById('chartSingle'), {
+  type: 'bar',
+  data: {
+    labels: singleData.map(d => d.n),
+    datasets: [{
+      label: '1인 가구 수',
+      data: singleData.map(d => d.v),
+      backgroundColor: singleData.map(d =>
+        d.v >= 100000 ? RED_ALPHA(0.9) : d.v <= 30000 ? SAFE_ALPHA(0.65) : RED_ALPHA(0.45)
+      ),
+      borderRadius: 3, borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => `  ${c.parsed.x.toLocaleString()}가구` }, titleFont: baseFont, bodyFont: baseFont }
+    },
+    scales: {
+      x: { grid: gridOpts, ticks: { ...tickOpts, callback: v => (v/10000).toFixed(0) + '만' } },
+      y: { grid: { display: false }, ticks: { ...tickOpts, font: { ...baseFont, size: 13 } } }
+    }
+  }
+});
+
+/* ── Chart 3-B: 전세가격지수 수평 바 ── */
+const jeonseIdx = [
+  {n:'금천구',v:90.3},{n:'관악구',v:90.9},{n:'도봉구',v:91.5},
+  {n:'강남구',v:91.5},{n:'강서구',v:91.7},{n:'성북구',v:92.1},
+  {n:'노원구',v:92.9},{n:'양천구',v:92.9},{n:'강동구',v:93.3},
+  {n:'동작구',v:93.4},{n:'서초구',v:93.5},{n:'구로구',v:93.9},
+  {n:'강북구',v:94.1},{n:'송파구',v:94.1},{n:'중구',v:94.4},
+  {n:'서대문구',v:94.7},{n:'영등포구',v:96.0},{n:'마포구',v:96.1},
+  {n:'광진구',v:96.3},{n:'은평구',v:96.4},{n:'용산구',v:96.5},
+  {n:'중랑구',v:96.5},{n:'동대문구',v:96.6},{n:'종로구',v:97.0},{n:'성동구',v:98.6}
+].reverse();
+
+new Chart(document.getElementById('chartJeonseIdx'), {
+  type: 'bar',
+  data: {
+    labels: jeonseIdx.map(d => d.n),
+    datasets: [{
+      label: '전세가격지수',
+      data: jeonseIdx.map(d => d.v),
+      backgroundColor: jeonseIdx.map(d =>
+        d.v <= 92 ? RED_ALPHA(0.9) : d.v >= 97 ? SAFE_ALPHA(0.65) : RED_ALPHA(0.42)
+      ),
+      borderRadius: 3, borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => `  ${c.parsed.x}` }, titleFont: baseFont, bodyFont: baseFont }
+    },
+    scales: {
+      x: { min: 88, max: 100, grid: gridOpts, ticks: tickOpts },
+      y: { grid: { display: false }, ticks: { ...tickOpts, font: { ...baseFont, size: 13 } } }
+    }
+  }
+});
+
+/* ── Chart 3-C: 다세대·연립 스택 바 ── */
+const housingData = [
+  {n:'관악구',  y:6230,  d:44409},
+  {n:'강서구',  y:4818,  d:69538},
+  {n:'동작구',  y:5005,  d:33746},
+  {n:'은평구',  y:5569,  d:71042},
+  {n:'송파구',  y:4725,  d:71951},
+  {n:'강북구',  y:4980,  d:41131},
+  {n:'양천구',  y:4027,  d:42314},
+  {n:'광진구',  y:4212,  d:40082},
+  {n:'강동구',  y:3377,  d:39881},
+  {n:'강남구',  y:5555,  d:33095},
+  {n:'중랑구',  y:4247,  d:36690},
+  {n:'마포구',  y:2969,  d:37324},
+  {n:'도봉구',  y:4235,  d:30751},
+  {n:'구로구',  y:7576,  d:32094},
+  {n:'성북구',  y:6391,  d:30976},
+  {n:'서초구',  y:5219,  d:27470},
+  {n:'금천구',  y:4034,  d:26556},
+  {n:'서대문구',y:5434,  d:28644},
+  {n:'노원구',  y:3559,  d:15296},
+  {n:'동대문구',y:3378,  d:17662},
+  {n:'영등포구',y:1668,  d:17461},
+  {n:'용산구',  y:3998,  d:20266},
+  {n:'종로구',  y:5548,  d:12849},
+  {n:'성동구',  y:1998,  d:10896},
+  {n:'중구',    y:1871,  d:7777}
+].sort((a,b) => (a.y+a.d)-(b.y+b.d));
+
+new Chart(document.getElementById('chartHousing'), {
+  type: 'bar',
+  data: {
+    labels: housingData.map(d => d.n),
+    datasets: [
+      {
+        label: '연립주택',
+        data: housingData.map(d => d.y),
+        backgroundColor: RED_ALPHA(0.4),
+        borderRadius: 0, borderSkipped: false,
+      },
+      {
+        label: '다세대주택',
+        data: housingData.map(d => d.d),
+        backgroundColor: RED_ALPHA(0.78),
+        borderRadius: { topRight: 3, bottomRight: 3 },
+        borderSkipped: false,
+      }
+    ]
+  },
+  options: {
+    indexAxis: 'y', responsive: true,
+    plugins: {
+      legend: {
+        display: true, position: 'top',
+        labels: { font: { ...baseFont, size: 13 }, color: INK_LIGHT, boxWidth: 14 }
+      },
+      tooltip: {
+        callbacks: { label: c => `  ${c.dataset.label}: ${c.parsed.x.toLocaleString()}채` },
+        titleFont: baseFont, bodyFont: baseFont
+      }
+    },
+    scales: {
+      x: { stacked: true, grid: gridOpts, ticks: { ...tickOpts, callback: v => (v/10000).toFixed(0) + '만' } },
+      y: { stacked: true, grid: { display: false }, ticks: { ...tickOpts, font: { ...baseFont, size: 13 } } }
+    }
+  }
+});
+
+/* ── Scroll Reveal ── */
+const obs = new IntersectionObserver(
+  entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+  { threshold: 0.08 }
+);
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

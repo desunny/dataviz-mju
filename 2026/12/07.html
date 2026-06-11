@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수영장에 물이 빠지면 - 에디토리얼 리포트</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Pretendard:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0"></script>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-main: #212529;
+            --text-muted: #6c757d;
+            --primary: #003049;
+            --secondary: #d62828;
+            --water: rgba(0, 119, 182, 0.4);
+            --water-deep: rgba(3, 4, 94, 0.6);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Pretendard', sans-serif;
+            color: var(--text-main);
+            background-color: #111;
+            overflow: hidden; /* Hide normal scroll */
+        }
+        
+        .scroll-container {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+        
+        section {
+            height: 100vh;
+            width: 100%;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-color);
+            position: relative;
+            padding: 2rem 10vw;
+        }
+        
+        #intro { background-color: var(--primary); color: white; overflow: hidden; }
+        #ch1 { background-color: #f1faee; }
+        #ch2 { background-color: #ffffff; }
+        #ch3 { background-color: #fdf0d5; }
+        #solution { background-color: #212529; color: white; }
+
+        h1 { font-family: 'Gowun Batang', serif; font-size: 3.5rem; margin-bottom: 0.5rem; line-height: 1.3; text-align: center; }
+        h2.chapter-title { font-size: 1.2rem; color: var(--secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem; font-weight: 800; }
+        h3.slide-title { font-family: 'Gowun Batang', serif; font-size: 2.8rem; margin-bottom: 1.5rem; color: var(--primary); text-align: center; }
+        
+        #solution h3.slide-title { color: #fdf0d5; }
+        
+        p.desc {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 1.5rem auto;
+            color: var(--text-muted);
+            word-break: keep-all;
+        }
+        
+        #intro p.desc, #solution p.desc { color: #ccc; }
+
+        .chart-container {
+            width: 100%;
+            max-width: 900px;
+            height: 45vh;
+            position: relative;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 10px;
+        }
+
+        #ch1 .chart-container { background: linear-gradient(to bottom, #e0fbfc 0%, #ffffff 100%); }
+
+        .solution-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            width: 100%;
+        }
+        
+        .sol-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 12px; }
+        .sol-card h4 { color: var(--secondary); font-size: 1.3rem; margin-bottom: 0.8rem; }
+        .sol-card p { font-size: 1rem; line-height: 1.5; color: #ddd; word-break: keep-all; }
+
+        .scroll-down { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); animation: bounce 2s infinite; color: inherit; opacity: 0.8; display: flex; flex-direction: column; align-items: center; font-size: 0.9rem; letter-spacing: 1px; z-index: 10;}
+        .scroll-down svg { width: 24px; height: 24px; margin-top: 8px; fill: currentColor; }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-15px) translateX(-50%); }
+            60% { transform: translateY(-7px) translateX(-50%); }
+        }
+
+        /* --- Intro Wave Animation --- */
+        .waves {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 15vh;
+            min-height: 100px;
+            max-height: 150px;
+            z-index: 1;
+        }
+        .parallax > use {
+            animation: move-forever 25s cubic-bezier(.55,.5,.45,.5) infinite;
+        }
+        .parallax > use:nth-child(1) { animation-delay: -2s; animation-duration: 7s; }
+        .parallax > use:nth-child(2) { animation-delay: -3s; animation-duration: 10s; }
+        .parallax > use:nth-child(3) { animation-delay: -4s; animation-duration: 13s; }
+        .parallax > use:nth-child(4) { animation-delay: -5s; animation-duration: 20s; }
+        
+        @keyframes move-forever {
+            0% { transform: translate3d(-90px,0,0); }
+            100% { transform: translate3d(85px,0,0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="scroll-container">
+
+    <section id="intro">
+        <div style="z-index: 2; display: flex; flex-direction: column; align-items: center; margin-bottom: 5vh;">
+            <h1 style="text-shadow: 0 4px 15px rgba(0,0,0,0.3);">수영장에 물이 빠지면<br>누가 허우적거리고 있는지 보인다.</h1>
+            <hr style="width: 60px; border: 1px solid rgba(255,255,255,0.4); margin: 2rem 0;">
+            <p class="desc" style="font-size: 1.4rem; color: #e0fbfc; font-weight: 400;">저금리의 유예와 부실의 역습, 그리고 한계기업</p>
+        </div>
+        
+        <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+            <defs>
+                <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+            </defs>
+            <g class="parallax">
+                <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.1)" />
+                <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.2)" />
+                <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
+                <use xlink:href="#gentle-wave" x="48" y="7" fill="#f1faee" /> </g>
+        </svg>
+
+        <div class="scroll-down">
+            SCROLL
+            <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </div>
+    </section>
+
+    <section id="ch1">
+        <h2 class="chapter-title">Chapter 1</h2>
+        <h3 class="slide-title">코로나 시기 경제 활성화를 위한 초저금리</h3>
+        <p class="desc">
+            초저금리라는 이름의 온수가 가득 차 있던 시절, 자본시장은 모두가 탁월한 경영 효율성을 내고 있는 듯한 <strong>거대한 착시의 공간</strong>이었습니다.<br>
+            초저금리라는 물이 차오르며, 벌어들인 영업이익으로 이자 비용조차 감당하지 못하는 불합리한 구조를 가진 기업들도 비용 부담이 없는 유동성의 <strong>보호막 뒤에 숨어 부채를 감추고 연명</strong>할 수 있었습니다. 0에 수렴하는 금리로 경제 활성화를 유도하였지만, 곧 다시 급상승하기 시작했습니다.
+        </p>
+        
+        <div class="chart-container">
+            <canvas id="chartCh1"></canvas>
+        </div>
+
+        <div class="scroll-down" style="color: var(--primary);">
+            <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </div>
+    </section>
+
+    <section id="ch2">
+        <h2 class="chapter-title">Chapter 2</h2>
+        <h3 class="slide-title">오르는 금리와 빠지는 수영장 물</h3>
+        <p class="desc">
+            코로나 국면을 거치며 저금리로 대출을 잔뜩 받은 기업과 가계. 저금리라는 물속에 숨어 약 30~40% 가량 부채를 폭발적으로 늘렸습니다.<br>
+            이 시기 <strong>전체 기업 부채 총액은 960조에서 1,321조로 급증</strong>했고, 자영업자 대출잔액은 무려 <strong>1,000조 원을 돌파</strong>하며 미증유의 고점을 형성했습니다. 이 거대한 레버리지 인플레이션은 금리가 오르고 수온이 떨어지는 순간, <strong>무거운 실물 청구서</strong>가 되어 돌아오기 시작했습니다.
+        </p>
+        
+        <div class="chart-container">
+            <canvas id="chartCh2"></canvas>
+        </div>
+
+        <div class="scroll-down" style="color: var(--primary);">
+            <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </div>
+    </section>
+
+    <section id="ch3">
+        <h2 class="chapter-title">Chapter 3</h2>
+        <h3 class="slide-title">바닥을 드러낸 수영장, 허우적거리는 기업들</h3>
+        <p class="desc">
+            저금리 속에서 부채를 늘린 기업들은 결국 급격히 오르는 금리에 <strong>이자비용 부담이 치솟으며 생존 한계선 밑바닥으로 고꾸라지고 있습니다.</strong><br>
+            물(유동성)이 빠지면서 자생력이 없는 기업들의 실체가 드러났고, 이에 따라 1년 동안 번 돈으로 이자조차 못 갚는 <strong>'한계기업' 비중(17.1%)이 금융위기 이후 최고치</strong>를 찍었습니다. 벌어들인 돈으로 이자 비용조차 감당하지 못하는 사투가 시작된 것입니다.
+        </p>
+        
+        <div class="chart-container">
+            <canvas id="chartCh3"></canvas>
+        </div>
+
+        <div class="scroll-down" style="color: var(--primary);">
+            <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </div>
+    </section>
+
+    <section id="solution">
+        <h2 class="chapter-title">해결방안</h2>
+        <h3 class="slide-title">허우적거리는 기업을 골라내자</h3>
+        <p class="desc" style="font-size: 1.05rem; margin-bottom: 1rem; max-width: 1000px;">
+            똑같이 차가워진 긴축의 수온 속에서도 자동차, 식료품 등 <strong>견고한 기초 체력을 구축한 산업군</strong>은 평온한 항해를 지속하고 있습니다. 반면 건설업처럼 부채 유동성에만 기대어 사상누각을 쌓아 올린 이들은 물이 빠지자마자 생존 한계선(이자보상배율 1.0) 아래에서 사투를 벌이고 있습니다.<br>
+            전체 풀을 통제하려다 우량 산업까지 멈춰 세우는 <strong>일괄 규제의 과오를 범해서는 안 됩니다.</strong> 명확한 거시 통계로 추출해 낸 '부실 한계 섹션'에 정밀한 리스크 정책을 실행해야 합니다.
+        </p>
+        
+        <div class="solution-content">
+            <div class="chart-container" style="height: 35vh; max-width: 1000px; margin: 0 auto; background: rgba(255,255,255,0.95);">
+                <canvas id="chartSolution"></canvas>
+            </div>
+
+            <div class="solution-grid">
+                <div class="sol-card">
+                    <h4>차별적 가산 금리 적용 (스트레스 DSR)</h4>
+                    <p>금리에 민감한 산업들을 사전에 분리하여, 리스크가 큰 곳에 '스트레스 DSR'과 같은 정밀한 가산 금리를 적용하는 차별적 정책을 시행해야 합니다.</p>
+                </div>
+                <div class="sol-card">
+                    <h4>생산성 위주 자산 재배치</h4>
+                    <p>한계기업의 무분별한 생명 연장을 제어하고, 정화된 신용 재원이 성장 잠재력이 높은 미래 신성장 산업군으로 원활히 흐르게 구조화해야 합니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    Chart.defaults.font.family = "'Pretendard', sans-serif";
+    Chart.defaults.color = "#6c757d";
+
+    // Chart 1
+    const ctx1 = document.getElementById('chartCh1').getContext('2d');
+    let waterGradient = ctx1.createLinearGradient(0, 0, 0, 400);
+    waterGradient.addColorStop(0, "rgba(0, 119, 182, 0.8)");
+    waterGradient.addColorStop(1, "rgba(0, 180, 216, 0.2)");
+    new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: ["2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"],
+            datasets: [{
+                label: '연평균 이자율 (%)',
+                data: [2.35, 1.66, 1.36, 1.27, 1.52, 1.58, 0.7, 0.61, 2.03, 3.49, 3.44],
+                borderColor: '#d62828',
+                backgroundColor: waterGradient,
+                borderWidth: 3,
+                pointBackgroundColor: '#d62828',
+                pointRadius: 5,
+                fill: 'end',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                annotation: {
+                    annotations: {
+                        label1: { type: 'label', xValue: '2021', yValue: 0.3, backgroundColor: 'rgba(255,255,255,0.8)', content: ['0.61%', '초저금리'], font: { size: 14, weight: 'bold' }, color: '#003049', borderRadius: 4, padding: 6 },
+                        label2: { type: 'label', xValue: '2023', yValue: 3.8, backgroundColor: 'rgba(255,255,255,0.8)', content: ['3.49%', '금리 급등'], font: { size: 14, weight: 'bold' }, color: '#d62828', borderRadius: 4, padding: 6 }
+                    }
+                }
+            },
+            scales: {
+                y: { min: 0, max: 4, title: { display: true, text: '연평균 이자율 (%)', font: { size: 14, weight: 'bold' } } },
+                x: { title: { display: true, text: '연도', font: { size: 14, weight: 'bold' } } }
+            }
+        }
+    });
+
+    // Chart 2
+    const ctx2 = document.getElementById('chartCh2').getContext('2d');
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: ["전체기업대출잔액", "자영업자대출잔액"],
+            datasets: [
+                { label: '2019년말 (코로나 직전)', data: [960, 684], backgroundColor: '#003049', borderRadius: 6 },
+                { label: '2022-2023년 (코로나 이후)', data: [1321, 1035], backgroundColor: '#d62828', borderRadius: 6 }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'top', labels: { font: { size: 14 } } } },
+            scales: { y: { title: { display: true, text: '대출 잔액 (조 원)', font: { size: 14, weight: 'bold' } }, beginAtZero: true } }
+        }
+    });
+
+    // Chart 3
+    const ctx3 = document.getElementById('chartCh3').getContext('2d');
+    new Chart(ctx3, {
+        type: 'line',
+        data: {
+            labels: ["2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"],
+            datasets: [{
+                label: '한계기업 비중 (%)',
+                data: [12.8, 12.1, 12.6, 12.4, 13.5, 12.7, 13.4, 13.7, 14.2, 14.8, 15.3, 14.9, 15.5, 16.4, 17.1],
+                borderColor: '#003049',
+                backgroundColor: 'rgba(0, 48, 73, 0.1)',
+                borderWidth: 4,
+                pointBackgroundColor: function(c) { return c.dataset.data[c.dataIndex] > 17 ? '#d62828' : '#003049'; },
+                pointRadius: function(c) { return c.dataset.data[c.dataIndex] > 17 ? 8 : 4; },
+                fill: true, tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                annotation: {
+                    annotations: {
+                        highest: { 
+                            type: 'label', 
+                            xValue: '2024', 
+                            yValue: 17.1, 
+                            backgroundColor: '#d62828', 
+                            content: ['17.1%', '역대 최고치'], 
+                            font: { size: 14, weight: 'bold' }, 
+                            color: '#fff', 
+                            borderRadius: 4, 
+                            padding: 6,
+                            xAdjust: -55, 
+                            yAdjust: -10
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: { title: { display: true, text: '한계기업 비중 (%)', font: { size: 14, weight: 'bold' } }, min: 10 },
+                x: { title: { display: true, text: '연도', font: { size: 14, weight: 'bold' } } }
+            }
+        }
+    });
+
+    // Chart 4 (Solution)
+    const ctx4 = document.getElementById('chartSolution').getContext('2d');
+    new Chart(ctx4, {
+        type: 'line',
+        data: {
+            labels: ["2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"],
+            datasets: [
+                { label: '자동차 제조업 (우량)', data: [23.01, 17.31, 8.81, 6.76, 8.84, 6.4, 17.03, 16.27, 21.68, 26.03], borderColor: '#1d3557', backgroundColor: '#1d3557', borderWidth: 3, tension: 0.3, pointRadius: 4 },
+                { label: '식료품 제조업 (안정)', data: [5.26, 5.94, 4.86, 4.5, 3.51, 5.78, 6.69, 5.05, 3.61, 4.08], borderColor: '#457b9d', backgroundColor: '#457b9d', borderWidth: 3, tension: 0.3, pointRadius: 4 },
+                { label: '건설업 (한계 위기)', data: [1.77, 2.63, 4.47, 5.77, 5.3, 5.97, 7.24, 4.47, 1.52, -0.13], borderColor: '#e63946', backgroundColor: '#e63946', borderWidth: 3, tension: 0.3, pointRadius: 4 },
+                { label: '숙박/음식점업 (취약)', data: [8.03, 8.75, 4.45, 3.82, 0.95, 0.04, 1.92, 0.94, 1.73, 1.49], borderColor: '#f4a261', backgroundColor: '#f4a261', borderWidth: 3, tension: 0.3, pointRadius: 4 }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            layout: {
+                padding: { right: 90 }
+            },
+            plugins: {
+                legend: { position: 'right', labels: { font: { size: 13, weight: 'bold' } } },
+                annotation: {
+                    clip: false,
+                    annotations: {
+                        line1: {
+                            type: 'line', yMin: 1.0, yMax: 1.0, borderColor: '#000000', borderWidth: 3,
+                            label: { 
+                                display: true, 
+                                content: ['생존 한계선', '(ICR=1.0)'], 
+                                position: 'end',
+                                xAdjust: 85, 
+                                backgroundColor: '#000000', 
+                                color: 'white',
+                                font: { weight: 'bold', size: 12 }, 
+                                padding: 6,
+                                borderRadius: 4
+                            }
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: { title: { display: true, text: '이자보상배율 (배)', font: { size: 13, weight: 'bold' } } },
+                x: { title: { display: true, text: '연도', font: { size: 13, weight: 'bold' } } }
+            }
+        }
+    });
+</script>
+</body>
+</html>

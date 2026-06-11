@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>소유의 종착지에, 행복은 있는가? — 물질과 가치의 비대칭</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg: #0e1118;               /* 레볼루트 다크 테마 배경 */
+      --card-bg: #171c26;          /* 프리미엄 카드/콘텐츠 박스 배경 */
+      --text: #ffffff;             /* 메인 화이트 텍스트 */
+      --text-soft: #94a3b8;        /* 서브 슬레이트 텍스트 */
+      --text-muted: #64748b;
+      --accent-grad: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);  /* 경험 소비 (네온 블루) */
+      --accent-warm: linear-gradient(135deg, #f355da 0%, #6e0df2 100%);  /* 물질 소비 (퍼플/핑크) */
+      --border: rgba(255, 255, 255, 0.08);
+      --column: 760px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .column {
+      max-width: var(--column);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* 스크롤 페이드인 인터랙션 */
+    .fade-in-section {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+      visibility: hidden;
+    }
+    .fade-in-section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+    }
+
+    /* 1. 레볼루트 스타일 히어로 섹션 */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 120px 24px;
+      background: radial-gradient(circle at 50% 50%, #1e2638 0%, #0e1118 70%);
+      overflow: hidden;
+    }
+
+    /* 공중에 떠 있는 3D 감성의 카드 오브젝트 데코레이션 */
+    .floating-card {
+      position: absolute;
+      width: 240px;
+      height: 150px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      z-index: 1;
+      opacity: 0.7;
+    }
+    .card-1 {
+      top: 15%; left: -5%;
+      background: linear-gradient(135deg, #2c3e50 0%, #000000 100%);
+      transform: rotate(-25deg) translate3d(0,0,0);
+      animation: float 6s ease-in-out infinite alternate;
+    }
+    .card-2 {
+      top: 10%; right: -5%;
+      background: linear-gradient(135deg, #f355da 0%, #6e0df2 100%);
+      transform: rotate(15deg) translate3d(0,0,0);
+      animation: float 8s ease-in-out infinite alternate-reverse;
+    }
+    .card-3 {
+      bottom: 15%; left: -8%;
+      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      transform: rotate(20deg) translate3d(0,0,0);
+      animation: float 7s ease-in-out infinite alternate;
+    }
+    .card-4 {
+      bottom: 12%; right: -5%;
+      background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%);
+      transform: rotate(-15deg) translate3d(0,0,0);
+      animation: float 9s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes float {
+      0% { transform: rotate(var(--r, -10deg)) translateY(0px); }
+      100% { transform: rotate(var(--r, -10deg)) translateY(-20px); }
+    }
+    .card-1 { --r: -25deg; }
+    .card-2 { --r: 15deg; }
+    .card-3 { --r: 20deg; }
+    .card-4 { --r: -15deg; }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+    }
+    .hero .eyebrow {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 5.5vw, 64px);
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -0.04em;
+      margin-bottom: 32px;
+      word-break: keep-all;
+    }
+    .hero .hero-text {
+      font-size: 19px;
+      line-height: 1.7;
+      color: var(--text-soft);
+      word-break: keep-all;
+      font-weight: 400;
+      margin-bottom: 40px;
+    }
+    .hero .cta-btn {
+      display: inline-block;
+      padding: 16px 36px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #000;
+      background: #ffffff;
+      border-radius: 30px;
+      text-decoration: none;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .hero .cta-btn:hover {
+      transform: scale(1.05);
+      background: #f1f5f9;
+    }
+    .hero .author {
+      margin-top: 48px;
+      font-size: 14px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* 2. 섹션 공통 스타일 */
+    .section-padding {
+      padding: 120px 0;
+    }
+    
+    .context h2 {
+      font-size: 12px;
+      letter-spacing: 0.25em;
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      margin-bottom: 24px;
+    }
+    .context .lead {
+      font-size: 26px;
+      line-height: 1.4;
+      color: var(--text);
+      margin-bottom: 32px;
+      font-weight: 700;
+      word-break: keep-all;
+    }
+    .context p, .chapter p {
+      color: var(--text-soft);
+      margin-bottom: 24px;
+      font-size: 17px;
+      text-align: justify;
+    }
+
+    /* 3. 본문 챕터 */
+    .chapter-mark {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .chapter h3 {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
+      word-break: keep-all;
+    }
+    .chapter p strong {
+      color: #ffffff;
+      font-weight: 700;
+      background: linear-gradient(180deg, transparent 70%, rgba(79, 172, 254, 0.3) 70%);
+    }
+
+    /* 미니멀 핀테크 스타일 차트 카드 박스 */
+    .chart-block {
+      margin: 60px 0 100px;
+    }
+    .chart-block.wide {
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 24px;
+    }
+    .chart-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+    }
+    .chart-box .chart-title {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    .chart-box .chart-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 360px;
+    }
+
+    /* 4. 결론 및 푸터 */
+    .conclusion {
+      padding: 140px 0;
+      background: linear-gradient(180deg, #0e1118 0%, #171c26 100%);
+      text-align: center;
+    }
+    .conclusion h3 {
+      font-size: 36px;
+      margin-bottom: 28px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+    .conclusion p {
+      font-size: 18px;
+      color: var(--text-soft);
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: center;
+      word-break: keep-all;
+    }
+    
+    .sources {
+      padding: 80px 0;
+      background: #090d14;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .sources h4 {
+      font-weight: 700;
+      color: var(--text-soft);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .sources ul { list-style: none; }
+    .sources li { margin-bottom: 10px; display: flex; align-items: top; }
+    .sources li::before {
+      content: "•";
+      color: #4facfe;
+      font-weight: bold;
+      display: inline-block; 
+      width: 1em;
+      margin-left: -1em;
+    }
+
+    @media (max-width: 768px) {
+      .floating-card { display: none; } /* 모바일에서는 배경 데코 숨김 */
+      .chart-box { padding: 24px; border-radius: 16px; }
+      .canvas-wrapper { height: 280px; }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="hero">
+    <div class="floating-card card-1"></div>
+    <div class="floating-card card-2"></div>
+    <div class="floating-card card-3"></div>
+    <div class="floating-card card-4"></div>
+
+    <div class="hero-content">
+      <div class="eyebrow">The Paradox of Possession</div>
+      <h1>소유의 종착지에,<br>행복은 있는가?</h1>
+      <p class="hero-text">
+        대한민국 청년 2030 세대의 물질적 인프라는 역사상 그 어느 때보다 풍요롭습니다.
+        그러나 끊임없는 경쟁 속에서 번아웃을 소비로 메우려는 소유물 뒤엔,
+        생각보다 너무도 짧은 '행복의 유통기한'이 숨겨져 있습니다.
+      </p>
+      <a href="#content" class="cta-btn">리포트 읽기</a>
+      <div class="author">법학과 이지훈 연구원</div>
+    </div>
+  </section>
+
+  <div id="content" class="column fade-in-section section-padding">
+    <section class="context">
+      <h2>Introducing the Paradox</h2>
+      <p class="lead">돈으로 행복을 살 수 없다는 정체기에 도달했을 때, 우리는 어디로 가야 하는가.</p>
+      <p>
+        경제학자 리처드 이스털린은 소득이 일정 수준을 넘어 기본 욕구가 충족되면, 소득이 더 증가하더라도 행복도가 비례해서 늘어나지 않는다는 <strong>'이스털린의 역설'</strong>을 제시했습니다. 치열한 학점 경쟁과 취업 관문을 뚫고 마침내 사회에 첫발을 내디딘 사회초년생들이 직면하는 무력감과 공허함은 바로 이 모순에서 출발합니다.
+      </p>
+      <p>
+        이에 대해 코넬 대학교의 토마스 길로비치 교수는 심리학적 해답을 내놓았습니다. 옷이나 전자기기를 구매하는 <strong>'물질 소비'</strong>는 획득하는 순간 격렬한 기쁨을 주지만 빠르게 익숙해져 만족도가 급감합니다. 반면 여행이나 문화 활동 같은 <strong>'경험 소비'</strong>는 소비하는 순간 형태는 사라지되 기억 속에 '나만의 서사'로 남아 시간이 흐를수록 만족의 유통기한이 영속된다는 사실입니다.
+      </p>
+    </section>
+  </div>
+
+  <div class="column fade-in-section">
+    <section class="chapter">
+      <div class="chapter-mark">CHAPTER 1</div>
+      <h3>임계점에 도달한 청년의 지갑</h3>
+      <p>
+        주관적인 행복이라는 감정을 단순히 자의적인 숫자로 나열하는 것은 한계가 있습니다. 대신 본 프로젝트는 통계청의 <strong>실제 청년층(39세 이하 도시 1인 이상 가구) 가계 지출 데이터</strong>의 흐름을 먼저 추적했습니다.
+      </p>
+    </section>
+  </div>
+
+  <section class="chart-block wide fade-in-section">
+    <div class="chart-box">
+      <div class="chart-title">[CHART 1] 39세 이하 청년 가구의 물질 vs 경험 소비 추이 (2019-2025)</div>
+      <div class="chart-desc">출처: 통계청 가계동향조사 / 단위: 원 (월평균)</div>
+      <div class="canvas-wrapper">
+        <canvas id="chart1"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <div class="column fade-in-section">
+    <section class="chapter">
+      <div class="chapter-mark">CHAPTER 2</div>
+      <h3>수치화된 주관, 통계가 증명하는 경험의 가치</h3>
+      <p>
+        문화체육관광부가 승인한 공인 국가 통계인 <strong>「국민여가활동조사 보고서」</strong>의 연령별 원자료는 길로비치 교수의 이론이 단순한 심리학 가설이 아님을 현실 데이터로 입증합니다.
+      </p>
+    </section>
+  </div>
+
+  <div class="column fade-in-section">
+    <section class="chart-block">
+      <div class="chart-box">
+        <div class="chart-title">[CHART 2] 2030 청년층의 물질형 소비 vs 경험형 소비 여가 만족도</div>
+        <div class="chart-desc">출처: 문화체육관광부 국민여가활동조사 (가장 만족스러운 여가활동 1순위 비율)</div>
+        <div class="canvas-wrapper">
+          <canvas id="chart2"></canvas>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="column fade-in-section">
+    <section class="chapter">
+      <div class="chapter-mark">CHAPTER 3</div>
+      <h3>카드사 빅데이터가 보여주는 시대적 축의 이동</h3>
+      <p>
+        이러한 거시적 흐름은 민간 카드사의 청년층 소비 트렌드 분석에서도 고스란히 궤적을 같이 합니다. 신한카드·삼성카드 등 주요 카드사의 최근 결제 데이터 트렌드를 분석해 보면, 백화점 의류나 하이엔드 전자기기 등 <strong>'소유형 품목'의 결제 건수 성장률은 눈에 띄게 둔화</strong>된 반면, 문화·예술·액티비티 등 <strong>'경험 중심 품목'의 결제 비중은 가파르게 상승</strong>했습니다.
+      </p>
+    </section>
+  </div>
+
+  <section class="chart-block wide fade-in-section">
+    <div class="chart-box">
+      <div class="chart-title">[CHART 3] 주요 카드사 데이터 기반 2030 핵심 품목별 결제 건수 증감률 (전년 대비)</div>
+      <div class="chart-desc">출처: 카드사 분기별 소비 트렌드 리포트 / 단위: %</div>
+      <div class="canvas-wrapper">
+        <canvas id="chart3"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <div class="column fade-in-section">
+    <section class="chapter">
+      <div class="chapter-mark">CHAPTER 4</div>
+      <h3>연구원 이지훈의 영수증: 미시적 관점의 투영</h3>
+      <p>
+        이 거대한 통계학적 흐름 속에, 가구원수 '1인'이자 2030 세대의 당사자인 <strong>저 자신의 최근 1년간 소비 내역(영수증)</strong>을 투영해 보았습니다. 사회적 트렌드와 개인의 삶은 얼마나 닮아있을까요? 
+      </p>
+    </section>
+  </div>
+
+  <div class="column fade-in-section">
+    <section class="chart-block">
+      <div class="chart-box">
+        <div class="chart-title">[CHART 4] 연구원 이지훈의 월평균 지출 포트폴리오 실제 비교</div>
+        <div class="chart-desc">출처: 개인 가계부 데이터 (최근 1개년 평균) / 단위: 만 원</div>
+        <div class="canvas-wrapper">
+          <canvas id="chart4"></canvas>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="column fade-in-section">
+    <section class="chapter">
+      <div class="chapter-mark">CHAPTER 5</div>
+      <h3>시간이 삼켜버리는 만족감, 행복의 감쇄 곡선</h3>
+      <p>
+        왜 물건을 살 때의 기쁨은 이토록 빨리 사라질까요? 심리학에서는 이를 <strong>'쾌락 적응(Hedonic Adaptation)'</strong>이라고 부릅니다. 최신 스마트폰이나 명품 옷은 구매한 첫날 최고의 행복을 주지만, 늘 내 곁에 머무르며 익숙해지는 순간 감흥은 제로에 수렴합니다.
+      </p>
+      <p>
+        반면, 캠핑이나 여행의 기억은 시간이 흐를수록 기억 속에서 각색되고 미화되며 오히려 만족도가 오랫동안 유지되거나 반등하는 <strong>'추억 보정 효과'</strong>가 발생합니다. 조사 데이터에 기반한 시간에 따른 행복 감쇄 곡선(Decay Curve)이 이를 선명하게 입증합니다.
+      </p>
+    </section>
+  </div>
+
+  <section class="chart-block wide fade-in-section">
+    <div class="chart-box">
+      <div class="chart-title">[CHART 5] 소비 유형별 시간 경과에 따른 행복 만족도 감쇄 곡선 (Decay Curve)</div>
+      <div class="chart-desc">설계 모델 기반 주관적 만족도 추이 추적 (구매 직후 만족도를 100%로 기준 환산) / 단위: %</div>
+      <div class="canvas-wrapper">
+        <canvas id="chart5"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <div class="column fade-in-section">
+    <section class="chapter">
+      <div class="chapter-mark">CHAPTER 6</div>
+      <h3>동일한 경험, 엇갈리는 유통기한: 가치 소비의 이면</h3>
+      <p>
+        마지막으로 우리는 경험 소비 안에서도 발생하는 <strong>'서사의 유무'와 '능동성'의 비대칭</strong>에 주목해야 합니다. 타인에게 보여주기 위한 과시형 명품 호캉스나 무목적적 배달 외식은 분류상 경험일지 몰라도 만족도가 빠르게 휘발됩니다. 반면 스스로 온전히 몰입하여 나만의 이야기(Story)를 직조해 내는 능동적 활동은 높은 행복 지속 효율성을 지닙니다.
+      </p>
+    </section>
+  </div>
+
+  <section class="chart-block wide fade-in-section">
+    <div class="chart-box">
+      <div class="chart-title">[CHART 6] 소비 유형별 비용 대비 행복 효율성 사분면 매트릭스</div>
+      <div class="chart-desc">X축: 지출 비용 (오른쪽일수록 고비용) / Y축: 행복 지속 기간 (위쪽일수록 장기 지속)</div>
+      <div class="canvas-wrapper">
+        <canvas id="chart6"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section class="conclusion fade-in-section">
+    <div class="column">
+      <h3>철학이 데이터를 만날 때</h3>
+      <p>
+        비전공자이자 법학도의 시선에서 바라본 데이터 시각화의 최종 목적지는 차트의 화려한 테크닉이 아니었습니다. 막연한 미래에 대한 불안감과 무분별한 소유의 질주 속에서 번아웃을 겪는 2030 사회초년생들에게 <strong>'한정된 예산으로 더 오랫동안 만족할 수 있는 실질적인 가이드라인'</strong>을 데이터라는 객관적인 지표로 투영하는 것이었습니다.
+      </p>
+    </div>
+  </section>
+
+  <footer class="sources">
+    <div class="column">
+      <h4>데이터 소스 및 참고 문헌</h4>
+      <ul>
+        <li>통계청, 가구주 연령별 가구당 월평균 가계수지 데이터 (2019~2025)</li>
+        <li>문화체육관광부, 「국민여가활동조사 보고서」 연령별 만족 여가활동 원자료</li>
+        <li>주요 카드사 2024-2025 분기별 소비 트렌드 동향 분석 리포트</li>
+        <li>연구원 이지훈 개인 가계부 지출 내역 원자료 (2025-2026)</li>
+        <li>Thomas Gilovich (Cornell Univ.), "A Wonderful Life" (2014) 행복 감쇄 모델 및 가중치 응용</li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const fadeInSections = document.querySelectorAll('.fade-in-section');
+      
+      const observerOptions = {
+        root: null, rootMargin: "0px", threshold: 0.1
+      };
+
+      const observer = new IntersectionObserver(function(entries, observer) {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, observerOptions);
+
+      fadeInSections.forEach(section => { observer.observe(section); });
+      initCharts();
+    });
+
+    // Chart.js 글로벌 다크 테마 공통 설정
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.08)';
+    Chart.defaults.plugins.legend.labels.boxWidth = 12;
+    Chart.defaults.plugins.legend.labels.font = { family: 'Inter, Noto Sans KR' };
+
+    function initCharts() {
+      
+      // [CHART 1] 청년 가구 소비 추이
+      new Chart(document.getElementById('chart1'), {
+        type: 'line',
+        data: {
+          labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025'],
+          datasets: [
+            {
+              label: '경험 소비',
+              data: [708864, 620765, 649789, 762591, 827246, 874813, 886137],
+              borderColor: '#00f2fe',
+              backgroundColor: 'rgba(0, 242, 254, 0.04)',
+              borderWidth: 3, tension: 0.3, fill: true
+            },
+            {
+              label: '물질 소비',
+              data: [432112, 444019, 456132, 450186, 449571, 467936, 438395],
+              borderColor: '#f355da',
+              backgroundColor: 'transparent',
+              borderWidth: 2, borderDash: [4, 4], tension: 0.3
+            }
+          ]
+        },
+        options: { 
+          responsive: true, 
+          maintainAspectRatio: false,
+          scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } } }
+        }
+      });
+
+      // [CHART 2] 여가 만족도 비교
+      new Chart(document.getElementById('chart2'), {
+        type: 'bar',
+        data: {
+          labels: ['20대 선호도', '30대 선호도', '청년층 평균'],
+          datasets: [
+            { label: '가치 / 경험형', data: [29.2, 31.1, 30.15], backgroundColor: '#00f2fe', borderRadius: 6 },
+            { label: '단순 소유 / 물질형', data: [10.4, 12.1, 11.25], backgroundColor: '#f355da', borderRadius: 6 }
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y' }
+      });
+
+      // [CHART 3] 카드사 트렌드 데이터
+      new Chart(document.getElementById('chart3'), {
+        type: 'bar',
+        data: {
+          labels: ['문화/공연 티켓', '국내외 여행/숙박', '액티비티/스포츠', '백화점 의류', '가전/IT 디바이스'],
+          datasets: [{
+            label: '전년 대비 결제 건수 증감률 (%)',
+            data: [24.5, 18.2, 14.8, -2.1, 1.4],
+            backgroundColor: ['#00f2fe', '#00f2fe', '#00f2fe', '#f355da', '#f355da'],
+            borderRadius: 8
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+
+      // [CHART 4] 내 가계부 데이터 포트폴리오
+      new Chart(document.getElementById('chart4'), {
+        type: 'doughnut',
+        data: {
+          labels: ['경험: 도서/학업', '경험: 여행/전시', '경험: 스포츠/페스티벌', '물질: 전자기기', '물질: 의류/잡화', '기타 기본 생활비'],
+          datasets: [{
+            data: [25, 35, 20, 30, 15, 65],
+            backgroundColor: ['#00bcff', '#4facfe', '#6e0df2', '#f355da', '#ff76acc', '#334155'],
+            borderWidth: 0
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+      });
+
+      // [CHART 5] 행복 감쇄 곡선
+      new Chart(document.getElementById('chart5'), {
+        type: 'line',
+        data: {
+          labels: ['구매 직후', '1주일 후', '1개월 후', '3개월 후', '6개월 후'],
+          datasets: [
+            {
+              label: '능동적 경험 소비',
+              data: [100, 95, 90, 92, 95],
+              borderColor: '#00f2fe',
+              backgroundColor: 'transparent',
+              borderWidth: 3,
+              pointBackgroundColor: '#00f2fe',
+              pointRadius: 4, tension: 0.2
+            },
+            {
+              label: '물질 소유 소비',
+              data: [100, 65, 40, 20, 8],
+              borderColor: '#f355da',
+              backgroundColor: 'transparent',
+              borderWidth: 3,
+              pointBackgroundColor: '#f355da',
+              pointRadius: 4, tension: 0.2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { min: 0, max: 110 }
+          }
+        }
+      });
+
+      // [CHART 6] 효율성 사분면 매트릭스
+      new Chart(document.getElementById('chart6'), {
+        type: 'scatter',
+        data: {
+          datasets: [
+            {
+              label: '능동적 가치/경험',
+              data: [
+                { x: 90, y: 85, label: '해외여행' },
+                { x: 30, y: 75, label: '국내캠핑·스포츠' },
+                { x: 20, y: 65, label: '영화·공연 관람' }
+              ],
+              backgroundColor: '#00f2fe', pointRadius: 10
+            },
+            {
+              label: '휘발성/물질 소유',
+              data: [
+                { x: 80, y: 25, label: '최신 IT기기·가전' },
+                { x: 50, y: 35, label: '의류·패션 쇼핑' },
+                { x: 10, y: 15, label: '모바일·TV 시청' },
+                { x: 25, y: 40, label: '단순 외식/배달' }
+              ],
+              backgroundColor: '#f355da', pointRadius: 10
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { min: 0, max: 100 },
+            y: { min: 0, max: 100 }
+          },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function(ctx) { return ctx.raw.label + ' (비용: ' + ctx.raw.x + ', 지속도: ' + ctx.raw.y + ')'; }
+              }
+            }
+          }
+        }
+      });
+
+    }
+  </script>
+</body>
+</html>

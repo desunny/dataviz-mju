@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>법은 술잔을 멈출 수 있는가? — 윤창호법의 실질적 효과 탐구 (에디터 모드)</title>
+  
+  <!-- Tailwind CSS CDN 및 Google Fonts (Gowun Batang, IBM Plex Sans KR, Outfit) 불러오기 -->
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&amp;family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&amp;family=Outfit:wght@400;600;800&amp;display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Gowun Batang', 'serif'],
+            sans: ['IBM Plex Sans KR', 'sans-serif'],
+            num: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* 에디토리얼 스타일 세부 튜닝 */
+    body {
+      background-color: #fefdfa;
+      color: #1a1b1a;
+      transition: padding-right 0.3s ease;
+    }
+    .text-marker {
+      background: linear-gradient(120deg, rgba(201, 42, 42, 0.09) 0%, rgba(201, 42, 42, 0.15) 100%);
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .text-marker-green {
+      background: linear-gradient(120deg, rgba(43, 138, 62, 0.09) 0%, rgba(43, 138, 62, 0.15) 100%);
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .text-marker-pink {
+      background: linear-gradient(120deg, rgba(230, 73, 128, 0.09) 0%, rgba(230, 73, 128, 0.15) 100%);
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .text-marker-blue {
+      background: linear-gradient(120deg, rgba(28, 126, 214, 0.09) 0%, rgba(28, 126, 214, 0.15) 100%);
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .text-marker-purple {
+      background: linear-gradient(120deg, rgba(121, 80, 242, 0.09) 0%, rgba(121, 80, 242, 0.15) 100%);
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .dot-node {
+      transition: transform 0.2s ease, r 0.2s ease;
+    }
+    .dot-node:hover {
+      transform: scale(1.6);
+      cursor: pointer;
+    }
+    
+    /* 편집 상태 가이드 스타일 */
+    .edit-active [contenteditable="true"] {
+      position: relative;
+      transition: background-color 0.2s ease, outline 0.2s ease;
+    }
+    .edit-active [contenteditable="true"]:hover {
+      outline: 1px dashed rgba(239, 68, 68, 0.45) !important;
+      outline-offset: 4px;
+      background-color: rgba(239, 68, 68, 0.03);
+      cursor: text;
+    }
+    .edit-active [contenteditable="true"]:focus {
+      outline: 2px solid #ef4444 !important;
+      outline-offset: 4px;
+      background-color: rgba(239, 68, 68, 0.06);
+    }
+    
+    /* 스크롤바 커스텀 */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #18181b;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #3f3f46;
+      border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #52525b;
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:IBM Plex Sans KR, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.-bottom-10{bottom:-2.5rem}.-right-10{right:-2.5rem}.bottom-0{bottom:0px}.bottom-6{bottom:1.5rem}.left-0{left:0px}.left-1\/2{left:50%}.right-0{right:0px}.top-0{top:0px}.top-14{top:3.5rem}.z-10{z-index:10}.z-40{z-index:40}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.my-4{margin-top:1rem;margin-bottom:1rem}.mb-1{margin-bottom:0.25rem}.mb-1\.5{margin-bottom:0.375rem}.mb-12{margin-bottom:3rem}.mb-14{margin-bottom:3.5rem}.mb-2{margin-bottom:0.5rem}.mb-20{margin-bottom:5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mt-1{margin-top:0.25rem}.mt-1\.5{margin-top:0.375rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-6{margin-top:1.5rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-0\.5{height:0.125rem}.h-14{height:3.5rem}.h-2{height:0.5rem}.h-2\.5{height:0.625rem}.h-3{height:0.75rem}.h-3\.5{height:0.875rem}.h-4{height:1rem}.h-40{height:10rem}.h-80{height:20rem}.h-\[1px\]{height:1px}.h-\[380px\]{height:380px}.h-full{height:100%}.h-screen{height:100vh}.w-2{width:0.5rem}.w-3{width:0.75rem}.w-3\.5{width:0.875rem}.w-4{width:1rem}.w-40{width:10rem}.w-8{width:2rem}.w-full{width:100%}.min-w-\[620px\]{min-width:620px}.max-w-2xl{max-width:42rem}.max-w-4xl{max-width:56rem}.max-w-\[700px\]{max-width:700px}.flex-1{flex:1 1 0%}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.translate-x-0{--tw-translate-x:0px;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.translate-x-full{--tw-translate-x:100%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.scale-90{--tw-scale-x:.9;--tw-scale-y:.9;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.scale-100{--tw-scale-x:1;--tw-scale-y:1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-neutral-100 > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(245 245 245 / var(--tw-divide-opacity, 1))}.self-end{align-self:flex-end}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.overflow-x-hidden{overflow-x:hidden}.whitespace-normal{white-space:normal}.break-words{overflow-wrap:break-word}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-sm{border-radius:0.125rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-l{border-left-width:1px}.border-l-2{border-left-width:2px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-amber-500{--tw-border-opacity:1;border-color:rgb(245 158 11 / var(--tw-border-opacity, 1))}.border-amber-600{--tw-border-opacity:1;border-color:rgb(217 119 6 / var(--tw-border-opacity, 1))}.border-emerald-500{--tw-border-opacity:1;border-color:rgb(16 185 129 / var(--tw-border-opacity, 1))}.border-emerald-600{--tw-border-opacity:1;border-color:rgb(5 150 105 / var(--tw-border-opacity, 1))}.border-neutral-100{--tw-border-opacity:1;border-color:rgb(245 245 245 / var(--tw-border-opacity, 1))}.border-neutral-200\/60{border-color:rgb(229 229 229 / 0.6)}.border-neutral-200\/80{border-color:rgb(229 229 229 / 0.8)}.border-neutral-800{--tw-border-opacity:1;border-color:rgb(38 38 38 / var(--tw-border-opacity, 1))}.border-neutral-900{--tw-border-opacity:1;border-color:rgb(23 23 23 / var(--tw-border-opacity, 1))}.border-red-500{--tw-border-opacity:1;border-color:rgb(239 68 68 / var(--tw-border-opacity, 1))}.border-red-600{--tw-border-opacity:1;border-color:rgb(220 38 38 / var(--tw-border-opacity, 1))}.border-red-900\/50{border-color:rgb(127 29 29 / 0.5)}.border-sky-400{--tw-border-opacity:1;border-color:rgb(56 189 248 / var(--tw-border-opacity, 1))}.border-zinc-700{--tw-border-opacity:1;border-color:rgb(63 63 70 / var(--tw-border-opacity, 1))}.border-zinc-800{--tw-border-opacity:1;border-color:rgb(39 39 42 / var(--tw-border-opacity, 1))}.bg-\[\#0d3b66\]{--tw-bg-opacity:1;background-color:rgb(13 59 102 / var(--tw-bg-opacity, 1))}.bg-\[\#1c7ed6\]{--tw-bg-opacity:1;background-color:rgb(28 126 214 / var(--tw-bg-opacity, 1))}.bg-\[\#2b8a3e\]{--tw-bg-opacity:1;background-color:rgb(43 138 62 / var(--tw-bg-opacity, 1))}.bg-\[\#5bc0f8\]{--tw-bg-opacity:1;background-color:rgb(91 192 248 / var(--tw-bg-opacity, 1))}.bg-\[\#7950f2\]{--tw-bg-opacity:1;background-color:rgb(121 80 242 / var(--tw-bg-opacity, 1))}.bg-\[\#e64980\]{--tw-bg-opacity:1;background-color:rgb(230 73 128 / var(--tw-bg-opacity, 1))}.bg-\[\#f8f9fa\]{--tw-bg-opacity:1;background-color:rgb(248 249 250 / var(--tw-bg-opacity, 1))}.bg-\[\#ff4a1c\]{--tw-bg-opacity:1;background-color:rgb(255 74 28 / var(--tw-bg-opacity, 1))}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129 / var(--tw-bg-opacity, 1))}.bg-neutral-200{--tw-bg-opacity:1;background-color:rgb(229 229 229 / var(--tw-bg-opacity, 1))}.bg-neutral-50{--tw-bg-opacity:1;background-color:rgb(250 250 250 / var(--tw-bg-opacity, 1))}.bg-neutral-800{--tw-bg-opacity:1;background-color:rgb(38 38 38 / var(--tw-bg-opacity, 1))}.bg-neutral-900{--tw-bg-opacity:1;background-color:rgb(23 23 23 / var(--tw-bg-opacity, 1))}.bg-neutral-950{--tw-bg-opacity:1;background-color:rgb(10 10 10 / var(--tw-bg-opacity, 1))}.bg-red-500{--tw-bg-opacity:1;background-color:rgb(239 68 68 / var(--tw-bg-opacity, 1))}.bg-red-600{--tw-bg-opacity:1;background-color:rgb(220 38 38 / var(--tw-bg-opacity, 1))}.bg-red-800\/10{background-color:rgb(153 27 27 / 0.1)}.bg-red-950\/40{background-color:rgb(69 10 10 / 0.4)}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-zinc-700{--tw-bg-opacity:1;background-color:rgb(63 63 70 / var(--tw-bg-opacity, 1))}.bg-zinc-800{--tw-bg-opacity:1;background-color:rgb(39 39 42 / var(--tw-bg-opacity, 1))}.bg-zinc-900{--tw-bg-opacity:1;background-color:rgb(24 24 27 / var(--tw-bg-opacity, 1))}.bg-zinc-950{--tw-bg-opacity:1;background-color:rgb(9 9 11 / var(--tw-bg-opacity, 1))}.bg-blue-50{--tw-bg-opacity:1;background-color:rgb(239 246 255 / var(--tw-bg-opacity, 1))}.bg-emerald-50{--tw-bg-opacity:1;background-color:rgb(236 253 245 / var(--tw-bg-opacity, 1))}.bg-neutral-100{--tw-bg-opacity:1;background-color:rgb(245 245 245 / var(--tw-bg-opacity, 1))}.bg-\[url\(\'https\:\/\/images\.unsplash\.com\/photo-1508873696983-2df519f0397e\?q\=80\&w\=1920\'\)\]{background-image:url('https://images.unsplash.com/photo-1508873696983-2df519f0397e?q=80&w=1920')}.bg-gradient-to-b{background-image:linear-gradient(to bottom, var(--tw-gradient-stops))}.from-transparent{--tw-gradient-from:transparent var(--tw-gradient-from-position);--tw-gradient-to:rgb(0 0 0 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-neutral-950\/90{--tw-gradient-to:rgb(10 10 10 / 0.9) var(--tw-gradient-to-position)}.bg-cover{background-size:cover}.bg-center{background-position:center}.p-1\.5{padding:0.375rem}.p-3{padding:0.75rem}.p-3\.5{padding:0.875rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-20{padding-top:5rem;padding-bottom:5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pb-3{padding-bottom:0.75rem}.pl-2{padding-left:0.5rem}.pl-4{padding-left:1rem}.pt-14{padding-top:3.5rem}.pt-8{padding-top:2rem}.text-center{text-align:center}.font-serif{font-family:Gowun Batang, serif}.font-sans{font-family:IBM Plex Sans KR, sans-serif}.font-num{font-family:Outfit, sans-serif}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[13px\]{font-size:13px}.text-\[9px\]{font-size:9px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.text-2xl{font-size:1.5rem;line-height:2rem}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-light{font-weight:300}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.leading-\[1\.7\]{line-height:1.7}.tracking-tight{letter-spacing:-0.025em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-blue-400{--tw-text-opacity:1;color:rgb(96 165 250 / var(--tw-text-opacity, 1))}.text-emerald-500{--tw-text-opacity:1;color:rgb(16 185 129 / var(--tw-text-opacity, 1))}.text-neutral-100{--tw-text-opacity:1;color:rgb(245 245 245 / var(--tw-text-opacity, 1))}.text-neutral-200{--tw-text-opacity:1;color:rgb(229 229 229 / var(--tw-text-opacity, 1))}.text-neutral-400{--tw-text-opacity:1;color:rgb(163 163 163 / var(--tw-text-opacity, 1))}.text-neutral-500{--tw-text-opacity:1;color:rgb(115 115 115 / var(--tw-text-opacity, 1))}.text-neutral-600{--tw-text-opacity:1;color:rgb(82 82 82 / var(--tw-text-opacity, 1))}.text-neutral-700{--tw-text-opacity:1;color:rgb(64 64 64 / var(--tw-text-opacity, 1))}.text-neutral-800{--tw-text-opacity:1;color:rgb(38 38 38 / var(--tw-text-opacity, 1))}.text-neutral-900{--tw-text-opacity:1;color:rgb(23 23 23 / var(--tw-text-opacity, 1))}.text-pink-400{--tw-text-opacity:1;color:rgb(244 114 182 / var(--tw-text-opacity, 1))}.text-purple-400{--tw-text-opacity:1;color:rgb(192 132 252 / var(--tw-text-opacity, 1))}.text-red-400{--tw-text-opacity:1;color:rgb(248 113 113 / var(--tw-text-opacity, 1))}.text-red-500{--tw-text-opacity:1;color:rgb(239 68 68 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-zinc-200{--tw-text-opacity:1;color:rgb(228 228 231 / var(--tw-text-opacity, 1))}.text-zinc-300{--tw-text-opacity:1;color:rgb(212 212 216 / var(--tw-text-opacity, 1))}.text-zinc-400{--tw-text-opacity:1;color:rgb(161 161 170 / var(--tw-text-opacity, 1))}.text-zinc-500{--tw-text-opacity:1;color:rgb(113 113 122 / var(--tw-text-opacity, 1))}.text-blue-500{--tw-text-opacity:1;color:rgb(59 130 246 / var(--tw-text-opacity, 1))}.text-blue-700{--tw-text-opacity:1;color:rgb(29 78 216 / var(--tw-text-opacity, 1))}.text-emerald-700{--tw-text-opacity:1;color:rgb(4 120 87 / var(--tw-text-opacity, 1))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.opacity-0{opacity:0}.opacity-25{opacity:0.25}.opacity-100{opacity:1}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-red-900\/20{--tw-shadow-color:rgb(127 29 29 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.blur-\[2px\]{--tw-blur:blur(2px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.blur-xl{--tw-blur:blur(24px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-300{transition-duration:300ms}.duration-200{transition-duration:200ms}.selection\:bg-red-100 *::selection{--tw-bg-opacity:1;background-color:rgb(254 226 226 / var(--tw-bg-opacity, 1))}.selection\:text-red-900 *::selection{--tw-text-opacity:1;color:rgb(127 29 29 / var(--tw-text-opacity, 1))}.selection\:bg-red-100::selection{--tw-bg-opacity:1;background-color:rgb(254 226 226 / var(--tw-bg-opacity, 1))}.selection\:text-red-900::selection{--tw-text-opacity:1;color:rgb(127 29 29 / var(--tw-text-opacity, 1))}.before\:absolute::before{content:var(--tw-content);position:absolute}.before\:left-1\/2::before{content:var(--tw-content);left:50%}.before\:top-1\/2::before{content:var(--tw-content);top:50%}.before\:h-1\.5::before{content:var(--tw-content);height:0.375rem}.before\:w-1\.5::before{content:var(--tw-content);width:0.375rem}.before\:-translate-x-1\/2::before{content:var(--tw-content);--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.before\:-translate-y-1\/2::before{content:var(--tw-content);--tw-translate-y:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.before\:rounded-full::before{content:var(--tw-content);border-radius:9999px}.before\:bg-\[\#0d3b66\]::before{content:var(--tw-content);--tw-bg-opacity:1;background-color:rgb(13 59 102 / var(--tw-bg-opacity, 1))}.before\:content-\[\'\'\]::before{--tw-content:'';content:var(--tw-content)}.hover\:bg-red-500:hover{--tw-bg-opacity:1;background-color:rgb(239 68 68 / var(--tw-bg-opacity, 1))}.hover\:bg-zinc-700:hover{--tw-bg-opacity:1;background-color:rgb(63 63 70 / var(--tw-bg-opacity, 1))}.hover\:bg-neutral-50\/50:hover{background-color:rgb(250 250 250 / 0.5)}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.hover\:text-zinc-300:hover{--tw-text-opacity:1;color:rgb(212 212 216 / var(--tw-text-opacity, 1))}@media (min-width: 768px){.md\:inline{display:inline}.md\:hidden{display:none}.md\:w-96{width:24rem}.md\:flex-row{flex-direction:row}.md\:items-center{align-items:center}.md\:self-auto{align-self:auto}.md\:pr-96{padding-right:24rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-5xl{font-size:3rem;line-height:1}.md\:text-base{font-size:1rem;line-height:1.5rem}.md\:text-lg{font-size:1.125rem;line-height:1.75rem}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:text-6xl{font-size:3.75rem;line-height:1}}</style></head>
+<body class="font-serif antialiased selection:bg-red-100 selection:text-red-900 overflow-x-hidden" style="padding-right: 0px;">
+
+  <!-- 에디터 제어 최상단 툴바 (고정형) -->
+  
+
+  <!-- 1. 풀스크린 훅 영역 (Hero Section) -->
+  <header class="relative w-full h-screen bg-neutral-950 flex flex-col justify-center items-center text-center px-6 overflow-hidden pt-14">
+    <!-- 배경 이미지 블러 레이어 -->
+    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1508873696983-2df519f0397e?q=80&amp;w=1920')] bg-cover bg-center opacity-25 filter blur-[2px]"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-neutral-950/90"></div>
+    
+    <div class="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
+      <span class="font-sans text-red-500 font-semibold tracking-widest text-xs uppercase mb-4 px-3 py-1 bg-red-950/40 border border-red-900/50 rounded-full animate-pulse">
+        Data Journalism Special Feature
+      </span>
+      <h1 class="font-sans text-3xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight mb-6">
+        법은 술잔을 <span class="text-red-500 inline-block">멈출 수</span> 있는가?
+      </h1>
+      <!-- 설명 폰트 컬러를 가독성이 좋은 밝은 연회색(text-neutral-200)으로 변경 -->
+      <p class="text-neutral-200 text-sm md:text-lg max-w-2xl font-light leading-relaxed mb-12">윤창호법 시행 이후 음주운전 사고는 어떻게 변했을까?<div>공공데이터를 통해 그 원인 분석해보았습니다.</div></p>
+    </div>
+  </header>
+
+  <!-- 메인 아티클 스트림 -->
+  <main class="max-w-[700px] mx-auto px-6 py-20">
+
+    <!-- 2. 도입부 컨텍스트 텍스트 영역 -->
+    <section class="mb-14">
+      <p class="text-lg md:text-xl font-bold leading-relaxed mb-8 text-neutral-800">
+        2018년 12월, 대한민국은 음주운전 처벌 기준과 형량을 획기적으로 강화한 <span class="text-marker">'윤창호법'</span>을 마주했습니다.
+      </p>
+      <p class="text-base md:text-lg mb-6 text-neutral-600 leading-relaxed">
+        그 슬픈 비극 끝에 탄생한 법률은 실제로 우리가 원하던 도로 위의 평화를 가져다주었을까요? 대리운전과 플랫폼의 성장, 갑작스레 들이닥친 코로나 팬데믹, 그리고 무뎌져 가는 사람들의 법적 경각심 속에서 과연 어떤 요인이 이러한 변화를 만들었는지 공공데이터를 통해 분석해보았습니다.&nbsp;</p>
+    </section>
+
+    <!-- 1막 타이틀 장 생성 -->
+    <section class="mb-8">
+      <div class="border-l-4 border-red-600 pl-4">
+        <h2 class="font-sans text-xl md:text-2xl font-bold text-neutral-900">1막. 도로 위의 변화: 10년간의 사고 추이</h2>
+        <p class="font-sans text-xs text-neutral-500 mt-1">음주운전 사고량 시계열 분석 (2016-2025)</p>
+      </div>
+    </section>
+
+    <!-- 3. CHART 1 : 10년간의 사고 추이 -->
+    <section class="mb-20">
+      <div class="bg-[#f8f9fa] border border-neutral-200/60 rounded-2xl p-6 shadow-sm mb-6">
+        <div class="mb-6">
+          <h2 class="font-sans text-xl md:text-2xl font-extrabold text-neutral-900 tracking-tight leading-tight">
+            도로 위 안전의 변화: 윤창호법 시행 전후 사고 데이터 비교
+          </h2>
+          <p class="font-sans text-sm md:text-base text-neutral-600 font-medium mt-1">
+            윤창호법 시행, 음주운전 사고의 결정적 변곡점인가?
+          </p>
+          <!-- 데이터 출처 및 종류 -->
+          <p class="font-sans text-xs text-neutral-500 mt-2 flex items-center gap-1.5">
+            <span class="px-1.5 py-0.5 bg-neutral-200 text-neutral-700 rounded text-[10px] font-bold">DATA</span>
+            <span>도로교통공단 교통사고분석시스템(TAAS) — 음주운전 교통사고 발생건수 시계열</span>
+          </p>
+        </div>
+        
+        <div class="w-full relative bg-[#f8f9fa] overflow-x-auto">
+          <!-- 반응형 SVG 영역 -->
+          <svg id="svg-chart1" class="w-full min-w-[620px] h-[380px]" viewBox="0 0 700 400">
+            <!-- 수평 그리드 가이드라인 -->
+            <line x1="60" y1="340" x2="660" y2="340" stroke="#f1f3f5" stroke-width="1.5"></line>
+            <line x1="60" y1="270" x2="660" y2="270" stroke="#f1f3f5" stroke-width="1"></line>
+            <line x1="60" y1="200" x2="660" y2="200" stroke="#f1f3f5" stroke-width="1"></line>
+            <line x1="60" y1="130" x2="660" y2="130" stroke="#f1f3f5" stroke-width="1"></line>
+            <line x1="60" y1="60" x2="660" y2="60" stroke="#f1f3f5" stroke-width="1.5"></line>
+
+            <!-- 단위 표시 -->
+            <text x="60" y="42" font-family="IBM Plex Sans KR" font-size="11" font-weight="bold" fill="#4a5568" text-anchor="start">(단위: 건)</text>
+
+            <!-- Y축 눈금 라벨 (0 ~ 20,000) -->
+            <text x="50" y="344" font-family="Outfit" font-size="11" fill="#718096" text-anchor="end">0</text>
+            <text x="50" y="274" font-family="Outfit" font-size="11" fill="#718096" text-anchor="end">5,000</text>
+            <text x="50" y="204" font-family="Outfit" font-size="11" fill="#718096" text-anchor="end">10,000</text>
+            <text x="50" y="134" font-family="Outfit" font-size="11" fill="#718096" text-anchor="end">15,000</text>
+            <text x="50" y="64" font-family="Outfit" font-size="11" fill="#718096" text-anchor="end">20,000</text>
+
+            <!-- X축 연도 눈금 -->
+            <g id="chart1-x-labels"><text x="60" y="362" font-family="Outfit" font-size="11" fill="#718096" text-anchor="middle">2016</text><text x="126.7" y="362" font-family="Outfit" font-size="11" fill="#718096" text-anchor="middle">2017</text><text x="193.3" y="362" font-family="Outfit" font-size="11" fill="#718096" text-anchor="middle">2018</text><text x="260" y="362" font-family="Outfit" font-size="11" fill="#718096" text-anchor="middle">2019</text><text x="326.7" y="362" font-family="Outfit" font-size="11" fill="#718096" text-anchor="middle">2020</text><text x="393.3" y="362" font-family="Outfit" font-size="11" fill="#718096" text-anchor="middle">2021</text><text x="460" y="362" font-family="Outfit" font-size="11" fill="#718096" text-anchor="middle">2022</text><text x="526.7" y="362" font-family="Outfit" font-size="11" fill="#718096" text-anchor="middle">2023</text><text x="593.3" y="362" font-family="Outfit" font-size="11" fill="#718096" text-anchor="middle">2024</text><text x="660" y="362" font-family="Outfit" font-size="11" fill="#718096" text-anchor="middle">2025</text></g>
+
+            <!-- 윤창호법 시행 가이드 수직선 (2018.12 - 2018과 2019 사이 점선 배치) -->
+            <line x1="226.7" y1="50" x2="226.7" y2="340" stroke="#2d3748" stroke-width="1.5" stroke-dasharray="3,3"></line>
+            <text x="232.7" y="65" font-family="IBM Plex Sans KR" font-size="10" font-weight="bold" fill="#2d3748" text-anchor="start">윤창호법</text>
+            <text x="232.7" y="77" font-family="IBM Plex Sans KR" font-size="10" font-weight="bold" fill="#2d3748" text-anchor="start">시행</text>
+
+            <!-- 음주운전 사고 꺾은선 (Smooth Curve - Orange Red) -->
+            <path id="chart1-path" d="M 60 64.15800000000002 C 82.23333333333333 64.15800000000002, 104.46666666666667 66.762, 126.7 66.762 C 148.9 66.762, 171.10000000000002 68.666, 193.3 68.666 C 215.53333333333333 68.666, 237.76666666666668 158, 260 158 C 282.23333333333335 158, 304.46666666666664 98.44399999999999, 326.7 98.44399999999999 C 348.9 98.44399999999999, 371.1 131.58200000000002, 393.3 131.58200000000002 C 415.53333333333336 131.58200000000002, 437.76666666666665 129.608, 460 129.608 C 482.23333333333335 129.608, 504.4666666666667 157.748, 526.7 157.748 C 548.9 157.748, 571.1 185.37, 593.3 185.37 C 615.5333333333333 185.37, 637.7666666666667 195.184, 660 195.184" fill="none" stroke="#ff4a1c" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"></path>
+
+            <!-- 데이터 노드 그룹 -->
+            <g id="chart1-nodes">
+          <circle cx="60" cy="64.15800000000002" r="5" fill="#ff4a1c" class="dot-node">
+            <title>2016년 음주운전 사고: 19,703건</title>
+          </circle>
+          <circle cx="126.7" cy="66.762" r="5" fill="#ff4a1c" class="dot-node">
+            <title>2017년 음주운전 사고: 19,517건</title>
+          </circle>
+          <circle cx="193.3" cy="68.666" r="5" fill="#ff4a1c" class="dot-node">
+            <title>2018년 음주운전 사고: 19,381건</title>
+          </circle>
+          <circle cx="260" cy="158" r="5" fill="#ff4a1c" class="dot-node">
+            <title>2019년 음주운전 사고: 13,000건</title>
+          </circle>
+          <circle cx="326.7" cy="98.44399999999999" r="5" fill="#ff4a1c" class="dot-node">
+            <title>2020년 음주운전 사고: 17,254건</title>
+          </circle>
+          <circle cx="393.3" cy="131.58200000000002" r="5" fill="#ff4a1c" class="dot-node">
+            <title>2021년 음주운전 사고: 14,887건</title>
+          </circle>
+          <circle cx="460" cy="129.608" r="5" fill="#ff4a1c" class="dot-node">
+            <title>2022년 음주운전 사고: 15,028건</title>
+          </circle>
+          <circle cx="526.7" cy="157.748" r="5" fill="#ff4a1c" class="dot-node">
+            <title>2023년 음주운전 사고: 13,018건</title>
+          </circle>
+          <circle cx="593.3" cy="185.37" r="5" fill="#ff4a1c" class="dot-node">
+            <title>2024년 음주운전 사고: 11,045건</title>
+          </circle>
+          <circle cx="660" cy="195.184" r="5" fill="#ff4a1c" class="dot-node">
+            <title>2025년 음주운전 사고: 10,344건</title>
+          </circle></g>
+          </svg>
+        </div>
+        <p class="font-sans text-xs text-neutral-400 text-center mt-3"><br></p>
+      </div>
+    </section>
+
+    <!-- 4. 검증 ① : 일반 vs 음주 사고의 대조 -->
+    <section class="mb-20">
+      <div class="border-l-4 border-zinc-800 pl-4 mb-6">
+        <h2 class="font-sans text-xl md:text-2xl font-bold text-neutral-900">2막. 일반 사고 vs 음주 사고: 법의 영향 가능성 검토</h2>
+        <p class="font-sans text-xs text-neutral-500 mt-1">교통사고 대조군 검증 (일반사고 vs 음주사고)</p>
+      </div>
+      <p class="text-base md:text-lg mb-8 text-neutral-600">
+        혹시 음주운전 사고 감소가 도로 환경 개선이나 차량 안전기술 발전으로 인한 전체 교통사고 감소의 결과는 아닐까?
+      </p>
+      <p class="text-base md:text-lg mb-8 text-neutral-600"><p data-start="273" data-end="324">이를 확인하기 위해 일반 교통사고 발생 건수와 음주운전 사고 발생 건수를 비교해 보았습니다.</p>
+<p data-start="329" data-end="409">분석 결과, 일반 교통사고는 10년 동안 큰 변화 없이 비슷한 수준을 유지한 반면, 음주운전 사고는 2019년 이후 뚜렷한 감소세를 보였습니다.</p>
+<p data-start="414" data-end="463"><br></p></p>
+
+      <!-- 일반사고 vs 음주사고 대비 콤보 그래프 -->
+      <div class="bg-neutral-50 border border-neutral-100 rounded-2xl p-6 shadow-sm mb-6">
+        <div class="mb-6">
+          <h3 class="font-sans font-bold text-neutral-800 text-base md:text-lg">교통사고 대조군 검증(일반사고 vs 음주사고)</h3>
+          <p class="font-sans text-xs text-neutral-500 mt-1">전체 교통사고는 유지, 오직 '음주운전'만 감소했다</p>
+          <!-- 데이터 출처 및 종류 -->
+          <p class="font-sans text-xs text-neutral-500 mt-2 flex items-center gap-1.5">
+            <span class="px-1.5 py-0.5 bg-neutral-200 text-neutral-700 rounded text-[10px] font-bold">DATA</span>
+            <span>도로교통공단 교통사고분석시스템(TAAS) — 순수 일반 교통사고 발생건수 및 음주운전 사고 발생건수</span>
+          </p>
+          
+          <!-- 범례 영역 -->
+          <div class="flex items-center gap-4 mt-3 text-xs font-sans">
+            <div class="flex items-center gap-1.5">
+              <span class="inline-block w-4 h-2.5 bg-[#5bc0f8] rounded"></span>
+              <span class="text-neutral-600 font-medium">순수일반사고</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="inline-block w-3 h-0.5 bg-[#0d3b66] relative before:content-[''] before:absolute before:w-1.5 before:h-1.5 before:bg-[#0d3b66] before:rounded-full before:left-1/2 before:top-1/2 before:-translate-x-1/2 before:-translate-y-1/2"></span>
+              <span class="text-neutral-600 font-medium">음주운전사고</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full relative bg-[#f8f9fa] border border-neutral-100 rounded-xl p-4 overflow-x-auto">
+          <!-- 반응형 SVG 영역 -->
+          <svg id="svg-chart2" class="w-full min-w-[620px] h-[380px]" viewBox="0 0 700 400">
+            <!-- 수평 그리드 가이드라인 -->
+            <line x1="70" y1="340" x2="630" y2="340" stroke="#e5e7eb" stroke-width="1.5"></line>
+            <line x1="70" y1="275" x2="630" y2="275" stroke="#e5e7eb" stroke-dasharray="3,3" stroke-width="1"></line>
+            <line x1="70" y1="210" x2="630" y2="210" stroke="#e5e7eb" stroke-dasharray="3,3" stroke-width="1"></line>
+            <line x1="70" y1="145" x2="630" y2="145" stroke="#e5e7eb" stroke-dasharray="3,3" stroke-width="1"></line>
+            <line x1="70" y1="80" x2="630" y2="80" stroke="#e5e7eb" stroke-dasharray="3,3" stroke-width="1"></line>
+
+            <!-- 단위 표시 -->
+            <text x="630" y="55" font-family="IBM Plex Sans KR" font-size="10" font-weight="bold" fill="#4a5568" text-anchor="end">(단위: 건)</text>
+
+            <!-- 좌측 Y축 눈금 라벨 (순수일반사고용: 0 ~ 200,000) -->
+            <text x="60" y="344" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">0</text>
+            <text x="60" y="279" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">50,000</text>
+            <text x="60" y="214" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">100,000</text>
+            <text x="60" y="149" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">150,000</text>
+            <text x="60" y="84" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">200,000</text>
+
+            <!-- 우측 Y축 눈금 라벨 (음주운전사고용: 0 ~ 20,000) -->
+            <text x="640" y="344" font-family="Outfit" font-size="10" fill="#718096" text-anchor="start">0</text>
+            <text x="640" y="279" font-family="Outfit" font-size="10" fill="#718096" text-anchor="start">5,000</text>
+            <text x="640" y="214" font-family="Outfit" font-size="10" fill="#718096" text-anchor="start">10,000</text>
+            <text x="640" y="149" font-family="Outfit" font-size="10" fill="#718096" text-anchor="start">15,000</text>
+            <text x="640" y="84" font-family="Outfit" font-size="10" fill="#718096" text-anchor="start">20,000</text>
+
+            <!-- X축 연도 눈금 -->
+            <g id="chart2-x-labels"><text x="95" y="362" font-family="Outfit" font-size="11" fill="#4a5568" text-anchor="middle">2016</text><text x="151" y="362" font-family="Outfit" font-size="11" fill="#4a5568" text-anchor="middle">2017</text><text x="207" y="362" font-family="Outfit" font-size="11" fill="#4a5568" text-anchor="middle">2018</text><text x="263" y="362" font-family="Outfit" font-size="11" fill="#4a5568" text-anchor="middle">2019</text><text x="319" y="362" font-family="Outfit" font-size="11" fill="#4a5568" text-anchor="middle">2020</text><text x="375" y="362" font-family="Outfit" font-size="11" fill="#4a5568" text-anchor="middle">2021</text><text x="431" y="362" font-family="Outfit" font-size="11" fill="#4a5568" text-anchor="middle">2022</text><text x="487" y="362" font-family="Outfit" font-size="11" fill="#4a5568" text-anchor="middle">2023</text><text x="543" y="362" font-family="Outfit" font-size="11" fill="#4a5568" text-anchor="middle">2024</text><text x="599" y="362" font-family="Outfit" font-size="11" fill="#4a5568" text-anchor="middle">2025</text></g>
+
+            <!-- [1] 순수일반사고 막대 그룹 (Left Axis) -->
+            <g id="chart2-bars">
+          <rect x="79" y="83.67770000000002" width="32" height="256.3223" fill="#5bc0f8" opacity="0.95" class="transition-all duration-200">
+            <title>2016년 순수일반사고: 197,171건</title>
+          </rect>
+          <rect x="135" y="90.22969999999998" width="32" height="249.77030000000002" fill="#5bc0f8" opacity="0.95" class="transition-all duration-200">
+            <title>2017년 순수일반사고: 192,131건</title>
+          </rect>
+          <rect x="191" y="89.1" width="32" height="250.9" fill="#5bc0f8" opacity="0.95" class="transition-all duration-200">
+            <title>2018년 순수일반사고: 193,000건</title>
+          </rect>
+          <rect x="247" y="80" width="32" height="260" fill="#5bc0f8" opacity="0.95" class="transition-all duration-200">
+            <title>2019년 순수일반사고: 209,600건</title>
+          </rect>
+          <rect x="303" y="95.60000000000002" width="32" height="244.39999999999998" fill="#5bc0f8" opacity="0.95" class="transition-all duration-200">
+            <title>2020년 순수일반사고: 188,000건</title>
+          </rect>
+          <rect x="359" y="100.79999999999998" width="32" height="239.20000000000002" fill="#5bc0f8" opacity="0.95" class="transition-all duration-200">
+            <title>2021년 순수일반사고: 184,000건</title>
+          </rect>
+          <rect x="415" y="111.19999999999999" width="32" height="228.8" fill="#5bc0f8" opacity="0.95" class="transition-all duration-200">
+            <title>2022년 순수일반사고: 176,000건</title>
+          </rect>
+          <rect x="471" y="106" width="32" height="234" fill="#5bc0f8" opacity="0.95" class="transition-all duration-200">
+            <title>2023년 순수일반사고: 180,000건</title>
+          </rect>
+          <rect x="527" y="105.87" width="32" height="234.13" fill="#5bc0f8" opacity="0.95" class="transition-all duration-200">
+            <title>2024년 순수일반사고: 180,100건</title>
+          </rect>
+          <rect x="583" y="108.6" width="32" height="231.4" fill="#5bc0f8" opacity="0.95" class="transition-all duration-200">
+            <title>2025년 순수일반사고: 178,000건</title>
+          </rect></g>
+
+            <!-- [2] 윤창호법 시행 가이드 라인 (2018.12) -->
+            <line x1="263" y1="60" x2="263" y2="340" stroke="#e53e3e" stroke-width="2" stroke-dasharray="2,2"></line>
+            <text x="268" y="75" font-family="IBM Plex Sans KR" font-size="9" font-weight="bold" fill="#e53e3e">윤창호법</text>
+            <text x="268" y="87" font-family="IBM Plex Sans KR" font-size="9" font-weight="bold" fill="#e53e3e">시행</text>
+            <text x="268" y="99" font-family="Outfit" font-size="8" font-weight="bold" fill="#e53e3e">(2018.12)</text>
+
+            <!-- [3] 음주운전사고 꺾은선 (Right Axis) -->
+            <path id="chart2-path" d="M 95 83.86099999999999 L 151 86.279 L 207 88.047 L 263 171 L 319 115.69800000000001 L 375 146.46900000000002 L 431 144.63600000000002 L 487 170.766 L 543 196.415 L 599 205.528" fill="none" stroke="#0d3b66" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
+
+            <!-- 음주운전사고 데이터 노드 -->
+            <g id="chart2-nodes">
+          <circle cx="95" cy="83.86099999999999" r="4.5" fill="#0d3b66" stroke="#ffffff" stroke-width="1.5" class="dot-node">
+            <title>2016년 음주운전사고: 19,703건</title>
+          </circle>
+          <circle cx="151" cy="86.279" r="4.5" fill="#0d3b66" stroke="#ffffff" stroke-width="1.5" class="dot-node">
+            <title>2017년 음주운전사고: 19,517건</title>
+          </circle>
+          <circle cx="207" cy="88.047" r="5.5" fill="#0d3b66" stroke="#ffffff" stroke-width="2" class="dot-node">
+            <title>2018년 음주운전사고: 19,381건</title>
+          </circle>
+          <circle cx="263" cy="171" r="5.5" fill="#e53e3e" stroke="#ffffff" stroke-width="2" class="dot-node">
+            <title>2019년 음주운전사고: 13,000건</title>
+          </circle>
+          <circle cx="319" cy="115.69800000000001" r="4.5" fill="#0d3b66" stroke="#ffffff" stroke-width="1.5" class="dot-node">
+            <title>2020년 음주운전사고: 17,254건</title>
+          </circle>
+          <circle cx="375" cy="146.46900000000002" r="4.5" fill="#0d3b66" stroke="#ffffff" stroke-width="1.5" class="dot-node">
+            <title>2021년 음주운전사고: 14,887건</title>
+          </circle>
+          <circle cx="431" cy="144.63600000000002" r="4.5" fill="#0d3b66" stroke="#ffffff" stroke-width="1.5" class="dot-node">
+            <title>2022년 음주운전사고: 15,028건</title>
+          </circle>
+          <circle cx="487" cy="170.766" r="4.5" fill="#0d3b66" stroke="#ffffff" stroke-width="1.5" class="dot-node">
+            <title>2023년 음주운전사고: 13,018건</title>
+          </circle>
+          <circle cx="543" cy="196.415" r="4.5" fill="#0d3b66" stroke="#ffffff" stroke-width="1.5" class="dot-node">
+            <title>2024년 음주운전사고: 11,045건</title>
+          </circle>
+          <circle cx="599" cy="205.528" r="4.5" fill="#0d3b66" stroke="#ffffff" stroke-width="1.5" class="dot-node">
+            <title>2025년 음주운전사고: 10,344건</title>
+          </circle></g>
+          </svg>
+        </div>
+        <p class="font-sans text-xs text-neutral-400 text-center">전체 일반사고(막대)가 18~21만 건 범위에서 견고한 정상 상태를 지키는 동안, 오직 음주사고(선)만이 시행 연도(2019)에 유의미한 급감 절벽을 만들었습니다.</p>
+      </div>
+    </section>
+
+    <!-- 5. 의심 ② : 진짜 외부 요인은 없었나? (3대 요인 분할 격파) -->
+    <section class="mb-20">
+      <div class="border-l-4 border-amber-600 pl-4 mb-6">
+        <h2 class="font-sans text-xl md:text-2xl font-bold text-neutral-900">3막. 진짜 외부 요인은 없었나?</h2>
+        <p class="font-sans text-xs text-neutral-500 mt-1">3대 교란 가설 변수 교차 추적 검증</p>
+      </div>
+      <p class="text-base md:text-lg mb-8 text-neutral-600">인과관계를 철저하게 검증하기 위해 세 가지 반론 가설을 추가로 수집했습니다.&nbsp;</p>
+
+      <!-- 3막 1부: 고위험 음주율 지수 검증 -->
+      <div class="mb-12">
+        <h3 class="font-sans font-bold text-neutral-800 text-lg mb-1">① 고위험 음주율 지수와의 연동 검증</h3>
+        <!-- 데이터 출처 및 종류 -->
+        <p class="font-sans text-xs text-neutral-500 mb-3 flex items-center gap-1.5">
+          <span class="px-1.5 py-0.5 bg-neutral-200 text-neutral-700 rounded text-[10px] font-bold">DATA</span>
+          <span>질병관리청 국민건강영양조사 — 19세 이상 성인 고위험음주율(연령표준화) 시계열 지수(2018=100)</span>
+        </p>
+        <p class="text-base text-neutral-600 mb-6 leading-relaxed"><p data-start="125" data-end="161">"사람들이 술을 덜 마셔서 음주운전 사고가 감소한 것은 아닐까?"</p>
+<p data-start="166" data-end="204">이를 확인하기 위해 질병관리청의 고위험 음주율 데이터를 분석했습니다.</p>
+<p data-start="209" data-end="256">분석 결과, 고위험 음주율은 지난 10년간 큰 변화 없이 비슷한 수준을 유지했습니다.</p>
+<p data-start="261" data-end="312">따라서 음주운전 사고 감소는 단순한 음주량 감소 때문이라고 보기 어렵습니다.</p></p>
+
+        <div class="bg-neutral-50 border border-neutral-100 rounded-3xl p-6 shadow-sm mb-6">
+          <div class="flex items-center gap-4 mb-4 text-xs font-sans">
+            <div class="flex items-center gap-1.5">
+              <span class="inline-block w-4 h-0.5 bg-[#ff4a1c]"></span>
+              <span class="text-neutral-600 font-medium">음주운전 사고율 지수 (기준선)</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="inline-block w-4 h-0.5 bg-[#7950f2]"></span>
+              <span class="text-neutral-600 font-medium">고위험 음주율 지수</span>
+            </div>
+          </div>
+
+          <div class="w-full h-80 relative flex items-center justify-center bg-white border border-neutral-100 rounded-2xl p-4">
+            <svg id="svg-chart3" class="w-full h-full" viewBox="0 0 600 300" preserveAspectRatio="none">
+              <!-- Y축 그리드 가이드라인 -->
+              <line x1="50" y1="270" x2="550" y2="270" stroke="#f1f3f5" stroke-width="1.5"></line>
+              <line x1="50" y1="195" x2="550" y2="195" stroke="#f1f3f5" stroke-width="1"></line>
+              <line x1="50" y1="120" x2="550" y2="120" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="3,3"></line>
+              <line x1="50" y1="45" x2="550" y2="45" stroke="#f1f3f5" stroke-width="1.5"></line>
+
+              <!-- 단위 표시 -->
+              <text x="50" y="30" font-family="IBM Plex Sans KR" font-size="10" font-weight="bold" fill="#4a5568" text-anchor="start">(지수, 2018=100)</text>
+
+              <!-- Y축 눈금 라벨 -->
+              <text x="40" y="274" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">0</text>
+              <text x="40" y="199" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">50</text>
+              <text x="40" y="124" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">100</text>
+              <text x="40" y="49" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">150</text>
+
+              <!-- 선 굵기를 원래 두께인 3으로 견고하게 유지 -->
+              <path id="chart3-base-path" d="M 50 117.50786853103554 C 70.83333333333333 117.50786853103554, 91.66666666666666 118.9474227336051, 112.5 118.9474227336051 C 133.33333333333334 118.9474227336051, 154.16666666666666 120, 175 120 C 195.83333333333334 120, 216.66666666666666 169.38599659460294, 237.5 169.38599659460294 C 258.3333333333333 169.38599659460294, 279.1666666666667 136.46199886486767, 300 136.46199886486767 C 320.8333333333333 136.46199886486767, 341.6666666666667 154.78148702337342, 362.5 154.78148702337342 C 383.3333333333333 154.78148702337342, 404.1666666666667 153.690212063361, 425 153.690212063361 C 445.8333333333333 153.690212063361, 466.6666666666667 169.2466848975801, 487.5 169.2466848975801 C 508.3333333333333 169.2466848975801, 529.1666666666666 184.51679479902998, 550 184.51679479902998" fill="none" stroke="#ff4a1c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path id="chart3-val-path" d="M 50 129.14999999999998 L 112.5 125.10000000000001 L 175 120 L 237.5 141.45 L 300 126.14999999999999 L 362.5 133.2 L 425 125.10000000000001 L 487.5 129.14999999999998 L 550 131.25" fill="none" stroke="#7950f2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+              
+              <!-- 붉은 기준선 위 빨간 점 노드 그룹 (JS에서 r=3.5 크기로 렌더링되도록 처리) -->
+              <g id="chart3-nodes">
+          <circle cx="50" cy="117.50786853103554" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2016년 음주사고율 지수: 101.7%</title>
+          </circle>
+          <circle cx="112.5" cy="118.9474227336051" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2017년 음주사고율 지수: 100.7%</title>
+          </circle>
+          <circle cx="175" cy="120" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2018년 음주사고율 지수: 100.0%</title>
+          </circle>
+          <circle cx="237.5" cy="169.38599659460294" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2019년 음주사고율 지수: 67.1%</title>
+          </circle>
+          <circle cx="300" cy="136.46199886486767" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2020년 음주사고율 지수: 89.0%</title>
+          </circle>
+          <circle cx="362.5" cy="154.78148702337342" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2021년 음주사고율 지수: 76.8%</title>
+          </circle>
+          <circle cx="425" cy="153.690212063361" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2022년 음주사고율 지수: 77.5%</title>
+          </circle>
+          <circle cx="487.5" cy="169.2466848975801" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2023년 음주사고율 지수: 67.2%</title>
+          </circle>
+          <circle cx="550" cy="184.51679479902998" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2024년 음주사고율 지수: 57.0%</title>
+          </circle>
+          <circle cx="50" cy="129.14999999999998" r="3.5" fill="#7950f2" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2016년 지수값: 93.9%</title>
+          </circle>
+          <circle cx="112.5" cy="125.10000000000001" r="3.5" fill="#7950f2" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2017년 지수값: 96.6%</title>
+          </circle>
+          <circle cx="175" cy="120" r="3.5" fill="#7950f2" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2018년 지수값: 100%</title>
+          </circle>
+          <circle cx="237.5" cy="141.45" r="3.5" fill="#7950f2" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2019년 지수값: 85.7%</title>
+          </circle>
+          <circle cx="300" cy="126.14999999999999" r="3.5" fill="#7950f2" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2020년 지수값: 95.9%</title>
+          </circle>
+          <circle cx="362.5" cy="133.2" r="3.5" fill="#7950f2" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2021년 지수값: 91.2%</title>
+          </circle>
+          <circle cx="425" cy="125.10000000000001" r="3.5" fill="#7950f2" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2022년 지수값: 96.6%</title>
+          </circle>
+          <circle cx="487.5" cy="129.14999999999998" r="3.5" fill="#7950f2" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2023년 지수값: 93.9%</title>
+          </circle>
+          <circle cx="550" cy="131.25" r="3.5" fill="#7950f2" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2024년 지수값: 92.5%</title>
+          </circle></g>
+              <!-- X축 라벨 -->
+              <g id="chart3-x-axis"><text x="50" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2016</text><text x="112.5" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2017</text><text x="175" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2018</text><text x="237.5" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2019</text><text x="300" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2020</text><text x="362.5" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2021</text><text x="425" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2022</text><text x="487.5" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2023</text><text x="550" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2024</text></g>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3막 2부: 대체 수단(택시 매출 및 종사자 수) 지수 검증 (막대 시인성 극대화 레이아웃 - 얇은 선 및 노드 제거 상태 유지) -->
+      <div class="mb-12 pt-8">
+        <h3 class="font-sans font-bold text-neutral-800 text-lg mb-1">② 대체 수단(택시 매출 및 종사자 수) 지수와의 연동 검증</h3>
+        <!-- 데이터 출처 및 종류 -->
+        <p class="font-sans text-xs text-neutral-500 mb-3 flex items-center gap-1.5">
+          <span class="px-1.5 py-0.5 bg-neutral-200 text-neutral-700 rounded text-[10px] font-bold">DATA</span>
+          <span>통계청 국가통계포털(KOSIS) 운수업조사 — 전국 택시운송업 총 매출액 및 종사자 수 시계열 지수(2018=100)</span>
+        </p>
+        <p class="text-base text-neutral-600 mb-6 leading-relaxed"><p data-start="144" data-end="179">대리운전과 플랫폼 택시 등 대체 수단은 지속적으로 성장했습니다.</p>
+<p data-start="184" data-end="227">관련 매출액 지표는 2018년 대비<strong data-start="202" data-end="214">&nbsp;증가</strong>한 것으로 나타난 반면,&nbsp;<span style="font-size: 1rem;">종사자 수는 감소하여 플랫폼 중심의 운영 효율화가 진행된 것으로 해석할 수 있습니다.</span></p><p data-start="232" data-end="282"><br></p></p>
+
+        <div class="bg-neutral-50 border border-neutral-100 rounded-3xl p-6 shadow-sm mb-6">
+          <!-- 범례 모양 막대 형태로 디자인 -->
+          <div class="flex items-center gap-4 mb-4 text-xs font-sans flex-wrap">
+            <div class="flex items-center gap-1.5">
+              <span class="inline-block w-4 h-0.5 bg-[#ff4a1c] rounded-full"></span>
+              <span class="text-neutral-600 font-medium">음주운전 사고율 지수 (기준선)</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="inline-block w-3 h-3 bg-[#2b8a3e] rounded-sm"></span>
+              <span class="text-neutral-600 font-medium">대안수단 매출액 지수 (막대)</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="inline-block w-3.5 h-3 bg-[#e64980] rounded-sm"></span>
+              <span class="text-neutral-600 font-medium">대안수단 종사자수 지수 (막대)</span>
+            </div>
+          </div>
+
+          <div class="w-full h-80 relative flex items-center justify-center bg-white border border-neutral-100 rounded-2xl p-4">
+            <svg id="svg-chart4" class="w-full h-full" viewBox="0 0 600 300" preserveAspectRatio="none">
+              <!-- Y축 그리드 가이드라인 -->
+              <line x1="50" y1="270" x2="550" y2="270" stroke="#f1f3f5" stroke-width="1.5"></line>
+              <line x1="50" y1="195" x2="550" y2="195" stroke="#f1f3f5" stroke-width="1"></line>
+              <line x1="50" y1="120" x2="550" y2="120" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="3,3"></line>
+              <line x1="50" y1="45" x2="550" y2="45" stroke="#f1f3f5" stroke-width="1.5"></line>
+
+              <!-- 단위 표시 -->
+              <text x="50" y="30" font-family="IBM Plex Sans KR" font-size="10" font-weight="bold" fill="#4a5568" text-anchor="start">(지수, 2018=100)</text>
+
+              <!-- Y축 눈금 라벨 -->
+              <text x="40" y="274" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">0</text>
+              <text x="40" y="199" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">50</text>
+              <text x="40" y="124" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">100</text>
+              <text x="40" y="49" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">150</text>
+
+              <!-- 대안수단 막대 그룹 -->
+              <g id="chart4-bars">
+            <rect x="41" y="125.25" width="8" height="144.75" fill="#2b8a3e" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2016년 대안수단 매출액 지수: 96.5%</title>
+            </rect>
+            <rect x="51" y="118.5" width="8" height="151.5" fill="#e64980" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2016년 대안수단 종사자 수 지수: 101%</title>
+            </rect>
+          
+            <rect x="103.5" y="120.60000000000002" width="8" height="149.39999999999998" fill="#2b8a3e" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2017년 대안수단 매출액 지수: 99.6%</title>
+            </rect>
+            <rect x="113.5" y="117.89999999999998" width="8" height="152.10000000000002" fill="#e64980" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2017년 대안수단 종사자 수 지수: 101.4%</title>
+            </rect>
+          
+            <rect x="166" y="120" width="8" height="150" fill="#2b8a3e" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2018년 대안수단 매출액 지수: 100%</title>
+            </rect>
+            <rect x="176" y="120" width="8" height="150" fill="#e64980" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2018년 대안수단 종사자 수 지수: 100%</title>
+            </rect>
+          
+            <rect x="228.5" y="117.60000000000002" width="8" height="152.39999999999998" fill="#2b8a3e" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2019년 대안수단 매출액 지수: 101.6%</title>
+            </rect>
+            <rect x="238.5" y="120.89999999999998" width="8" height="149.10000000000002" fill="#e64980" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2019년 대안수단 종사자 수 지수: 99.4%</title>
+            </rect>
+          
+            <rect x="291" y="132" width="8" height="138" fill="#2b8a3e" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2020년 대안수단 매출액 지수: 92%</title>
+            </rect>
+            <rect x="301" y="131.55" width="8" height="138.45" fill="#e64980" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2020년 대안수단 종사자 수 지수: 92.3%</title>
+            </rect>
+          
+            <rect x="353.5" y="127.64999999999998" width="8" height="142.35000000000002" fill="#2b8a3e" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2021년 대안수단 매출액 지수: 94.9%</title>
+            </rect>
+            <rect x="363.5" y="137.25" width="8" height="132.75" fill="#e64980" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2021년 대안수단 종사자 수 지수: 88.5%</title>
+            </rect>
+          
+            <rect x="416" y="120.44999999999999" width="8" height="149.55" fill="#2b8a3e" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2022년 대안수단 매출액 지수: 99.7%</title>
+            </rect>
+            <rect x="426" y="143.10000000000002" width="8" height="126.89999999999999" fill="#e64980" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2022년 대안수단 종사자 수 지수: 84.6%</title>
+            </rect>
+          
+            <rect x="478.5" y="88.80000000000001" width="8" height="181.2" fill="#2b8a3e" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2023년 대안수단 매출액 지수: 120.8%</title>
+            </rect>
+            <rect x="488.5" y="140.85000000000002" width="8" height="129.14999999999998" fill="#e64980" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2023년 대안수단 종사자 수 지수: 86.1%</title>
+            </rect>
+          
+            <rect x="541" y="82.35000000000002" width="8" height="187.64999999999998" fill="#2b8a3e" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2024년 대안수단 매출액 지수: 125.1%</title>
+            </rect>
+            <rect x="551" y="139.35000000000002" width="8" height="130.64999999999998" fill="#e64980" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>2024년 대안수단 종사자 수 지수: 87.1%</title>
+            </rect>
+          </g>
+
+              <!-- 두 번째 차트 기준선은 막대 시인성을 위해 얇은 선(1.5px)과 노드 미노출 상태 그대로 고수 -->
+              <path id="chart4-base-path" d="M 50 117.50786853103554 C 70.83333333333333 117.50786853103554, 91.66666666666666 118.9474227336051, 112.5 118.9474227336051 C 133.33333333333334 118.9474227336051, 154.16666666666666 120, 175 120 C 195.83333333333334 120, 216.66666666666666 169.38599659460294, 237.5 169.38599659460294 C 258.3333333333333 169.38599659460294, 279.1666666666667 136.46199886486767, 300 136.46199886486767 C 320.8333333333333 136.46199886486767, 341.6666666666667 154.78148702337342, 362.5 154.78148702337342 C 383.3333333333333 154.78148702337342, 404.1666666666667 153.690212063361, 425 153.690212063361 C 445.8333333333333 153.690212063361, 466.6666666666667 169.2466848975801, 487.5 169.2466848975801 C 508.3333333333333 169.2466848975801, 529.1666666666666 184.51679479902998, 550 184.51679479902998" fill="none" stroke="#ff4a1c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+              
+              <!-- 꺾은선용 히든 플레이스홀더 -->
+              <path id="chart4-val-path" d="" fill="none" stroke="none"></path>
+              <path id="chart4-val2-path" d="" fill="none" stroke="none"></path>
+              
+              <g id="chart4-nodes"></g>
+              <g id="chart4-x-axis"><text x="50" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2016</text><text x="112.5" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2017</text><text x="175" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2018</text><text x="237.5" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2019</text><text x="300" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2020</text><text x="362.5" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2021</text><text x="425" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2022</text><text x="487.5" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2023</text><text x="550" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2024</text></g>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3막 3부: 야간 이동성 지수 검증 -->
+      <div class="mb-12 pt-8">
+        <h3 class="font-sans font-bold text-neutral-800 text-lg mb-1">③ 야간 이동성 지수와의 연동 검증</h3>
+        <!-- 데이터 출처 및 종류 -->
+        <p class="font-sans text-xs text-neutral-500 mb-3 flex items-center gap-1.5">
+          <span class="px-1.5 py-0.5 bg-neutral-200 text-neutral-700 rounded text-[10px] font-bold">DATA</span>
+          <span>국토교통부 국가교통DB(VPUM) — 목적별(여가·사교·오락) 여객 기종점 통행량(O/D) 야간 이동성 지수(2018=100)</span>
+        </p>
+        <p class="text-base text-neutral-600 mb-6 leading-relaxed"><p class="text-base text-neutral-600 mb-6 leading-relaxed" style="--tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ; font-size: medium; --tw-text-opacity: 1; color: rgb(82, 82, 82);">"코로나 때문에 밤에 안 돌아다녀서 사고가 줄어든 것이다?"&nbsp;</p><div style="--tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ; color: rgb(26, 27, 26); font-size: medium;">목적별 통행량 데이터로부터 도출된 야간 이동성 지수를 추적하면, 코로나 시기인 2020~2021년 야간 이동성이 <span class="text-marker-blue" style="--tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ;">약 22.9% 급감</span>했던 흐름이 뚜렷하게 관측되고, 가장 가파른 음주사고 급감은 코로나 팬데믹이 시작되기도 전인 2019년에 이미 완료되었습니다. 코로나로 인한 이동성 제한은 장기 유지에 보조 기여했을 뿐입니다.</div></p>
+
+        <div class="bg-neutral-50 border border-neutral-100 rounded-3xl p-6 shadow-sm mb-6">
+          <div class="flex items-center gap-4 mb-4 text-xs font-sans">
+            <div class="flex items-center gap-1.5">
+              <span class="inline-block w-4 h-0.5 bg-[#ff4a1c]"></span>
+              <span class="text-neutral-600 font-medium">음주운전 사고율 지수 (기준선)</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="inline-block w-4 h-0.5 bg-[#1c7ed6]"></span>
+              <span class="text-neutral-600 font-medium">야간 이동성 지수</span>
+            </div>
+          </div>
+
+          <div class="w-full h-80 relative flex items-center justify-center bg-white border border-neutral-100 rounded-2xl p-4">
+            <svg id="svg-chart5" class="w-full h-full" viewBox="0 0 600 300" preserveAspectRatio="none">
+              <!-- Y축 그리드 가이드라인 -->
+              <line x1="50" y1="270" x2="550" y2="270" stroke="#f1f3f5" stroke-width="1.5"></line>
+              <line x1="50" y1="195" x2="550" y2="195" stroke="#f1f3f5" stroke-width="1"></line>
+              <line x1="50" y1="120" x2="550" y2="120" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="3,3"></line>
+              <line x1="50" y1="45" x2="550" y2="45" stroke="#f1f3f5" stroke-width="1.5"></line>
+
+              <!-- 단위 표시 -->
+              <text x="50" y="30" font-family="IBM Plex Sans KR" font-size="10" font-weight="bold" fill="#4a5568" text-anchor="start">(지수, 2018=100)</text>
+
+              <!-- Y축 눈금 라벨 -->
+              <text x="40" y="274" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">0</text>
+              <text x="40" y="199" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">50</text>
+              <text x="40" y="124" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">100</text>
+              <text x="40" y="49" font-family="Outfit" font-size="10" fill="#718096" text-anchor="end">150</text>
+
+              <!-- 선 굵기를 원래 두께인 3으로 세련되게 복원 -->
+              <path id="chart5-base-path" d="M 50 117.50786853103554 C 70.83333333333333 117.50786853103554, 91.66666666666666 118.9474227336051, 112.5 118.9474227336051 C 133.33333333333334 118.9474227336051, 154.16666666666666 120, 175 120 C 195.83333333333334 120, 216.66666666666666 169.38599659460294, 237.5 169.38599659460294 C 258.3333333333333 169.38599659460294, 279.1666666666667 136.46199886486767, 300 136.46199886486767 C 320.8333333333333 136.46199886486767, 341.6666666666667 154.78148702337342, 362.5 154.78148702337342 C 383.3333333333333 154.78148702337342, 404.1666666666667 153.690212063361, 425 153.690212063361 C 445.8333333333333 153.690212063361, 466.6666666666667 169.2466848975801, 487.5 169.2466848975801 C 508.3333333333333 169.2466848975801, 529.1666666666666 184.51679479902998, 550 184.51679479902998" fill="none" stroke="#ff4a1c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path id="chart5-val-path" d="M 50 121.94999999999999 L 112.5 120.30000000000001 L 175 120 L 237.5 122.69999999999999 L 300 150.75 L 362.5 154.35000000000002 L 425 137.25 L 487.5 130.05 L 550 125.39999999999999" fill="none" stroke="#1c7ed6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+              
+              <!-- 붉은 기준선 위 빨간 점 노드 그룹 (JS에서 r=3.5 크기로 렌더링되도록 처리) -->
+              <g id="chart5-nodes">
+          <circle cx="50" cy="117.50786853103554" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2016년 음주사고율 지수: 101.7%</title>
+          </circle>
+          <circle cx="112.5" cy="118.9474227336051" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2017년 음주사고율 지수: 100.7%</title>
+          </circle>
+          <circle cx="175" cy="120" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2018년 음주사고율 지수: 100.0%</title>
+          </circle>
+          <circle cx="237.5" cy="169.38599659460294" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2019년 음주사고율 지수: 67.1%</title>
+          </circle>
+          <circle cx="300" cy="136.46199886486767" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2020년 음주사고율 지수: 89.0%</title>
+          </circle>
+          <circle cx="362.5" cy="154.78148702337342" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2021년 음주사고율 지수: 76.8%</title>
+          </circle>
+          <circle cx="425" cy="153.690212063361" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2022년 음주사고율 지수: 77.5%</title>
+          </circle>
+          <circle cx="487.5" cy="169.2466848975801" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2023년 음주사고율 지수: 67.2%</title>
+          </circle>
+          <circle cx="550" cy="184.51679479902998" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2024년 음주사고율 지수: 57.0%</title>
+          </circle>
+          <circle cx="50" cy="121.94999999999999" r="3.5" fill="#1c7ed6" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2016년 지수값: 98.7%</title>
+          </circle>
+          <circle cx="112.5" cy="120.30000000000001" r="3.5" fill="#1c7ed6" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2017년 지수값: 99.8%</title>
+          </circle>
+          <circle cx="175" cy="120" r="3.5" fill="#1c7ed6" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2018년 지수값: 100%</title>
+          </circle>
+          <circle cx="237.5" cy="122.69999999999999" r="3.5" fill="#1c7ed6" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2019년 지수값: 98.2%</title>
+          </circle>
+          <circle cx="300" cy="150.75" r="3.5" fill="#1c7ed6" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2020년 지수값: 79.5%</title>
+          </circle>
+          <circle cx="362.5" cy="154.35000000000002" r="3.5" fill="#1c7ed6" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2021년 지수값: 77.1%</title>
+          </circle>
+          <circle cx="425" cy="137.25" r="3.5" fill="#1c7ed6" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2022년 지수값: 88.5%</title>
+          </circle>
+          <circle cx="487.5" cy="130.05" r="3.5" fill="#1c7ed6" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2023년 지수값: 93.3%</title>
+          </circle>
+          <circle cx="550" cy="125.39999999999999" r="3.5" fill="#1c7ed6" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>2024년 지수값: 96.4%</title>
+          </circle></g>
+              <g id="chart5-x-axis"><text x="50" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2016</text><text x="112.5" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2017</text><text x="175" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2018</text><text x="237.5" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2019</text><text x="300" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2020</text><text x="362.5" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2021</text><text x="425" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2022</text><text x="487.5" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2023</text><text x="550" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">2024</text></g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 결론 영역: 최종 성적표 스코어카드 및 통찰 -->
+    <section class="mb-20">
+      <div class="border-l-4 border-emerald-600 pl-4 mb-6">
+        <h2 class="font-sans text-xl md:text-2xl font-bold text-neutral-900">최종 막. 법과 기술이 만든 변화</h2>
+        <p class="font-sans text-xs text-neutral-500 mt-1">음주운전 감소를 설명하는 핵심 요인은 무엇일까?</p>
+      </div>
+      <p class="text-base md:text-lg mb-8 text-neutral-600"><p data-start="527" data-end="568" style="--tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ; color: rgb(26, 27, 26); font-size: medium;"><span style="color: rgb(82, 82, 82); font-size: 16px;">외부 요인 검증 결과, 음주운전 감소는 단일 요인으로 설명되지 않았습니다. 고위험 음주율과 야간 이동성은 보조적 역할에 그쳤으며, 대체 수단 서비스 운영의 효율화가 가장 큰 연관성을 보였습니다.</span></p></p>
+      <p class="text-base md:text-lg mb-8 text-neutral-600"><p class="font-claude-response-body break-words whitespace-normal leading-[1.7]"><span style="font-size: 1rem;">주목할 점은 </span><strong style="font-size: 1rem;">2019년 음주사고 급감은 법 시행 직후</strong><span style="font-size: 1rem;">에 발생했고, 이후 장기적인 감소 유지 시기와 택시 매출 증가 시기가 맞물린다는 것입니다. 종사자 수는 감소했지만 매출은 증가한 패턴은 플랫폼 중심의 효율화, 즉 카카오T 같은 앱 기반 서비스의 확산으로 대체 수단 접근성이 높아진 결과로 해석됩니다.</span></p><p data-start="270" data-end="341" style="--tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ; color: rgb(26, 27, 26); font-size: medium;">
+
+</p><p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">즉, <strong>윤창호법이 초기 행동 변화를 이끌었다면, 대리운전·플랫폼 택시의 성장은 그 변화를 지속시키는 구조적 기반</strong>이 되었습니다. 강한 처벌과 편리한 귀가 수단이 결합했을 때 비로소 음주운전 감소가 장기적으로 유지될 수 있었습니다.</p></p>
+
+      <!-- 채점표 (Scorecard) 스타일의 결론 레이아웃 -->
+      <div class="bg-white border border-neutral-200/80 rounded-2xl overflow-hidden shadow-sm mb-8">
+        <div class="bg-neutral-900 px-6 py-4 text-white">
+          <h3 class="font-sans font-bold text-base">윤창호법 전후 10년, 외부 요인 가설 평가 성적표</h3>
+          <p class="font-sans text-neutral-400 text-xs mt-1">음주운전 감소를 설명하는 핵심 요인은 무엇일까?</p>
+        </div>
+        <div class="divide-y divide-neutral-100" id="scorecard-list">
+          <div class="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-neutral-50/50 transition-all">
+            <div class="flex-1">
+              <span class="font-sans font-bold text-neutral-800 text-base block md:inline">① 주류 총소비량 감소</span>
+              <p class="font-sans text-xs text-neutral-400 mt-1">전국 성인 연령표준화 고위험음주율 추이</p>
+            </div>
+            <div class="flex items-center gap-6 self-end md:self-auto">
+              <span class="font-num text-2xl font-extrabold text-neutral-800">-2.1%</span>
+              <span class="font-sans text-sm font-semibold px-3 py-1 rounded-lg flex items-center gap-1 bg-neutral-100 text-neutral-600">
+                <span class="text-red-500 font-bold">✗</span> <span>✗ 기여 없음</span>
+              </span>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-neutral-50/50 transition-all">
+            <div class="flex-1">
+              <span class="font-sans font-bold text-neutral-800 text-base block md:inline">② 야간 이동성 감소</span>
+              <p class="font-sans text-xs text-neutral-400 mt-1">연도별 목적별 여객기종점통행량(O/D) 야간 이동성 지수</p>
+            </div>
+            <div class="flex items-center gap-6 self-end md:self-auto">
+              <span class="font-num text-2xl font-extrabold text-neutral-800">-22.9%</span>
+              <span class="font-sans text-sm font-semibold px-3 py-1 rounded-lg flex items-center gap-1 bg-blue-50 text-blue-700">
+                <span class="text-blue-500 font-bold">△</span> <span>△ 부분 기여</span>
+              </span>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-neutral-50/50 transition-all">
+            <div class="flex-1">
+              <span class="font-sans font-bold text-neutral-800 text-base block md:inline">③ 대체 수단 인프라의 성장</span>
+              <p class="font-sans text-xs text-neutral-400 mt-1">운수업조사 택시운송업 연도별 총 매출액 및 종사자 수 시계열</p>
+            </div>
+            <div class="flex items-center gap-6 self-end md:self-auto">
+              <span class="font-num text-2xl font-extrabold text-neutral-800">매출 +25.1% / 종사자 -12.9%</span>
+              <span class="font-sans text-sm font-semibold px-3 py-1 rounded-lg flex items-center gap-1 bg-emerald-50 text-emerald-700">
+                <span class="text-emerald-500 font-bold">✓</span> <span>✓ 결정적 요인</span>
+              </span>
+            </div>
+          </div></div>
+      </div>
+
+      <!-- 최종 마무리 인용 상자 -->
+      <div class="bg-neutral-900 text-neutral-100 p-8 rounded-2xl shadow-xl border border-neutral-800 relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-red-800/10 rounded-full filter blur-xl"></div>
+        <p class="font-sans text-xs text-red-500 font-semibold uppercase tracking-wider mb-2">Conclusion</p>
+        <p class="text-base md:text-lg leading-relaxed font-light"><p data-start="48" data-end="99"><strong data-start="48" data-end="99">"분석 결과, 음주운전 사고 감소는 단순히 윤창호법 때문만으로 설명하기 어려우나,</strong></p><p data-start="104" data-end="180"><strong data-start="104" data-end="180">일반 교통사고는 큰 변화가 없었지만 음주운전 사고만 감소했다는 점에서, 윤창호법의 영향이 있었음을 확인할 수 있었습니다.</strong></p><p data-start="185" data-end="250">강력한 처벌은 음주운전에 대한 경각심을 높였고, 대리운전과 모빌리티 서비스의 운영의 효율화는 안전한 귀가 수단을 제공했습니다.</p><p data-start="90" data-end="137" style="--tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ; font-size: medium;">
+
+
+</p><p data-start="255" data-end="297">결국 음주운전 감소는 법과 기술이 함께 만들어낸 변화라고 볼 수 있습니다."</p></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- 7. 푸터: 공공데이터 공식 출처 명시 -->
+  <footer class="bg-neutral-950 text-neutral-500 py-12 px-6 border-t border-neutral-900">
+    <div class="max-w-4xl mx-auto text-center font-sans text-xs">
+      <p class="mb-4 text-neutral-400">본 페이지는 2026학년도 1학기 데이터시각화 기말보고서 실습 목업 페이지로 설계 및 제작되었습니다.</p>
+      <div class="w-8 h-[1px] bg-neutral-800 mx-auto my-4"></div>
+      <p class="leading-relaxed">
+        <strong>데이터 소스 및 수집처 명세:</strong><br>
+        도로교통공단 교통사고분석시스템(TAAS) 음주사고 원본 통계 | 질병관리청 국민건강영양조사 고위험음주율 표준화 시계열<br>
+        국토교통부 국가교통DB 목적별 여객기종점통행량(O/D) | 통계청 국가통계포털(KOSIS) 운수업조사 택시운송업 매출액 및 종사자 명세 | 대한민국 경찰청 교통단속 통계
+      </p>
+      <p class="mt-6 text-neutral-600">© 2026 융합데이터 시각화 에디토리얼 프로젝트. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- 에디터 제어 오른쪽 사이드바 대시보드 -->
+  
+
+  <!-- 복사 알림 토스트 팝업 -->
+  
+
+  <script>
+    // --------------------------------------------------
+    // 1. STATE & CONSTANTS DEFINITIONS (실측 공공데이터 원본 정밀 연동)
+    // --------------------------------------------------
+    const yearsArray = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
+    const subYearsArray = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
+
+    // 원본 백업용 데이터 선언
+    const defaultChart1Data = [19703, 19517, 19381, 13000, 17254, 14887, 15028, 13018, 11045, 10344];
+    const defaultChart2BarData = [197171, 192131, 193000, 209600, 188000, 184000, 176000, 180000, 180100, 178000];
+
+    // 2018년 = 100 기준 고위험음주율(표준화), 택시매출액 시계열, 목적별통행량 데이터의 원본 무손실 지수
+    const defaultHyp1Data = [93.9, 96.6, 100.0, 85.7, 95.9, 91.2, 96.6, 93.9, 92.5]; // 고위험 음주율 지수
+    const defaultHyp2Data = [96.5, 99.6, 100.0, 101.6, 92.0, 94.9, 99.7, 120.8, 125.1]; // 대안 수단(택시 매출) 지수
+    const defaultHyp4Data = [101.0, 101.4, 100.0, 99.4, 92.3, 88.5, 84.6, 86.1, 87.1]; // 대안 수단(택시 종사자수) 지수
+    const defaultHyp3Data = [98.7, 99.8, 100.0, 98.2, 79.5, 77.1, 88.5, 93.3, 96.4]; // 야간 이동성 지수
+
+    // 결론 스코어카드 데이터에서 3개 변수 유지
+    const defaultScorecardData = [
+      { id: 0, title: "① 주류 총소비량 감소", sub: "전국 성인 연령표준화 고위험음주율 추이", val: "-2.1%", tag: "✗ 기여 없음", style: "none" },
+      { id: 1, title: "② 야간 이동성 감소", sub: "연도별 목적별 여객기종점통행량(O/D) 야간 이동성 지수", val: "-22.9%", tag: "△ 부분 기여", style: "partial" },
+      { id: 2, title: "③ 대체 수단 인프라의 성장", sub: "운수업조사 택시운송업 연도별 총 매출액 및 종사자 수 시계열", val: "매출 +25.1% / 종사자 -12.9%", tag: "✓ 결정적 요인", style: "success" }
+    ];
+
+    // 활성 상태
+    let chart1Data = [...defaultChart1Data];
+    let chart2BarData = [...defaultChart2BarData];
+    let hyp1Data = [...defaultHyp1Data];
+    let hyp2Data = [...defaultHyp2Data];
+    let hyp4Data = [...defaultHyp4Data];
+    let hyp3Data = [...defaultHyp3Data];
+    let scorecardData = JSON.parse(JSON.stringify(defaultScorecardData));
+
+    let isEditMode = true;
+
+    // --------------------------------------------------
+    // 2. LIFECYCLE INIT
+    // --------------------------------------------------
+    window.onload = function() {
+      // 입력 폼에 상태값 로드
+      syncStateToInputs();
+      // 차트 최초 드로잉
+      drawAllCharts();
+    }
+
+    function syncStateToInputs() {
+      // Chart 1 Inputs
+      for(let i=0; i<10; i++) {
+        document.getElementById(`inp-yr-${i}`).value = chart1Data[i];
+        document.getElementById(`inp-bar-${i}`).value = chart2BarData[i];
+      }
+      // Hypothesis Inputs
+      for(let i=0; i<9; i++) {
+        document.getElementById(`hyp1-${i}`).value = hyp1Data[i];
+        document.getElementById(`hyp2-${i}`).value = hyp2Data[i];
+        document.getElementById(`hyp4-${i}`).value = hyp4Data[i];
+        document.getElementById(`hyp3-${i}`).value = hyp3Data[i];
+      }
+      // Scorecard Inputs (3개 항목만 동기화)
+      scorecardData.forEach((item, idx) => {
+        document.getElementById(`sc-val-${idx}`).value = item.val;
+        document.getElementById(`sc-tag-${idx}`).value = item.tag;
+        document.getElementById(`sc-style-${idx}`).value = item.style;
+      });
+    }
+
+    // --------------------------------------------------
+    // 3. CURVE MATH & SVG DRAWING LOGIC
+    // --------------------------------------------------
+    function getBezierSplinePath(points) {
+      if (points.length === 0) return '';
+      let d = `M ${points[0].x} ${points[0].y}`;
+      for (let i = 0; i < points.length - 1; i++) {
+        const p0 = points[i];
+        const p1 = points[i + 1];
+        const cpX1 = p0.x + (p1.x - p0.x) / 3;
+        const cpY1 = p0.y;
+        const cpX2 = p0.x + 2 * (p1.x - p0.x) / 3;
+        const cpY2 = p1.y;
+        d += ` C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${p1.x} ${p1.y}`;
+      }
+      return d;
+    }
+
+    // 꺾은선용
+    function getLinePath(points) {
+      if (points.length === 0) return '';
+      let d = `M ${points[0].x} ${points[0].y}`;
+      for (let i = 1; i < points.length; i++) {
+        d += ` L ${points[i].x} ${points[i].y}`;
+      }
+      return d;
+    }
+
+    function drawAllCharts() {
+      drawChart1();
+      drawChart2();
+      drawChart3();
+      drawChart4();
+      drawChart5();
+      renderScorecard();
+    }
+
+    // [CHART 1] : 10개년 단독 사고량
+    function drawChart1() {
+      const svg = document.getElementById("svg-chart1");
+      const xCoords = [60, 126.7, 193.3, 260, 326.7, 393.3, 460, 526.7, 593.3, 660];
+      
+      const xLabelsG = document.getElementById("chart1-x-labels");
+      xLabelsG.innerHTML = '';
+      yearsArray.forEach((yr, idx) => {
+        xLabelsG.innerHTML += `<text x="${xCoords[idx]}" y="362" font-family="Outfit" font-size="11" fill="#718096" text-anchor="middle">${yr}</text>`;
+      });
+
+      const points = chart1Data.map((val, idx) => {
+        const clampedVal = Math.min(Math.max(val, 0), 20000);
+        const y = 340 - (clampedVal / 20000) * 280;
+        return { x: xCoords[idx], y: y, originalValue: val };
+      });
+
+      const path = document.getElementById("chart1-path");
+      path.setAttribute("d", getBezierSplinePath(points));
+
+      const nodesG = document.getElementById("chart1-nodes");
+      nodesG.innerHTML = '';
+      points.forEach((p, idx) => {
+        nodesG.innerHTML += `
+          <circle cx="${p.x}" cy="${p.y}" r="5" fill="#ff4a1c" class="dot-node">
+            <title>${yearsArray[idx]}년 음주운전 사고: ${p.originalValue.toLocaleString()}건</title>
+          </circle>`;
+      });
+    }
+
+    // [CHART 2] : 일반사고 vs 음주사고 이중축
+    function drawChart2() {
+      const xCoords = [95, 151, 207, 263, 319, 375, 431, 487, 543, 599];
+
+      const xLabelsG = document.getElementById("chart2-x-labels");
+      xLabelsG.innerHTML = '';
+      yearsArray.forEach((yr, idx) => {
+        xLabelsG.innerHTML += `<text x="${xCoords[idx]}" y="362" font-family="Outfit" font-size="11" fill="#4a5568" text-anchor="middle">${yr}</text>`;
+      });
+
+      const barsG = document.getElementById("chart2-bars");
+      barsG.innerHTML = '';
+      chart2BarData.forEach((val, idx) => {
+        const clampedVal = Math.min(Math.max(val, 0), 200000);
+        const height = (clampedVal / 200000) * 260;
+        const y = 340 - height;
+        const barWidth = 32;
+        barsG.innerHTML += `
+          <rect x="${xCoords[idx] - barWidth/2}" y="${y}" width="${barWidth}" height="${height}" fill="#5bc0f8" opacity="0.95" class="transition-all duration-200">
+            <title>${yearsArray[idx]}년 순수일반사고: ${val.toLocaleString()}건</title>
+          </rect>`;
+      });
+
+      const linePoints = chart1Data.map((val, idx) => {
+        const clampedVal = Math.min(Math.max(val, 0), 20000);
+        const y = 340 - (clampedVal / 20000) * 260;
+        return { x: xCoords[idx], y: y, originalValue: val };
+      });
+
+      const path = document.getElementById("chart2-path");
+      path.setAttribute("d", getLinePath(linePoints));
+
+      const nodesG = document.getElementById("chart2-nodes");
+      nodesG.innerHTML = '';
+      linePoints.forEach((p, idx) => {
+        const isFocus = (yearsArray[idx] === 2019 || yearsArray[idx] === 2018);
+        const rSize = isFocus ? 5.5 : 4.5;
+        const strokeColor = '#ffffff';
+        const strokeWidth = isFocus ? '2' : '1.5';
+        const fillColor = (yearsArray[idx] === 2019) ? '#e53e3e' : '#0d3b66';
+        nodesG.innerHTML += `
+          <circle cx="${p.x}" cy="${p.y}" r="${rSize}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="${strokeWidth}" class="dot-node">
+            <title>${yearsArray[idx]}년 음주운전사고: ${p.originalValue.toLocaleString()}건</title>
+          </circle>`;
+      });
+    }
+
+    // [CHART 3, 5] : 첫 번째(고위험음주율), 세 번째(야간이동성) 차트의 빨간색 사고기준선 점크기와 선굵기 맞춤 조정
+    function drawSubChart(svgId, basePathId, valPathId, nodesGroupId, xAxisId, valueData, color) {
+      const xCoords = [50, 112.5, 175, 237.5, 300, 362.5, 425, 487.5, 550];
+      
+      const xAxis = document.getElementById(xAxisId);
+      xAxis.innerHTML = '';
+      subYearsArray.forEach((yr, idx) => {
+        const label = (yr === 2018) ? "2018" : yr;
+        xAxis.innerHTML += `<text x="${xCoords[idx]}" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">${label}</text>`;
+      });
+
+      const ref2018Val = chart1Data[2]; 
+      const basePoints = [];
+      for(let i=0; i<9; i++) {
+        const indexRatio = (chart1Data[i] / ref2018Val) * 100;
+        const y = 120 + (100 - indexRatio) * 1.5; 
+        basePoints.push({ x: xCoords[i], y: y, originalValue: indexRatio });
+      }
+
+      const valPoints = valueData.map((val, idx) => {
+        const y = 120 + (100 - val) * 1.5;
+        return { x: xCoords[idx], y: y, originalValue: val };
+      });
+
+      const basePathElement = document.getElementById(basePathId);
+      basePathElement.setAttribute("d", getBezierSplinePath(basePoints));
+
+      const valPathElement = document.getElementById(valPathId);
+      valPathElement.setAttribute("d", getLinePath(valPoints));
+
+      const nodesG = document.getElementById(nodesGroupId);
+      nodesG.innerHTML = '';
+      
+      // 빨간 기준선(음주사고율 지수)의 동그라미 데이터 점 크기를 고위험 음주율 지수의 노드 크기(r="3.5")와 똑같게 조정
+      basePoints.forEach((p, idx) => {
+        nodesG.innerHTML += `
+          <circle cx="${p.x}" cy="${p.y}" r="3.5" fill="#ff4a1c" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>${subYearsArray[idx]}년 음주사고율 지수: ${p.originalValue.toFixed(1)}%</title>
+          </circle>`;
+      });
+
+      // 비교 대상 가설 지표 데이터선 포인트 노드 (r="3.5")
+      valPoints.forEach((p, idx) => {
+        nodesG.innerHTML += `
+          <circle cx="${p.x}" cy="${p.y}" r="3.5" fill="${color}" stroke="#ffffff" stroke-width="1" class="dot-node">
+            <title>${subYearsArray[idx]}년 지수값: ${p.originalValue}%</title>
+          </circle>`;
+      });
+    }
+
+    function drawChart3() {
+      drawSubChart("svg-chart3", "chart3-base-path", "chart3-val-path", "chart3-nodes", "chart3-x-axis", hyp1Data, "#7950f2");
+    }
+
+    // [CHART 4] : 대체수단 다중 지표 시각화 (두 번째 차트 - 얇은 선 및 노드 제거 상태 유지)
+    function drawChart4() {
+      const svgId = "svg-chart4";
+      const basePathId = "chart4-base-path";
+      const nodesGroupId = "chart4-nodes";
+      const xAxisId = "chart4-x-axis";
+      const barsGroupId = "chart4-bars";
+
+      const xCoords = [50, 112.5, 175, 237.5, 300, 362.5, 425, 487.5, 550];
+      
+      const xAxis = document.getElementById(xAxisId);
+      xAxis.innerHTML = '';
+      subYearsArray.forEach((yr, idx) => {
+        const label = (yr === 2018) ? "2018" : yr;
+        xAxis.innerHTML += `<text x="${xCoords[idx]}" y="292" font-family="Outfit" font-size="10" fill="#718096" text-anchor="middle">${label}</text>`;
+      });
+
+      // 1. 대안수단 지표(매출액 및 종사자 수)를 이중 그룹 세로 막대그래프로 그리기
+      const barsG = document.getElementById(barsGroupId);
+      if (barsG) {
+        barsG.innerHTML = '';
+        const barWidth = 8;
+        for (let i = 0; i < 9; i++) {
+          // 매출액 지수 (그린)
+          const val1 = hyp2Data[i];
+          const height1 = val1 * 1.5;
+          const y1 = 270 - height1;
+          const x1 = xCoords[i] - barWidth - 1;
+
+          // 종사자 수 지수 (핑크)
+          const val2 = hyp4Data[i];
+          const height2 = val2 * 1.5;
+          const y2 = 270 - height2;
+          const x2 = xCoords[i] + 1;
+
+          barsG.innerHTML += `
+            <rect x="${x1}" y="${y1}" width="${barWidth}" height="${height1}" fill="#2b8a3e" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>${subYearsArray[i]}년 대안수단 매출액 지수: ${val1}%</title>
+            </rect>
+            <rect x="${x2}" y="${y2}" width="${barWidth}" height="${height2}" fill="#e64980" opacity="0.85" rx="1.5" class="transition-all duration-200 cursor-pointer">
+              <title>${subYearsArray[i]}년 대안수단 종사자 수 지수: ${val2}%</title>
+            </rect>
+          `;
+        }
+      }
+
+      // 2. 음주운전 사고율 기준 시계열선을 부드러운 하이라이트 꺾은선으로 얹기
+      const ref2018Val = chart1Data[2]; 
+      const basePoints = [];
+      for(let i=0; i<9; i++) {
+        const indexRatio = (chart1Data[i] / ref2018Val) * 100;
+        const y = 120 + (100 - indexRatio) * 1.5; 
+        basePoints.push({ x: xCoords[i], y: y });
+      }
+
+      const basePathElement = document.getElementById(basePathId);
+      basePathElement.setAttribute("d", getBezierSplinePath(basePoints));
+
+      // 미사용 꺾은선 엘리먼트 에러 회피용 클리어링
+      const valPathElement = document.getElementById("chart4-val-path");
+      if (valPathElement) valPathElement.setAttribute("d", "");
+      const val2PathElement = document.getElementById("chart4-val2-path");
+      if (val2PathElement) val2PathElement.setAttribute("d", "");
+
+      // 두 번째 대체수단 차트 기준선은 노드 제거 상태 유지
+      const nodesG = document.getElementById(nodesGroupId);
+      nodesG.innerHTML = ''; 
+    }
+
+    function drawChart5() {
+      drawSubChart("svg-chart5", "chart5-base-path", "chart5-val-path", "chart5-nodes", "chart5-x-axis", hyp3Data, "#1c7ed6");
+    }
+
+    // --------------------------------------------------
+    // 4. SCORECARD GENERATOR
+    // --------------------------------------------------
+    function renderScorecard() {
+      const container = document.getElementById("scorecard-list");
+      container.innerHTML = '';
+
+      scorecardData.forEach((item, idx) => {
+        let styleClasses = '';
+        let badgeIcon = '';
+
+        if(item.style === 'success') {
+          styleClasses = 'bg-emerald-50 text-emerald-700';
+          badgeIcon = '<span class="text-emerald-500 font-bold">✓</span>';
+        } else if(item.style === 'partial') {
+          styleClasses = 'bg-blue-50 text-blue-700';
+          badgeIcon = '<span class="text-blue-500 font-bold">△</span>';
+        } else {
+          styleClasses = 'bg-neutral-100 text-neutral-600';
+          badgeIcon = '<span class="text-red-500 font-bold">✗</span>';
+        }
+
+        container.innerHTML += `
+          <div class="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-neutral-50/50 transition-all">
+            <div class="flex-1">
+              <span class="font-sans font-bold text-neutral-800 text-base block md:inline">${item.title}</span>
+              <p class="font-sans text-xs text-neutral-400 mt-1">${item.sub}</p>
+            </div>
+            <div class="flex items-center gap-6 self-end md:self-auto">
+              <span class="font-num text-2xl font-extrabold text-neutral-800">${item.val}</span>
+              <span class="font-sans text-sm font-semibold px-3 py-1 rounded-lg flex items-center gap-1 ${styleClasses}">
+                ${badgeIcon} <span>${item.tag}</span>
+              </span>
+            </div>
+          </div>`;
+      });
+    }
+
+    // --------------------------------------------------
+    // 5. EVENT HANDLERS & STATE MUTATORS
+    // --------------------------------------------------
+    function updateYearData(index, value) {
+      chart1Data[index] = parseFloat(value) || 0;
+      drawAllCharts();
+    }
+
+    function updateBarData(index, value) {
+      chart2BarData[index] = parseFloat(value) || 0;
+      drawChart2();
+    }
+
+    function updateHypData(chartNum, index, value) {
+      const numVal = parseFloat(value) || 0;
+      if (chartNum === 1) {
+        hyp1Data[index] = numVal;
+        drawChart3();
+      } else if (chartNum === 2) {
+        hyp2Data[index] = numVal;
+        drawChart4();
+      } else if (chartNum === 3) {
+        hyp3Data[index] = numVal;
+        drawChart5();
+      } else if (chartNum === 4) {
+        hyp4Data[index] = numVal;
+        drawChart4();
+      }
+    }
+
+    // --------------------------------------------------
+    // 6. CONTROL PANEL UTILITIES
+    // --------------------------------------------------
+    function updateScorecard(index, field, value) {
+      scorecardData[index][field] = value;
+      renderScorecard();
+    }
+
+    function resetChart1() {
+      chart1Data = [...defaultChart1Data];
+      for(let i=0; i<10; i++) {
+        document.getElementById(`inp-yr-${i}`).value = chart1Data[i];
+      }
+      drawAllCharts();
+    }
+
+    function resetChart2Bars() {
+      chart2BarData = [...defaultChart2BarData];
+      for(let i=0; i<10; i++) {
+        document.getElementById(`inp-bar-${i}`).value = chart2BarData[i];
+      }
+      drawChart2();
+    }
+
+    function restoreAllToOriginal() {
+      if(confirm("모든 텍스트 수정 내역과 차트 데이터가 초기값으로 완전히 리셋됩니다. 진행하시겠습니까?")) {
+        chart1Data = [...defaultChart1Data];
+        chart2BarData = [...defaultChart2BarData];
+        hyp1Data = [...defaultHyp1Data];
+        hyp2Data = [...defaultHyp2Data];
+        hyp4Data = [...defaultHyp4Data];
+        hyp3Data = [...defaultHyp3Data];
+        scorecardData = JSON.parse(JSON.stringify(defaultScorecardData));
+
+        syncStateToInputs();
+        drawAllCharts();
+
+        // 텍스트 초기화 리셋
+        document.getElementById("txt-meta-tag").innerText = "Data Journalism Special Feature";
+        document.getElementById("txt-hero-highlight").innerText = "멈출 수";
+        document.getElementById("txt-hero-sub").innerHTML = "음주운전 처벌을 비약적으로 강화했던 윤창호법 도입 후 10년,<br class='hidden md:inline'> 실제 정제된 4대 공공데이터 원본이 증명하는 도로 위의 삶과 숨겨진 배후의 진실.";
+        document.getElementById("txt-intro-bold").innerHTML = "2018년 12월, 대한민국은 음주운전 처벌 기준과 형량을 획기적으로 강화한 <span class='text-marker' contenteditable='false'>'윤창호법'</span>을 마주했습니다.";
+        document.getElementById("txt-intro-p").innerText = "그 슬픈 비극 끝에 탄생한 법률은 실제로 우리가 원하던 도로 위의 평화를 가져다주었을까요? 대리운전과 플랫폼의 성장, 갑작스레 들이닥친 코로나 팬데믹, 그리고 무뎌져 가는 사람들의 법적 경각심 속에서 숫자는 무엇을 증명하고 있는지, 공공데이터의 흐름을 역추적해 보았습니다.";
+        
+        document.getElementById("txt-sec1-title").innerText = "1막. 도로 위의 변화: 10년간의 사고 추이";
+        document.getElementById("txt-sec1-meta").innerText = "음주운전 사고량 시계열 분석 (2016-2025)";
+
+        document.getElementById("txt-c1-title").innerText = "도로 위 안전의 변화: 윤창호법 시행 전후 사고 데이터 비교";
+        document.getElementById("txt-c1-subtitle").innerText = "윤창호법 시행, 음주운전 사고의 결정적 변곡점인가?";
+        
+        if(document.getElementById("txt-c1-source")) document.getElementById("txt-c1-source").innerHTML = '<span class="px-1.5 py-0.5 bg-neutral-200 text-neutral-700 rounded text-[10px] font-bold">DATA</span> <span>도로교통공단 교통사고분석시스템(TAAS) — 음주운전 교통사고 발생건수 시계열</span>';
+        if(document.getElementById("txt-c2-source")) document.getElementById("txt-c2-source").innerHTML = '<span class="px-1.5 py-0.5 bg-neutral-200 text-neutral-700 rounded text-[10px] font-bold">DATA</span> <span>도로교통공단 교통사고분석시스템(TAAS) — 순수 일반 교통사고 발생건수 및 음주운전 사고 발생건수</span>';
+        if(document.getElementById("txt-sub1-source")) document.getElementById("txt-sub1-source").innerHTML = '<span class="px-1.5 py-0.5 bg-neutral-200 text-neutral-700 rounded text-[10px] font-bold">DATA</span> <span>질병관리청 국민건강영양조사 — 19세 이상 성인 고위험음주율(연령표준화) 시계열 지수(2018=100)</span>';
+        if(document.getElementById("txt-sub2-source")) document.getElementById("txt-sub2-source").innerHTML = '<span class="px-1.5 py-0.5 bg-neutral-200 text-neutral-700 rounded text-[10px] font-bold">DATA</span> <span>통계청 국가통계포털(KOSIS) 운수업조사 — 전국 택시운송업 총 매출액 및 종사자 수 시계열 지수(2018=100)</span>';
+        if(document.getElementById("txt-sub3-source")) document.getElementById("txt-sub3-source").innerHTML = '<span class="px-1.5 py-0.5 bg-neutral-200 text-neutral-700 rounded text-[10px] font-bold">DATA</span> <span>국토교통부 국가교통DB(VPUM) — 목적별(여가·사교·오락) 여객 기종점 통행량(O/D) 야간 이동성 지수(2018=100)</span>';
+
+        document.getElementById("txt-c1-caption").innerText = "차트 영역을 가로지르는 붉은 절벽 구간은 윤창호법 공포 직후 시민 행동의 강력한 충격파를 고스란히 노출합니다.";
+        document.getElementById("txt-sec2-title").innerText = "2막. 일반 사고 vs 음주 사고: 법의 특수효과 증명";
+        document.getElementById("txt-sec2-meta").innerText = "교통사고 대조군 검증 (일반사고 vs 음주사고)";
+        document.getElementById("txt-sec2-p1").innerText = "어쩌면 도로 위의 기술 발전이나 도로 인프라의 개선으로 전체 교통사고 자체가 자연스럽게 줄어들던 평탄한 트렌드 속 착시는 아니었을까요?";
+        document.getElementById("txt-sec2-p2").innerHTML = "이 가설을 증명하기 위해 동일한 해에 발생한 <span class='text-marker'>대한민국 순수 일반 교통사고 발생 건수</span>와 <span class='text-marker'>음주 교통사고 발생 건수</span>를 이중 축(Dual-Axis) 차트 상에 함께 올려 교차 검증해 보았습니다. 전체 일반사고율은 10년간 소폭의 진동만 한 채 완강하게 기존 볼륨을 유지한 반면, **오직 음주운전 사고선만 윤창호법 제정 기점을 계기로 급격하게 아래로 추락했습니다.** 이는 도로 위의 기술적 상향화가 아닌, 오직 **'음주 규제 법률'에만 가혹하게 반응한 특수한 인과관계**의 완전한 증거입니다.";
+        document.getElementById("txt-c2-title").innerText = "교통사고 대조군 검증(일반사고 vs 음주사고)";
+        document.getElementById("txt-c2-subtitle").innerText = "전체 교통사고는 유지, 오직 '음주운전'만 감소했다";
+        document.getElementById("txt-c2-caption").innerText = "전체 일반사고(막대)가 18~21만 건 범위에서 견고한 정상 상태를 지키는 동안, 오직 음주사고(선)만이 시행 연도(2019)에 유의미한 급감 절벽을 만들었습니다.";
+        document.getElementById("txt-sec3-title").innerText = "3막. 진짜 외부 요인은 없었나?";
+        document.getElementById("txt-sec3-meta").innerText = "3대 교란 가설 변수 교차 추적 검증";
+        document.getElementById("txt-sec3-p").innerText = "우리는 인과관계를 철저하게 검증하기 위해 세 가지 반론 가설을 추가로 수집했습니다. 아래로 스크롤을 내리며 붉은색 음주운전 사고율 지수선 뒤로 숨겨진 외부 요인 변수들을 하나씩 순서대로 대조해 보세요.";
+        document.getElementById("txt-sub1-title").innerText = "① 고위험 음주율 지수와의 연동 검증";
+        document.getElementById("txt-sub1-p").innerHTML = '"한국인들이 웰빙 유행에 술 자체를 덜 마시게 되어 사고가 감소한 것이다?" 고위험 음주율 데이터를 대조해 보았으나, 술 소비 비율은 10년간 큰 하락 없이 <span class="text-marker-purple">100 언저리의 플랫한 흐름</span>을 지켰습니다. 주류 소비율의 자연 하락이 음주사고 급감을 부른 것이 아니라는 1차 결론이 입증됩니다.';
+        
+        document.getElementById("txt-sub2-title").innerText = "② 대체 수단(택시 매출 및 종사자 수) 지수와의 연동 검증";
+        document.getElementById("txt-sub2-p").innerHTML = '법률의 무거운 공포가 주는 긴장 수명은 지극히 한정되어 있습니다. 그럼에도 10년간 장기 하락세를 안전하게 유지시킬 수 있었던 배후는 대안 수단인 스마트폰 대리운전과 플랫폼 택시의 등장(매출액 <span class="text-marker-green">25.1% 폭발적 우상향</span>)이었습니다. 반면 <span class="text-marker-pink">종사자 수는 12.9% 감소</span>하며 법인택시 기사 이탈과 플랫폼 효율화 등의 변화 양상을 대조적으로 보여줍니다. 처벌이라는 경각심 위에 편리하게 귀가할 수 있는 도구(기술)가 결합하면서 음주운전 없는 예방 문화가 완성되었습니다.';
+        
+        document.getElementById("txt-sub3-title").innerText = "③ 야간 이동성 지수와의 연동 검증";
+        document.getElementById("txt-sub3-p").innerHTML = '"코로나 때문에 밤에 안 돌아다녀서 사고가 줄어든 것이다?" 목적별 통행량 데이터로부터 도출된 야간 이동성 지수를 추적하면 코로나 시기인 2020~2021년 야간 이동성이 <span class="text-marker-blue">약 22.9% 급감</span>했던 흐름이 뚜렷하게 관측됩니다. 하지만 진짜 반전은, 가장 가파른 음주사고 급감(18.9%)은 코로나 팬데믹이 시작되기도 전인 **2019년에 이미 완수되었습니다.** 코로나로 인한 이동성 제한은 장기 유지에 보조 기여했을 뿐입니다.';
+        document.getElementById("txt-sec4-title").innerText = "최종 막. 마중물이 된 법, 그릇이 된 기술";
+        document.getElementById("txt-sec4-meta").innerText = "DUI Impact Scorecard";
+        document.getElementById("txt-sec4-p1").innerText = "인간의 공포심과 경각심에는 뚜렷한 유통기한이 존재합니다. 강력한 법적 규제가 가하는 충격은 초반 1~2년을 제외하면 대개 무뎌지기 마련입니다.";
+        document.getElementById("txt-sec4-p2").innerHTML = "그름에도 불구하고 윤창호법 도입 후 지난 10년간 도로 위의 기적이 역행하지 않은 진짜 배경에는 <span class=\'text-marker-green\'>대안수단의 정착</span>이 있었습니다. 강력해진 형벌이라는 공포 위에, 밤에 마트와 술집 문을 나설 때 언제든 안전하게 귀가할 수 있도록 편리하게 이끌어준 스마트 모빌리티 인프라의 동반 성장이 도로의 패러다임을 지속적으로 영구히 묶어둔 진짜 일등 공신이었습니다.";
+        document.getElementById("txt-sc-main-title").innerText = "윤창호법 10년, 외부 요인 가설 평가 성적표";
+        document.getElementById("txt-sc-main-sub").innerText = "정교한 인과관계 추적을 거친 가설별 최종 기여도 점수";
+        document.getElementById("txt-concl-tag").innerText = "Conclusion";
+        document.getElementById("txt-concl-quote").innerHTML = '"법률은 우리에게 <strong>\'운전대를 놓으라\'</strong>고 무겁게 강제했고, 모빌리티 기술 인프라는 우리가 <strong>\'술잔을 안전하게 내려놓을 수 있도록\'</strong> 편리한 탈출구를 마련했습니다. 강력한 처벌이라는 마중물 위에, 기술이 만들어낸 그릇이 튼튼하게 결합할 때 비로소 도로는 안전해집니다."';
+        document.getElementById("txt-footer-p1").innerText = "본 페이지는 2026학년도 1학기 데이터시각화 기말보고서 실습 목업 페이지로 설계 및 제작되었습니다.";
+        document.getElementById("txt-footer-p2").innerHTML = "<strong>데이터 소스 및 수집처 명세:</strong><br>도로교통공단 교통사고분석시스템(TAAS) 음주사고 원본 통계 | 질병관리청 국민건강영양조사 고위험음주율 표준화 시계열<br>국토교통부 국가교통DB 목적별 여객기종점통행량(O/D) | 통계청 국가통계포털(KOSIS) 운수업조사 택시운송업 매출액 및 종사자 명세 | 대한민국 경찰청 교통단속 통계";
+        document.getElementById("txt-footer-p3").innerText = "© 2026 융합데이터 시각화 에디토리얼 프로젝트. All Rights Reserved.";
+
+        showToast("실측 공공데이터 원본 기준의 목업 사양으로 복구되었습니다!");
+      }
+    }
+
+    function toggleEditMode() {
+      isEditMode = !isEditMode;
+      const body = document.body;
+      const btn = document.getElementById("btn-mode");
+      const sidebar = document.getElementById("editor-sidebar");
+
+      if (isEditMode) {
+        body.classList.add("edit-active");
+        body.classList.add("md:pr-96");
+        btn.innerHTML = `
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>보기 모드로 전환</span>
+        `;
+        sidebar.classList.remove("translate-x-full");
+      } else {
+        body.classList.remove("edit-active");
+        body.classList.remove("md:pr-96");
+        btn.innerHTML = `
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
+          <span>편집 모드로 전환</span>
+        `;
+        sidebar.classList.add("translate-x-full");
+      }
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById("editor-sidebar");
+      sidebar.classList.toggle("translate-x-full");
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      const toastText = document.getElementById("toast-text");
+      toastText.innerText = message;
+      toast.classList.remove("opacity-0", "scale-90", "pointer-events-none");
+      toast.classList.add("opacity-100", "scale-100");
+      
+      setTimeout(() => {
+        toast.classList.remove("opacity-100", "scale-100");
+        toast.classList.add("opacity-0", "scale-90", "pointer-events-none");
+      }, 3500);
+    }
+
+    // --------------------------------------------------
+    // 7. CLEAN PRODUCTION EXPORT ENGINEERING
+    // --------------------------------------------------
+    function exportHTML() {
+      const cloneDoc = document.documentElement.cloneNode(true);
+
+      const topbar = cloneDoc.querySelector("#editor-topbar");
+      if (topbar) topbar.remove();
+
+      const sidebar = cloneDoc.querySelector("#editor-sidebar");
+      if (sidebar) sidebar.remove();
+
+      const toast = cloneDoc.querySelector("#toast");
+      if (toast) toast.remove();
+
+      const body = cloneDoc.querySelector("body");
+      if (body) {
+        body.className = "font-serif antialiased selection:bg-red-100 selection:text-red-900 overflow-x-hidden";
+        body.style.paddingRight = "0px";
+      }
+
+      const editables = cloneDoc.querySelectorAll("[contenteditable]");
+      editables.forEach(el => {
+        el.removeAttribute("contenteditable");
+        el.removeAttribute("id"); 
+      });
+
+      const scripts = cloneDoc.querySelectorAll("script");
+      scripts.forEach(script => {
+        if (!script.innerHTML.includes("tailwind.config")) {
+          script.remove();
+        }
+      });
+
+      let cleanedHTML = "<!DOCTYPE html>\n" + cloneDoc.outerHTML;
+
+      const dummyTextArea = document.createElement("textarea");
+      dummyTextArea.value = cleanedHTML;
+      document.body.appendChild(dummyTextArea);
+      dummyTextArea.select();
+      
+      try {
+        const success = document.execCommand("copy");
+        if(success) {
+          showToast("🏆 실측 가설 데이터가 정확히 이식된 무손실 HTML 완성본 코드가 복사되었습니다!");
+        } else {
+          showToast("복사 중 에러가 발생했습니다.");
+        }
+      } catch (err) {
+        showToast("보안 정책으로 수동 복사가 차단되었습니다.");
+      }
+      document.body.removeChild(dummyTextArea);
+    }
+  </script>
+
+</body></html>

@@ -1,0 +1,1267 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>회피형은 왜 이렇게 많이 보일까?</title>
+  <style>
+    :root {
+      --ink: #171717;
+      --muted: #5f6268;
+      --line: #dadde2;
+      --paper: #ffffff;
+      --soft: #f5f5f1;
+      --blue: #263c59;
+      --avoidant: #c9474d;
+      --anxious: #8291a3;
+      --secure: #53677f;
+      --fearful: #b4bec9;
+      --surface: #fbfaf7;
+      --surface-strong: #f3f1eb;
+      --radius: 18px;
+      --shadow: 0 16px 44px rgba(25, 31, 40, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", Arial, sans-serif;
+      word-break: keep-all;
+      overflow-wrap: normal;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 52px;
+      padding: 0 30px;
+      background: rgba(255, 255, 255, 0.9);
+      border-bottom: 1px solid rgba(218, 221, 226, 0.9);
+      backdrop-filter: blur(10px);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .top-nav button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .top-nav button.active {
+      color: var(--avoidant);
+      background: rgba(201, 71, 77, 0.09);
+    }
+
+    .top-nav button:focus-visible,
+    .remote button:focus-visible {
+      outline: 3px solid #b5684f;
+      outline-offset: 2px;
+    }
+
+    .deck {
+      height: 100vh;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+
+    .slide {
+      position: relative;
+      min-height: 100vh;
+      height: 100vh;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      display: grid;
+      align-items: center;
+      padding: 80px min(7vw, 104px) 64px;
+      border-bottom: 1px solid #ecebe7;
+      background: var(--paper);
+      overflow: hidden;
+    }
+
+    .slide-inner {
+      width: min(1240px, 100%);
+      margin: 0 auto;
+    }
+
+    .kicker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 16px;
+      color: var(--avoidant);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .kicker::before {
+      content: "";
+      width: 28px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--avoidant);
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      letter-spacing: 0;
+      line-height: 1.08;
+      text-wrap: balance;
+    }
+
+    h1 {
+      font-size: clamp(54px, 7.2vw, 92px);
+      max-width: 780px;
+      font-weight: 950;
+    }
+
+    h2 {
+      font-size: clamp(40px, 4.6vw, 64px);
+      max-width: 1020px;
+      font-weight: 950;
+    }
+
+    .lead {
+      margin: 24px 0 0;
+      color: #41444a;
+      font-size: clamp(17px, 1.65vw, 23px);
+      line-height: 1.62;
+      max-width: 900px;
+    }
+
+    .big-sentence {
+      margin-top: 22px;
+      color: var(--avoidant);
+      font-size: clamp(22px, 3vw, 38px);
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .big-sentence-note {
+      margin: 5px 0 0;
+      color: #777c83;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 0.98fr) minmax(420px, 1.02fr);
+      gap: min(6vw, 86px);
+      align-items: center;
+    }
+
+    .video-frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #111;
+      border: 0;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      transition: transform 220ms ease, box-shadow 220ms ease;
+    }
+
+    .video-frame img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      transition: transform 500ms ease;
+    }
+
+    .video-frame a {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      text-decoration: none;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.38));
+    }
+
+    .video-frame a:focus-visible {
+      outline: 3px solid #b5684f;
+      outline-offset: -5px;
+      border-radius: var(--radius);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .video-frame:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 24px 55px rgba(17, 23, 26, 0.2);
+      }
+
+      .video-frame:hover img {
+        transform: scale(1.025);
+      }
+
+      .method-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 44px rgba(25, 31, 40, 0.12);
+      }
+
+      .chart-box:hover,
+      .insight-card:hover {
+        transform: translateY(-4px);
+        border-color: #ddd7d1;
+        box-shadow: 0 24px 55px rgba(17, 23, 26, 0.15);
+      }
+
+      .final-insight:hover {
+        transform: translateY(-4px);
+        border-color: rgba(255, 255, 255, 0.26);
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 24px 55px rgba(0, 0, 0, 0.24);
+      }
+
+      .final-answer:hover {
+        transform: translateY(-4px);
+        background: rgba(201, 71, 77, 0.18);
+        box-shadow: 0 20px 44px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    .play-button {
+      display: grid;
+      place-items: center;
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      background: rgba(201, 71, 77, 0.94);
+      color: #fff;
+      font-size: 34px;
+      font-weight: 900;
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.28);
+    }
+
+    .question-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 34px;
+      font-size: clamp(20px, 2.2vw, 30px);
+      font-weight: 900;
+      line-height: 1.32;
+    }
+
+    .chart-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(250px, 0.32fr);
+      gap: 34px;
+      align-items: stretch;
+      margin-top: 34px;
+    }
+
+    .chart-box {
+      border: 1px solid #e8e6e0;
+      border-radius: var(--radius);
+      background: #fff;
+      padding: 26px 28px 20px;
+      box-shadow: var(--shadow);
+      min-height: 430px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    }
+
+    .compact-chart {
+      min-height: 380px;
+    }
+
+    .source {
+      margin: 14px 0 0;
+      color: #747980;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .video-caption,
+    .study-note {
+      margin: 12px 0 0;
+      color: #70747a;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .study-note {
+      display: grid;
+      gap: 5px;
+      padding-top: 4px;
+      font-size: 13px;
+    }
+
+    .insight-card {
+      border: 1px solid #e8e6e0;
+      border-top: 5px solid var(--avoidant);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(25, 31, 40, 0.06);
+      align-self: center;
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    }
+
+    .insight-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--avoidant);
+      font-size: 17px;
+    }
+
+    .insight-card p {
+      margin: 0;
+      color: #33383f;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 38px;
+    }
+
+    .method-card {
+      min-height: 150px;
+      padding: 24px;
+      border: 1px solid #e8e6e0;
+      border-top: 5px solid var(--blue);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 10px 30px rgba(25, 31, 40, 0.05);
+      transition: transform 220ms ease, box-shadow 220ms ease;
+    }
+
+    .method-card .label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .method-card .value {
+      margin-top: 12px;
+      font-size: clamp(28px, 4vw, 48px);
+      line-height: 1;
+      font-weight: 950;
+    }
+
+    .method-card .value.with-rate {
+      font-size: clamp(23px, 2.7vw, 38px);
+      letter-spacing: -0.04em;
+    }
+
+    .kpi-main,
+    .kpi-rate {
+      display: block;
+    }
+
+    .kpi-main {
+      font-size: 1.08em;
+    }
+
+    .kpi-rate {
+      margin-top: 7px;
+      font-size: 0.62em;
+      font-weight: 850;
+      letter-spacing: -0.01em;
+      opacity: 0.82;
+    }
+
+    .method-card p {
+      margin: 12px 0 0;
+      color: #393d43;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .method-grid.type-counts .method-card {
+      border-top-color: var(--avoidant);
+    }
+
+    .method-grid.type-counts .method-card:nth-child(2) {
+      border-top-color: var(--anxious);
+    }
+
+    .method-grid.type-counts .method-card:nth-child(3) {
+      border-top-color: var(--secure);
+    }
+
+    .method-grid.type-counts .method-card:nth-child(4) {
+      border-top-color: var(--blue);
+    }
+
+    .method-insight {
+      margin-top: 24px;
+      max-width: 980px;
+    }
+
+    .final-slide .lead + .lead {
+      margin-top: 16px;
+    }
+
+    .unavailable {
+      margin-top: 30px;
+      max-width: 900px;
+      padding: 28px 30px;
+      background: var(--soft);
+      border-left: 6px solid var(--blue);
+    }
+
+    .unavailable strong {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .unavailable p {
+      margin: 0;
+      color: #34383f;
+      font-size: 18px;
+      line-height: 1.55;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      margin-top: 14px;
+      color: #34383f;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .legend span::before {
+      content: "";
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      margin-right: 6px;
+      background: var(--c);
+      vertical-align: -1px;
+    }
+
+    .final-slide {
+      color: #fff;
+      background:
+        linear-gradient(120deg, rgba(17, 24, 34, 0.98), rgba(31, 42, 55, 0.97)),
+        radial-gradient(circle at 82% 22%, rgba(201, 71, 77, 0.3), transparent 33%);
+      border-bottom: 0;
+    }
+
+    .final-slide .kicker,
+    .final-slide .source {
+      color: #c9d3df;
+    }
+
+    .final-slide h2 {
+      max-width: 1120px;
+      font-size: clamp(40px, 5vw, 68px);
+    }
+
+    .final-insights {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+      margin-top: 28px;
+    }
+
+    .final-insight {
+      min-height: 178px;
+      padding: 24px 26px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(8px);
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease, background 220ms ease;
+    }
+
+    .final-insight .number {
+      display: block;
+      color: #ff9b9f;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .final-insight strong {
+      display: block;
+      margin-top: 10px;
+      font-size: clamp(19px, 1.7vw, 25px);
+      line-height: 1.25;
+    }
+
+    .final-insight p {
+      margin: 12px 0 0;
+      color: #dce2e8;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .final-answer {
+      margin: 22px 0 0;
+      padding: 20px 24px;
+      border-left: 5px solid #ff7f84;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      background: rgba(201, 71, 77, 0.12);
+      color: #ff999d;
+      font-size: clamp(22px, 2.5vw, 34px);
+      font-weight: 950;
+      line-height: 1.3;
+      transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+    }
+
+    .remote {
+      position: fixed;
+      right: 22px;
+      bottom: 20px;
+      z-index: 25;
+      display: grid;
+      grid-template-columns: 44px minmax(180px, auto) 44px;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--line);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
+      backdrop-filter: blur(10px);
+    }
+
+    .remote button {
+      width: 44px;
+      height: 44px;
+      border: 1px solid #e4e2dd;
+      border-radius: 11px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .remote button:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .remote-status {
+      min-width: 180px;
+      color: var(--ink);
+      text-align: center;
+      line-height: 1.25;
+    }
+
+    .remote-title {
+      display: block;
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .remote-count {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .axis,
+    .label,
+    .tick,
+    .value,
+    .line-label {
+      font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", Arial, sans-serif;
+    }
+
+    .axis,
+    .tick {
+      fill: #5f6268;
+      font-size: 12px;
+    }
+
+    .label {
+      fill: #242830;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    #opening {
+      background:
+        radial-gradient(circle at 82% 22%, rgba(201, 71, 77, 0.08), transparent 28%),
+        var(--paper);
+    }
+
+    #opening .lead {
+      max-width: 560px;
+      color: var(--avoidant);
+      font-weight: 800;
+    }
+
+    #attachment-types,
+    #method {
+      background: var(--surface);
+    }
+
+    #method .big-sentence {
+      margin-bottom: 0;
+      font-size: clamp(28px, 3.4vw, 46px);
+      letter-spacing: -0.04em;
+    }
+
+    #method .method-grid {
+      margin-top: 30px;
+    }
+
+    .value {
+      fill: #171717;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .line-label {
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    @media (max-width: 1180px) and (min-width: 921px) {
+      .slide {
+        padding-left: 48px;
+        padding-right: 48px;
+      }
+
+      .method-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .method-card {
+        min-height: 132px;
+        padding: 18px 20px;
+      }
+
+      .chart-layout {
+        grid-template-columns: minmax(0, 1fr) minmax(220px, 0.3fr);
+        gap: 22px;
+      }
+
+      .insight-card,
+      .final-insight {
+        padding: 20px 22px;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .top-nav { height: 44px; padding: 0 10px; }
+      .top-nav button { font-size: 12px; padding: 7px 8px; }
+      .deck {
+        scroll-snap-type: none;
+      }
+      .slide {
+        min-height: 100vh;
+        height: auto;
+        padding: 60px 18px 78px;
+        overflow: visible;
+        scroll-snap-align: none;
+        scroll-snap-stop: normal;
+      }
+      .two-col,
+      .chart-layout,
+      .final-insights {
+        grid-template-columns: 1fr;
+      }
+      .method-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .video-frame { max-width: 640px; }
+      .chart-box { min-height: 320px; padding: 14px; }
+      .method-grid { gap: 10px; }
+      .method-card { min-height: auto; padding: 14px; }
+      .insight-card,
+      .final-insight {
+        padding: 18px;
+      }
+      .remote {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        grid-template-columns: 42px minmax(0, 1fr) 42px;
+      }
+      .remote-title { max-width: none; }
+    }
+
+    @media (max-width: 620px) {
+      .method-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .method-card .value.with-rate {
+        font-size: 30px;
+      }
+
+      .final-answer {
+        padding: 16px 18px;
+      }
+    }
+
+    @media (max-height: 720px) and (min-width: 921px) {
+      .slide { padding-top: 54px; padding-bottom: 40px; }
+      .kicker { margin-bottom: 10px; }
+      h1 { font-size: clamp(42px, 6vw, 70px); }
+      h2 { font-size: clamp(32px, 4.1vw, 48px); }
+      .lead { font-size: 17px; line-height: 1.48; margin-top: 10px; }
+      .chart-layout { margin-top: 14px; }
+      .chart-box { min-height: 330px; padding: 16px 20px 14px; }
+      .study-note {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 5px 12px;
+        font-size: 11px;
+      }
+      .study-note strong { grid-column: 1 / -1; }
+      .method-card { min-height: 126px; padding: 15px; }
+      .method-card .value { font-size: 34px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav" aria-label="발표 슬라이드 이동"></nav>
+
+  <main class="deck" id="deck">
+    <section class="slide" data-title="오프닝" id="opening">
+      <div class="slide-inner two-col">
+        <div>
+          <p class="kicker">Opening Question</p>
+          <h1>회피형은 왜 이렇게 많이 보일까?</h1>
+          <p class="lead">실제 애착유형 분포와 온라인 담론의 차이</p>
+        </div>
+        <div>
+          <div class="video-frame">
+            <img src="https://img.youtube.com/vi/c3mZJhy_D0U/maxresdefault.jpg" alt="EBS 지식채널e 애착이론 영상 썸네일">
+            <a href="https://youtu.be/c3mZJhy_D0U?si=KID1GuAOurzopjHG" target="_blank" rel="noopener" aria-label="EBS 지식채널e 애착이론 영상 열기">
+              <span class="play-button">▶</span>
+            </a>
+          </div>
+          <p class="video-caption">지식채널e에서 애착 이론이 소개될 만큼, 애착유형은 최근 한국의 관계 담론에서 활발히 논의되는 주제가 되었다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="애착유형" id="attachment-types">
+      <div class="slide-inner">
+        <p class="kicker">Brief Context</p>
+        <h2>애착유형은 친밀한 관계를 맺고 유지하는 방식이다</h2>
+        <p class="lead">애착유형은 가까운 사람과의 관계에서 안정감과 친밀성을 어떻게 형성하는지를 설명하는 심리학 개념이다.<br><br>일반적으로 안정형, 불안형, 회피형 등으로 설명되며, 고정된 성격이라기보다 관계 속에서 반복되는 정서적 반응 패턴에 가깝다.</p>
+        <div class="method-grid">
+          <div class="method-card">
+            <div class="label">회피형</div>
+            <div class="value" style="color:var(--avoidant)">거리두기</div>
+            <p>친밀감이나 갈등 상황에서 감정을 드러내기보다 거리를 두는 방식으로 설명된다.</p>
+          </div>
+          <div class="method-card">
+            <div class="label">불안형</div>
+            <div class="value" style="color:var(--anxious)">확인추구</div>
+            <p>관계가 불안할 때 상대의 반응, 연락, 확신을 더 강하게 확인하려는 방식으로 설명된다.</p>
+          </div>
+          <div class="method-card">
+            <div class="label">안정형</div>
+            <div class="value" style="color:var(--secure)">균형</div>
+            <p>친밀감과 독립성을 비교적 균형 있게 다루는 방식으로 설명된다.</p>
+          </div>
+          <div class="method-card">
+            <div class="label">분석 관점</div>
+            <div class="value" style="color:var(--blue)">담론</div>
+            <p>이 연구는 실제 애착유형 분포보다, 온라인에서 각 유형이 어떤 의미로 사용되는지에 주목한다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="검색지수" id="search">
+      <div class="slide-inner">
+        <p class="kicker">Search Trend</p>
+        <h2>온라인에서는 회피형이 유독 많이 검색된다</h2>
+        <p class="lead">상대검색지수는 조회 기간 내 최대 검색량을 100으로 환산한 값이다. 실제 검색 건수가 아니라 관심 흐름을 비교하는 지표다.</p>
+        <div class="chart-layout">
+          <div class="chart-box">
+            <div id="searchChart"></div>
+          </div>
+          <aside class="insight-card">
+            <strong>핵심 문장</strong>
+            <p>온라인 관심도에서는 회피형이 다른 유형보다 꾸준히 높은 수준을 보였다.</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="실제 분포" id="distribution">
+      <div class="slide-inner">
+        <p class="kicker">Actual Distribution</p>
+        <h2>검색량과 실제 분포는 일치하지 않는다</h2>
+        <p class="lead">국내 연구 예시에서는 안정형이 가장 높은 비율을 차지한다. 회피형이 가장 많은 유형은 아니다.</p>
+        <div class="chart-layout">
+          <div class="chart-box">
+            <div id="distributionChart"></div>
+            <div class="legend">
+              <span style="--c:#53677f">안정형</span>
+              <span style="--c:var(--avoidant)">회피형</span>
+              <span style="--c:#8291a3">불안형</span>
+              <span style="--c:#b4bec9">혼란형</span>
+            </div>
+            <div class="study-note">
+              <strong>사용 연구</strong>
+              <span>• 대학생 성인애착 연구 (1996)</span>
+              <span>• 성인 애착유형 연구 (2003)</span>
+              <span>• 성인애착 군집 연구 (2011)</span>
+            </div>
+          </div>
+          <aside class="insight-card">
+            <strong>해석 기준</strong>
+            <p>이 차트는 전체 한국인 대표 분포가 아니라, 온라인 담론과 비교하기 위한 연구 예시다.</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="자료 정제" id="method">
+      <div class="slide-inner">
+        <p class="kicker">Data Cleaning</p>
+        <h2>온라인 담론은 어떻게 분석했을까?</h2>
+        <p class="lead">온라인 커뮤니티에서 크롤링한 글을 수집한 뒤, 분류 기준에 따라 AI가 1차로 유형과 언급양상을 구분했다. 이후 연구자가 직접 원문을 확인하며 2차 검증과 수정을 거쳤다.</p>
+        <p class="big-sentence">총 분석 게시글 495건</p>
+        <p class="big-sentence-note">최종 유형 분류 완료 게시글 기준</p>
+        <div class="method-grid type-counts">
+          <div class="method-card">
+            <div class="label">회피형 글 수</div>
+            <div class="value with-rate" style="color:var(--avoidant)">
+              <span class="kpi-main">340건</span>
+              <span class="kpi-rate">68.7%</span>
+            </div>
+          </div>
+          <div class="method-card">
+            <div class="label">불안형 글 수</div>
+            <div class="value with-rate" style="color:var(--anxious)">
+              <span class="kpi-main">89건</span>
+              <span class="kpi-rate">18.0%</span>
+            </div>
+          </div>
+          <div class="method-card">
+            <div class="label">안정형 글 수</div>
+            <div class="value with-rate" style="color:var(--secure)">
+              <span class="kpi-main">26건</span>
+              <span class="kpi-rate">5.3%</span>
+            </div>
+          </div>
+          <div class="method-card">
+            <div class="label">복합유형 글 수 · 둘 이상 유형 언급</div>
+            <div class="value with-rate" style="color:var(--blue)">
+              <span class="kpi-main">40건</span>
+              <span class="kpi-rate">8.1%</span>
+            </div>
+          </div>
+        </div>
+        <aside class="insight-card method-insight">
+          <strong>검색 관심도와 수집한 온라인 담론 모두에서 회피형이 가장 두드러졌다.</strong>
+          <p>이 결과는 실제 인구 분포가 아니라, 온라인에서 회피형이 얼마나 강하게 부각되는지를 보여준다.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="slide" data-title="자기/상대" id="self-other">
+      <div class="slide-inner">
+        <p class="kicker">Key Finding 1</p>
+        <h2>온라인에서는 애착유형으로 자신보다 상대를 더 많이 설명한다</h2>
+        <p class="lead">자기이해와 상대분석·비판담론을 비교하면, 회피형은 상대를 설명하거나 평가하는 글의 비중이 높았다. 반면 불안형은 자신의 감정과 관계 패턴을 설명하는 글의 비중이 높았다.</p>
+        <div class="chart-layout">
+          <div class="chart-box compact-chart">
+            <div id="selfOtherChart"></div>
+            <div class="legend">
+              <span style="--c:#b9c7d5">자기이해</span>
+              <span style="--c:#c9474d">상대분석 및 비판담론</span>
+            </div>
+            <p class="source">복합유형과 정보공유 글은 제외했다. 비율과 n은 두 비교 범주의 합을 기준으로 계산했다.</p>
+          </div>
+          <aside class="insight-card">
+            <strong>회피형</strong>
+            <p>회피형은 자기이해 60건보다 상대분석·비판담론 259건으로, 상대를 설명하거나 평가하는 데 약 4.3배 더 많이 사용되었다.</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="비판 담론" id="critical">
+      <div class="slide-inner">
+        <p class="kicker">Key Finding 2</p>
+        <h2>상대분석 중에서도 회피형은 비판적으로 언급된다</h2>
+        <p class="lead">상대를 설명하는 글 가운데에서도 회피형은 비판과 평가의 대상으로 자주 등장했다.</p>
+        <div class="chart-layout">
+          <div class="chart-box compact-chart">
+            <div id="criticalChart"></div>
+            <p class="source">복합유형은 비교에서 제외했다. 비율은 유형별 전체 글을 분모로 계산했다. 안정형은 전체 26건으로 해석에 주의가 필요하다.</p>
+          </div>
+          <aside class="insight-card">
+            <strong>비판 맥락</strong>
+            <p>회피형 글의 4건 중 1건은 상대를 비판하거나 평가하는 맥락에서 사용되었다. 반면 안정형은 비판담론이 거의 확인되지 않았다.</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide final-slide" data-title="결론" id="conclusion">
+      <div class="slide-inner">
+        <p class="kicker">Conclusion</p>
+        <h2>회피형은 가장 많은 사람이 아니라 가장 많이 설명되는 사람이다.</h2>
+        <div class="final-insights">
+          <article class="final-insight">
+            <span class="number">Insight 01</span>
+            <strong>회피형은 가장 많이 설명되는 유형이다</strong>
+            <p>검토한 국내 연구 예시에서는 안정형 비율이 더 높았지만, 수집한 온라인 담론에서는 회피형이 가장 많이 검색되고 언급되었다.</p>
+          </article>
+          <article class="final-insight">
+            <span class="number">Insight 02</span>
+            <strong>자기이해의 틀이 타인분석의 언어로 기울어진다</strong>
+            <p>애착이론은 자신의 관계 패턴을 이해하는 틀로 활용될 수 있다. 그러나 온라인 담론에서는 자신보다 상대의 행동을 해석하고 규정하는 데 더 큰 비중으로 사용되고 있었다.</p>
+          </article>
+        </div>
+        <p class="final-answer">회피형이 많아서가 아니라,<br>사람들이 회피형으로 상대를 설명하기 때문에 많이 보인다.</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="remote" aria-label="발표 리모컨">
+    <button id="prevBtn" type="button" aria-label="이전 슬라이드">‹</button>
+    <div class="remote-status">
+      <span class="remote-title" id="remoteTitle">오프닝</span>
+      <span class="remote-count" id="remoteCount">1 / 8</span>
+    </div>
+    <button id="nextBtn" type="button" aria-label="다음 슬라이드">›</button>
+  </div>
+
+  <script>
+    const DATA = {
+      searchTrend: [
+        { year: 2016, "회피형": 6.70, "불안형": 1.17, "안정형": 5.08, "혼란형": 0.13, "애착유형": 3.99 },
+        { year: 2017, "회피형": 8.67, "불안형": 2.46, "안정형": 3.86, "혼란형": 0.11, "애착유형": 5.14 },
+        { year: 2018, "회피형": 11.68, "불안형": 3.25, "안정형": 3.87, "혼란형": 1.01, "애착유형": 6.28 },
+        { year: 2019, "회피형": 11.21, "불안형": 4.12, "안정형": 3.83, "혼란형": 1.72, "애착유형": 8.74 },
+        { year: 2020, "회피형": 14.09, "불안형": 5.67, "안정형": 4.45, "혼란형": 3.00, "애착유형": 9.74 },
+        { year: 2021, "회피형": 17.87, "불안형": 6.53, "안정형": 5.29, "혼란형": 6.84, "애착유형": 10.33 },
+        { year: 2022, "회피형": 18.24, "불안형": 6.04, "안정형": 4.17, "혼란형": 6.71, "애착유형": 8.91 },
+        { year: 2023, "회피형": 22.13, "불안형": 8.53, "안정형": 4.53, "혼란형": 9.40, "애착유형": 13.19 },
+        { year: 2024, "회피형": 23.47, "불안형": 10.60, "안정형": 4.10, "혼란형": 10.45, "애착유형": 13.37 },
+        { year: 2025, "회피형": 22.29, "불안형": 9.02, "안정형": 4.25, "혼란형": 8.18, "애착유형": 9.17 },
+        { year: 2026, "회피형": 19.00, "불안형": 9.02, "안정형": 9.52, "혼란형": 7.74, "애착유형": 8.18 }
+      ],
+      distribution: [
+        { study: "대학생 성인애착\n분포 연구\n1996", secure: 45.5, avoidant: 27.5, anxious: 27.0, fearful: 0 },
+        { study: "성인 애착유형\n분포 연구\n2003", secure: 40.0, avoidant: 22.0, anxious: 21.0, fearful: 17.0 },
+        { study: "성인애착 군집\n연구\n2011", secure: 44.0, avoidant: 24.0, anxious: 20.0, fearful: 12.0 }
+      ],
+      selfOther: [
+        { type: "회피형", self: 60, other: 259, color: "#c9474d" },
+        { type: "불안형", self: 57, other: 28, color: "#d68a34" },
+        { type: "안정형", self: 2, other: 19, color: "#407d74" }
+      ],
+      critical: [
+        { type: "회피형", total: 340, critical: 85, rate: 25.0 },
+        { type: "불안형", total: 89, critical: 11, rate: 12.4 },
+        { type: "안정형", total: 26, critical: 0, rate: 0.0 }
+      ]
+    };
+
+    const colors = {
+      "회피형": "#c9474d",
+      "불안형": "#8291a3",
+      "안정형": "#53677f",
+      "혼란형": "#b4bec9",
+      "애착유형": "#263c59"
+    };
+
+    function textLines(text, x, y, cls, anchor = "middle", size = 14, gap = 17) {
+      return String(text).split("\n").map((line, i) =>
+        `<text class="${cls}" x="${x}" y="${y + i * gap}" text-anchor="${anchor}" font-size="${size}">${line}</text>`
+      ).join("");
+    }
+
+    function drawSearchChart() {
+      const rows = DATA.searchTrend;
+      const series = ["회피형", "불안형", "안정형"];
+      const width = 980, height = 410;
+      const left = 54, right = 120, top = 24, bottom = 52;
+      const plotW = width - left - right;
+      const plotH = height - top - bottom;
+      const max = 25;
+      const x = year => left + ((year - 2016) / 10) * plotW;
+      const y = value => top + plotH - (value / max) * plotH;
+      const labelOffsets = {
+        "회피형": -14,
+        "안정형": -18,
+        "불안형": 18
+      };
+      let svg = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="2016년부터 2026년까지 애착유형 검색어트렌드 상대지수 추이">`;
+      [0, 5, 10, 15, 20, 25].forEach(v => {
+        const yy = y(v);
+        svg += `<line x1="${left}" y1="${yy}" x2="${width - right}" y2="${yy}" stroke="${v === 0 ? "#aeb5bd" : "#eceeef"}"/>`;
+        svg += `<text class="tick" x="${left - 10}" y="${yy + 4}" text-anchor="end">${v}</text>`;
+      });
+      rows.forEach((d, i) => {
+        if (i % 2 === 0 || d.year === 2026) {
+          svg += `<text class="tick" x="${x(d.year)}" y="${height - 18}" text-anchor="middle">${d.year}</text>`;
+        }
+      });
+      series.forEach(name => {
+        const path = rows.map((d, i) => `${i === 0 ? "M" : "L"}${x(d.year)},${y(d[name])}`).join(" ");
+        const isAvoidant = name === "회피형";
+        svg += `<path d="${path}" fill="none" stroke="${colors[name]}" stroke-width="${isAvoidant ? 5 : 2}" opacity="${isAvoidant ? 1 : 0.42}"/>`;
+        rows.forEach(d => {
+          svg += `<circle cx="${x(d.year)}" cy="${y(d[name])}" r="${isAvoidant ? 4.8 : 2.6}" fill="${colors[name]}" opacity="${isAvoidant ? 1 : 0.55}"/>`;
+        });
+      });
+      const last = rows[rows.length - 1];
+      series.forEach(name => {
+        const isAvoidant = name === "회피형";
+        const px = x(last.year);
+        const py = y(last[name]);
+        const lx = px + 18;
+        const ly = py + labelOffsets[name];
+        svg += `<line x1="${px + 6}" y1="${py}" x2="${lx - 7}" y2="${ly - 4}" stroke="${colors[name]}" opacity="${isAvoidant ? 0.9 : 0.46}"/>`;
+        svg += `<text class="line-label" x="${lx}" y="${ly}" fill="${colors[name]}" font-size="${isAvoidant ? 16 : 13}" font-weight="${isAvoidant ? 950 : 800}">${name}</text>`;
+      });
+      svg += `<text class="label" x="${left}" y="14" text-anchor="start">연도별 평균 상대 검색지수</text>`;
+      svg += `</svg>`;
+      document.getElementById("searchChart").innerHTML = svg;
+    }
+
+    function drawDistributionChart() {
+      const rows = DATA.distribution;
+      const series = [
+        ["secure", "안정형", "#53677f"],
+        ["avoidant", "회피형", "#c9474d"],
+        ["anxious", "불안형", "#8291a3"],
+        ["fearful", "혼란형", "#b4bec9"]
+      ];
+      const width = 980, height = 390;
+      const left = 210, right = 34, top = 42, bottom = 52;
+      const plotW = width - left - right;
+      const rowH = 88;
+      const barH = 50;
+      const x = v => left + (v / 100) * plotW;
+      let svg = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="국내 연구 예시별 애착유형 실제 분포 비교">`;
+      [0, 50, 100].forEach(v => {
+        const xx = x(v);
+        svg += `<line x1="${xx}" y1="${top - 12}" x2="${xx}" y2="${top + rowH * rows.length - 18}" stroke="${v === 0 || v === 100 ? "#c8cdd2" : "#e7e9eb"}"/>`;
+        svg += `<text class="tick" x="${xx}" y="${height - 18}" text-anchor="middle">${v}%</text>`;
+      });
+      rows.forEach((d, i) => {
+        const barY = top + i * rowH;
+        const studyLines = d.study.split("\n");
+        svg += `<text class="label" x="${left - 18}" y="${barY + 20}" text-anchor="end">${studyLines.slice(0, -1).join(" ")}</text>`;
+        svg += `<text class="tick" x="${left - 18}" y="${barY + 39}" text-anchor="end">${studyLines[studyLines.length - 1]}</text>`;
+        let cumulative = 0;
+        series.forEach(s => {
+          const value = d[s[0]];
+          const segmentX = x(cumulative);
+          const segmentW = value / 100 * plotW;
+          const isAvoidant = s[0] === "avoidant";
+          svg += `<rect x="${segmentX}" y="${barY}" width="${segmentW}" height="${barH}" fill="${s[2]}" stroke="#fff" stroke-width="2"/>`;
+          if (value > 0) {
+            svg += `<text x="${segmentX + segmentW / 2}" y="${barY + 31}" text-anchor="middle" fill="${s[0] === "fearful" ? "#263442" : "#fff"}" font-size="${isAvoidant ? 14 : 13}" font-weight="${isAvoidant ? 950 : 850}">${value.toFixed(1)}%</text>`;
+          }
+          cumulative += value;
+        });
+      });
+      svg += `</svg>`;
+      document.getElementById("distributionChart").innerHTML = svg;
+    }
+
+    function drawSelfOtherChart() {
+      const rows = DATA.selfOther;
+      const width = 980, height = 340;
+      const left = 132, right = 34, top = 34, bottom = 42;
+      const plotW = width - left - right;
+      const rowH = 86;
+      const barH = 50;
+      const x = v => left + (v / 100) * plotW;
+      let svg = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="유형별 자기이해와 상대분석 비교">`;
+      [0, 50, 100].forEach(v => {
+        const xx = x(v);
+        svg += `<line x1="${xx}" y1="${top - 12}" x2="${xx}" y2="${top + rowH * rows.length - 18}" stroke="${v === 0 || v === 100 ? "#c8cdd2" : "#e7e9eb"}"/>`;
+        svg += `<text class="tick" x="${xx}" y="${height - 12}" text-anchor="middle">${v}%</text>`;
+      });
+      rows.forEach((d, i) => {
+        const barY = top + i * rowH;
+        const total = d.self + d.other;
+        const selfRate = d.self / total * 100;
+        const otherRate = d.other / total * 100;
+        const segments = [
+          { count: d.self, rate: selfRate, color: "#b9c7d5", text: "#25384a" },
+          { count: d.other, rate: otherRate, color: "#c9474d", text: "#fff" }
+        ];
+        svg += `<text class="label" x="${left - 18}" y="${barY + 22}" text-anchor="end">${d.type}</text>`;
+        svg += `<text class="tick" x="${left - 18}" y="${barY + 41}" text-anchor="end">n=${total}</text>`;
+        let cumulative = 0;
+        segments.forEach(segment => {
+          const segmentX = x(cumulative);
+          const segmentW = segment.rate / 100 * plotW;
+          svg += `<rect x="${segmentX}" y="${barY}" width="${segmentW}" height="${barH}" fill="${segment.color}" stroke="#fff" stroke-width="2"/>`;
+          svg += `<text x="${segmentX + segmentW / 2}" y="${barY + 21}" text-anchor="middle" fill="${segment.text}" font-weight="900">`;
+          svg += `<tspan x="${segmentX + segmentW / 2}" font-size="13">${segment.count}건</tspan>`;
+          svg += `<tspan x="${segmentX + segmentW / 2}" dy="16" font-size="11">${segment.rate.toFixed(1)}%</tspan>`;
+          svg += `</text>`;
+          cumulative += segment.rate;
+        });
+      });
+      svg += `</svg>`;
+      document.getElementById("selfOtherChart").innerHTML = svg;
+    }
+
+    function drawCriticalChart() {
+      const rows = DATA.critical;
+      const width = 980, height = 350;
+      const left = 110, right = 90, top = 34;
+      const barMax = width - left - right;
+      const rowH = 82;
+      const max = 30;
+      let svg = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="유형별 비판담론 건수와 비율">`;
+      [0, 10, 20, 30].forEach(v => {
+        const xx = left + (v / max) * barMax;
+        svg += `<line x1="${xx}" y1="${top - 8}" x2="${xx}" y2="${top + rowH * rows.length - 26}" stroke="#e5e6e8"/>`;
+        svg += `<text class="tick" x="${xx}" y="${top + rowH * rows.length - 8}" text-anchor="middle">${v}%</text>`;
+      });
+      rows.forEach((d, i) => {
+        const y = top + i * rowH;
+        const bw = (d.rate / max) * barMax;
+        svg += `<text class="label" x="${left - 18}" y="${y + 29}" text-anchor="end">${d.type}</text>`;
+        svg += `<rect x="${left}" y="${y}" width="${barMax}" height="38" fill="#e7e7e7"/>`;
+        svg += `<rect x="${left}" y="${y}" width="${bw}" height="38" fill="#c9474d"/>`;
+        svg += `<text class="value" x="${left + Math.max(bw, 8) + 12}" y="${y + 25}">${d.rate.toFixed(1)}%</text>`;
+        svg += `<text class="tick" x="${left}" y="${y + 58}">비판담론 ${d.critical}건 / 전체 ${d.total}건</text>`;
+      });
+      svg += `</svg>`;
+      document.getElementById("criticalChart").innerHTML = svg;
+    }
+
+    function setupNavigation() {
+      const deck = document.getElementById("deck");
+      const slides = Array.from(document.querySelectorAll(".slide"));
+      const nav = document.querySelector(".top-nav");
+      const prev = document.getElementById("prevBtn");
+      const next = document.getElementById("nextBtn");
+      const remoteTitle = document.getElementById("remoteTitle");
+      const remoteCount = document.getElementById("remoteCount");
+      let current = 0;
+
+      slides.forEach((slide, i) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = slide.dataset.title;
+        button.addEventListener("click", () => goTo(i));
+        nav.appendChild(button);
+      });
+      const navButtons = Array.from(nav.querySelectorAll("button"));
+
+      function update(index) {
+        current = Math.max(0, Math.min(slides.length - 1, index));
+        navButtons.forEach((button, i) => {
+          const isCurrent = i === current;
+          button.classList.toggle("active", isCurrent);
+          if (isCurrent) button.setAttribute("aria-current", "page");
+          else button.removeAttribute("aria-current");
+        });
+        remoteTitle.textContent = slides[current].dataset.title;
+        remoteCount.textContent = `${current + 1} / ${slides.length}`;
+        prev.disabled = current === 0;
+        next.disabled = current === slides.length - 1;
+      }
+
+      function goTo(index) {
+        const target = Math.max(0, Math.min(slides.length - 1, index));
+        slides[target].scrollIntoView({ behavior: "smooth", block: "start" });
+        update(target);
+      }
+
+      prev.addEventListener("click", () => goTo(current - 1));
+      next.addEventListener("click", () => goTo(current + 1));
+
+      deck.addEventListener("scroll", () => {
+        const readingLine = deck.scrollTop + deck.clientHeight * 0.45;
+        let index = 0;
+        slides.forEach((slide, i) => {
+          if (slide.offsetTop <= readingLine) index = i;
+        });
+        if (index !== current) update(index);
+      }, { passive: true });
+
+      window.addEventListener("keydown", event => {
+        const nextKeys = ["ArrowDown", "ArrowRight", "PageDown", " "];
+        const prevKeys = ["ArrowUp", "ArrowLeft", "PageUp"];
+        if (nextKeys.includes(event.key)) {
+          event.preventDefault();
+          goTo(current + 1);
+        }
+        if (prevKeys.includes(event.key)) {
+          event.preventDefault();
+          goTo(current - 1);
+        }
+      });
+
+      update(0);
+    }
+
+    drawSearchChart();
+    drawDistributionChart();
+    drawSelfOtherChart();
+    drawCriticalChart();
+    setupNavigation();
+  </script>
+</body>
+</html>

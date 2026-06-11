@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>지진 대피 및 응급처치 통합 가이드</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Leaflet 무료 지도: API Key / 결제수단 필요 없음 -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; line-height: 1.6; margin: 0; padding: 0; color: #333; background-color: #f7f9fa; }
+        header { background-color: #d9534f; color: white; padding: 20px; text-align: center; }
+        main { max-width: 1100px; margin: 20px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        footer { background-color: #333; color: #ccc; text-align: center; padding: 15px; font-size: 14px; margin-top: 40px; }
+
+        .tab-menu { display: flex; border-bottom: 2px solid #d9534f; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 15px; text-align: center; background: #eee; cursor: pointer; font-weight: bold; border: none; font-size: 16px; }
+        .tab-btn.active { background: #d9534f; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        details { background: #f9f9f9; border: 1px solid #ddd; padding: 12px; margin-bottom: 10px; border-radius: 4px; }
+        summary { font-weight: bold; cursor: pointer; font-size: 16px; outline: none; }
+        details[open] summary { color: #d9534f; border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-bottom: 8px; }
+        .accent-list { padding-left: 20px; }
+        .accent-list li { margin-bottom: 6px; }
+
+        .chart-box { background: #fff3f3; border: 1px solid #ffcccc; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+        .donut-chart { width: 180px; height: 180px; margin: 20px auto; border-radius: 50%; background: conic-gradient(#d9534f 0% 65%, #f0ad4e 65% 78%, #5bc0de 78% 85.6%, #5cb85c 85.6% 92.9%, #777 92.9% 100%); position: relative; }
+        .donut-hole { width: 100px; height: 100px; background: white; border-radius: 50%; position: absolute; top: 40px; left: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; text-align: center; }
+        .chart-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; max-width: 500px; margin: 0 auto; }
+        .legend-item { display: flex; align-items: center; font-size: 14px; }
+        .color-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; display: inline-block; }
+
+        .step-box { background: #f8f9fa; border: 2px dashed #ccc; padding: 20px; border-radius: 8px; text-align: center; margin-top: 20px; }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .action-btn { padding: 12px; background: #fff; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; font-size: 15px; font-weight: bold; transition: 0.2s; }
+        .action-btn:hover { background: #e9ecef; border-color: #888; }
+        .result-card { background: #fff; border: 2px solid #d9534f; padding: 20px; border-radius: 8px; text-align: left; margin-top: 15px; }
+        .badge { display: inline-block; padding: 4px 8px; color: white; font-weight: bold; border-radius: 4px; font-size: 12px; margin-bottom: 10px; }
+        .badge.danger { background-color: #d9534f; }
+        .badge.warning { background-color: #f0ad4e; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+
+        .map-layout { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; align-items: start; }
+        #leafletMap { width: 100%; height: 560px; border-radius: 10px; border: 1px solid #ccc; }
+        .map-panel { background:#f8f9fa; border:1px solid #ddd; border-radius:10px; padding:14px; max-height:560px; overflow-y:auto; }
+        .map-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:10px 0; }
+        .map-button { padding:10px; border:none; background:#d9534f; color:white; border-radius:8px; font-weight:bold; cursor:pointer; }
+        .map-button.secondary { background:#555; }
+        .map-button:hover { opacity:0.9; }
+        .filter-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
+        .filter-btn { padding:9px; border:1px solid #bbb; background:white; border-radius:8px; cursor:pointer; font-weight:bold; }
+        .filter-btn.active { background:#d9534f; color:white; border-color:#d9534f; }
+        .status { font-size:13px; color:#555; background:#fff; border:1px solid #ddd; padding:10px; border-radius:8px; margin-bottom:10px; }
+        .facility-card { background:white; border:1px solid #ddd; border-radius:10px; padding:10px; margin-bottom:8px; cursor:pointer; }
+        .facility-card:hover { background:#fff3f3; border-color:#d9534f; }
+        .facility-card strong { display:block; font-size:15px; }
+        .tag { display:inline-block; padding:3px 7px; border-radius:999px; font-size:12px; font-weight:bold; margin-bottom:5px; color:white; }
+        .tag.shelter { background:#2e7d32; }
+        .tag.emergency { background:#c62828; }
+        .tag.health { background:#1565c0; }
+        .tag.hospital { background:#6a1b9a; }
+        .distance { color:#d9534f; font-weight:bold; margin:4px 0; }
+        .small { color:#666; font-size:12px; margin:3px 0; }
+        .data-note { font-size:12px; color:#666; margin-top:12px; line-height:1.5; }
+
+        @media (max-width: 850px) {
+            main { margin: 0; border-radius: 0; padding: 12px; }
+            .tab-menu { flex-direction: column; }
+            .map-layout { grid-template-columns: 1fr; }
+            #leafletMap { height: 380px; }
+            .map-panel { max-height: none; }
+            .chart-legend { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🚨 지진 발생 실시간 안전 통합 대시보드</h1>
+    <p>행동강령 · 응급처치 · 서울 안전시설 지도 통합 웹 앱</p>
+</header>
+
+<main>
+    <div class="tab-menu">
+        <button class="tab-btn active" onclick="openTab('action', this)">🏃‍♂️ 1. 행동요령 종합 안내</button>
+        <button class="tab-btn" onclick="openTab('emergency', this)">🩹 2. 응급처치 가이드</button>
+        <button class="tab-btn" onclick="openTab('map', this)">📍 3. 내 주변 대피소 찾기</button>
+    </div>
+
+    <div id="action" class="tab-content active">
+        <h2>지진 발생 순간 행동요령 종합 가이드</h2>
+        <p style="color:#d9534f; font-weight:bold;">※ 지진이 감지되면 당황하지 말고 즉시 아래의 단계별 지침을 수행하십시오.</p>
+
+        <details open>
+            <summary>1. 지진이 발생했을 때 🚨</summary>
+            <ul class="accent-list">
+                <li><strong>탁자 아래로 피하기:</strong> 흔들림이 시작되면 튼튼한 탁자 아래로 들어가 몸을 보호하고 탁자 다리를 꼭 잡습니다. 탁자가 없다면 방석, 가방 등으로 머리를 감싸 보호합니다.</li>
+                <li><strong>출구 확보 및 대피:</strong> 흔들림이 멈추면 가스와 전기를 차단하고 문을 열어 출구를 확보한 뒤 계단을 이용해 건물 밖으로 나갑니다. <strong>엘리베이터는 사용하지 않습니다.</strong></li>
+                <li><strong>넓은 공간으로 이동:</strong> 낙하물 위험이 적은 운동장, 공원, 광장 등 넓은 공간으로 도보로 대피합니다.</li>
+                <li><strong>공식 정보 확인:</strong> 재난문자, TV, 라디오, 안전디딤돌, 기상청 등 공공기관 안내에 따라 행동합니다.</li>
+            </ul>
+        </details>
+
+        <details>
+            <summary>2. 어린이 및 임산부와 함께 있을 때 👶</summary>
+            <ul class="accent-list">
+                <li><strong>영유아 동반 시:</strong> 유모차보다 아기띠를 사용해 양손을 자유롭게 하고 아이 머리를 보호합니다.</li>
+                <li><strong>걸을 수 있는 아이:</strong> 유리 파편과 잔해가 많으므로 가능하면 안아서 이동하고 반드시 신발을 신깁니다.</li>
+                <li><strong>임산부 대피 시:</strong> 계단 이용 시 발밑 확인이 어려울 수 있으므로 주변 사람의 도움을 받아 함께 이동합니다.</li>
+            </ul>
+        </details>
+
+        <details>
+            <summary>3. 지진 후 시설 안전점검 🛠️</summary>
+            <table>
+                <thead>
+                    <tr>
+                        <th>시설 구분</th>
+                        <th>점검 및 조치 요령</th>
+                        <th>주의사항</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>가스</strong></td>
+                        <td>냄새나 누출 소리가 나면 밸브를 잠그고 창문을 열어 환기 후 대피합니다.</td>
+                        <td>가스 관련 기관의 점검 전까지 사용하지 않습니다.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>전기</strong></td>
+                        <td>정전 시 손전등을 사용하고, 전선 손상 의심 시 차단기를 내립니다.</td>
+                        <td>원인 확인 전 엘리베이터와 전기 사용을 피합니다.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>수도</strong></td>
+                        <td>수도관 파손이 의심되면 밸브를 잠급니다.</td>
+                        <td>하수관 안전 확인 전 수도꼭지·화장실 사용을 자제합니다.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </details>
+    </div>
+
+    <div id="emergency" class="tab-content">
+        <h2>임상 데이터 기반 응급처치 가이드</h2>
+
+        <div class="chart-box">
+            <h3>지진 부상 유형 통계 데이터</h3>
+            <div class="donut-chart">
+                <div class="donut-hole">지진 부상<br>손상 유형</div>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item"><span class="color-dot" style="background:#d9534f;"></span>🦴 골절 65%</div>
+                <div class="legend-item"><span class="color-dot" style="background:#f0ad4e;"></span>🏗️ 압궤손상 13%</div>
+                <div class="legend-item"><span class="color-dot" style="background:#5bc0de;"></span>⚠️ 구획증후군 7.6%</div>
+                <div class="legend-item"><span class="color-dot" style="background:#5cb85c;"></span>🩹 피부·근육 손상 7.3%</div>
+                <div class="legend-item"><span class="color-dot" style="background:#777;"></span>🚨 압궤증후군 6.4%</div>
+            </div>
+        </div>
+
+        <div class="step-box" id="step1">
+            <h3>1단계: 어떤 상황인가요?</h3>
+            <div class="btn-grid">
+                <button class="action-btn" onclick="goToStep2('fracture')">🦴 뼈가 부러진 것 같아요</button>
+                <button class="action-btn" onclick="goToStep2('crush')">🏗️ 잔해나 가구에 깔렸어요</button>
+                <button class="action-btn" onclick="goToStep2('bleeding')">🩹 피가 많이 나요</button>
+            </div>
+        </div>
+
+        <div class="step-box" id="step2" style="display:none;">
+            <h3>2단계: 육안으로 보이는 상처 상태는 어떤가요?</h3>
+            <div class="btn-grid" id="step2-options"></div>
+            <button class="action-btn" style="margin-top:15px; background:#f0f0f0;" onclick="goBackToStep1()">⬅️ 이전 단계로</button>
+        </div>
+
+        <div class="result-card" id="result-box" style="display:none;"></div>
+    </div>
+
+    <div id="map" class="tab-content">
+        <h2>서울 지역 안전시설 지도</h2>
+        <p>서울 대표 시설 50개 샘플 데이터: 지진옥외대피소 15개, 응급의료기관 10개, 보건소 25개</p>
+
+        <div class="map-layout">
+            <div id="leafletMap"></div>
+
+            <aside class="map-panel">
+                <div class="map-actions">
+                    <button class="map-button" onclick="findMyLocation()">📍 현재 위치</button>
+                    <button class="map-button secondary" onclick="resetToSeoul()">서울 전체 보기</button>
+                </div>
+
+                <div class="filter-row">
+                    <button class="filter-btn active" onclick="setFacilityFilter('전체', this)">전체</button>
+                    <button class="filter-btn" onclick="setFacilityFilter('지진옥외대피소', this)">대피소</button>
+                    <button class="filter-btn" onclick="setFacilityFilter('응급의료기관', this)">응급의료</button>
+                    <button class="filter-btn" onclick="setFacilityFilter('보건소', this)">보건소</button>
+                </div>
+
+                <div class="status" id="mapStatus">
+                    현재 위치를 누르면 가까운 시설이 거리순으로 정렬됩니다.
+                </div>
+
+                <div id="facilityList"></div>
+
+                <p class="data-note">
+                    ※ 과제용 대표 샘플 데이터입니다. 실제 서비스에서는 행정안전부 지진옥외대피장소, 국립중앙의료원 응급의료기관, 서울시·공공데이터포털 보건소 위치정보 API로 최신 데이터를 갱신해야 합니다.
+                </p>
+            </aside>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>🚨 비상 연락망 - 소방청 119 | 보건복지상담센터 129 | 정부민원안내 110</p>
+    <p>© 2026 재난안전 통합 가이드 프로젝트</p>
+</footer>
+
+<script>
+    // 탭 전환
+    function openTab(tabId, clickedButton) {
+        const contents = document.querySelectorAll('.tab-content');
+        const buttons = document.querySelectorAll('.tab-btn');
+
+        contents.forEach(content => content.classList.remove('active'));
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        clickedButton.classList.add('active');
+
+        if (tabId === 'map') {
+            setTimeout(() => {
+                if (!mapInitialized) initLeafletMap();
+                if (leafletMap) leafletMap.invalidateSize();
+            }, 100);
+        }
+    }
+
+    // 응급처치 인터랙션
+    function goToStep2(situation) {
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'block';
+        document.getElementById('result-box').style.display = 'none';
+
+        const optionsBox = document.getElementById('step2-options');
+        optionsBox.innerHTML = '';
+
+        if (situation === 'fracture') {
+            optionsBox.innerHTML = `
+                <button class="action-btn" onclick="showResult('closed_frac')">피부는 괜찮고 뼈만 부러진 것 같아요</button>
+                <button class="action-btn" onclick="showResult('open_frac')">뼈가 피부 밖으로 뚫고 나왔어요</button>
+                <button class="action-btn" onclick="showResult('multi_frac')">여러 부위가 다발적으로 부러졌어요</button>
+            `;
+        } else if (situation === 'crush') {
+            optionsBox.innerHTML = `
+                <button class="action-btn" onclick="showResult('short_crush')">방금 가구나 가벼운 잔해에 깔렸어요</button>
+                <button class="action-btn" onclick="showResult('long_crush')">수 시간 이상 무거운 잔해에 깔려있었어요</button>
+            `;
+        } else if (situation === 'bleeding') {
+            optionsBox.innerHTML = `
+                <button class="action-btn" onclick="showResult('normal_bleed')">일반적인 피부 찢어짐 및 출혈</button>
+                <button class="action-btn" onclick="showResult('compartment')">피부는 멀쩡한데 극심한 통증과 손발이 창백함</button>
+            `;
+        }
+    }
+
+    function goBackToStep1() {
+        document.getElementById('step1').style.display = 'block';
+        document.getElementById('step2').style.display = 'none';
+        document.getElementById('result-box').style.display = 'none';
+    }
+
+    function showResult(type) {
+        const resultBox = document.getElementById('result-box');
+        resultBox.style.display = 'block';
+
+        let htmlContent = '';
+
+        switch(type) {
+            case 'closed_frac':
+                htmlContent = `<h3><span class="badge warning">주의</span> 폐쇄성 골절</h3>
+                               <p><strong>응급처치:</strong> 부러진 부위를 움직이지 않게 부목으로 고정하고, 냉찜질로 붓기를 줄입니다. 이동을 최소화하세요.</p>
+                               <p style="color:#d9534f;">※ 함부로 뼈를 맞추려고 조작하지 않습니다.</p>`;
+                break;
+            case 'open_frac':
+                htmlContent = `<h3><span class="badge danger">위험</span> 개방성 골절</h3>
+                               <p><strong>응급처치:</strong> 뼈를 만지지 말고 깨끗한 거즈나 천으로 상처를 덮고 지혈합니다. 즉시 119에 신고합니다.</p>
+                               <p style="color:#d9534f;">※ 튀어나온 뼈를 밀어 넣지 않습니다.</p>`;
+                break;
+            case 'multi_frac':
+                htmlContent = `<h3><span class="badge danger">위험</span> 다발성 및 분쇄 골절</h3>
+                               <p><strong>응급처치:</strong> 의식과 호흡을 먼저 확인하고, 환자를 움직이지 않게 고정합니다. 즉시 병원 이송이 필요합니다.</p>`;
+                break;
+            case 'short_crush':
+                htmlContent = `<h3><span class="badge warning">주의</span> 일반 압궤손상</h3>
+                               <p><strong>응급처치:</strong> 안전을 확보한 뒤 구조 요청을 하고, 구조 후 다친 부위를 고정하며 상태를 관찰합니다.</p>`;
+                break;
+            case 'long_crush':
+                htmlContent = `<h3><span class="badge danger">응급</span> 압궤증후군 의심</h3>
+                               <p><strong>응급처치:</strong> 즉시 119에 매립 시간을 알립니다. 의료진 도착 전까지 환자를 무리하게 잡아당기지 않습니다.</p>`;
+                break;
+            case 'normal_bleed':
+                htmlContent = `<h3><span class="badge warning">주의</span> 피부 및 근육 손상</h3>
+                               <p><strong>응급처치:</strong> 깨끗한 천이나 거즈로 상처 부위를 직접 압박하여 지혈합니다.</p>`;
+                break;
+            case 'compartment':
+                htmlContent = `<h3><span class="badge danger">응급</span> 구획증후군 의심</h3>
+                               <p><strong>응급처치:</strong> 심한 통증, 감각 저하, 창백함이 있으면 즉시 병원으로 이송해야 합니다.</p>`;
+                break;
+        }
+
+        resultBox.innerHTML = htmlContent;
+    }
+
+    // 서울 대표 안전시설 50개 샘플 데이터
+    const facilities = [
+        // 지진옥외대피소 15개
+        { name:"서울광장", type:"지진옥외대피소", lat:37.565703, lng:126.977875, address:"서울특별시 중구 세종대로 110" },
+        { name:"여의도공원", type:"지진옥외대피소", lat:37.526011, lng:126.922104, address:"서울특별시 영등포구 여의공원로 68" },
+        { name:"올림픽공원", type:"지진옥외대피소", lat:37.520891, lng:127.122946, address:"서울특별시 송파구 올림픽로 424" },
+        { name:"서울어린이대공원", type:"지진옥외대피소", lat:37.549589, lng:127.081578, address:"서울특별시 광진구 능동로 216" },
+        { name:"보라매공원", type:"지진옥외대피소", lat:37.491780, lng:126.919912, address:"서울특별시 동작구 여의대방로20길 33" },
+        { name:"월드컵공원 평화의공원", type:"지진옥외대피소", lat:37.563430, lng:126.899590, address:"서울특별시 마포구 월드컵로 243-60" },
+        { name:"서울숲", type:"지진옥외대피소", lat:37.544388, lng:127.037442, address:"서울특별시 성동구 뚝섬로 273" },
+        { name:"북서울꿈의숲", type:"지진옥외대피소", lat:37.623335, lng:127.041548, address:"서울특별시 강북구 월계로 173" },
+        { name:"용산가족공원", type:"지진옥외대피소", lat:37.521385, lng:126.983673, address:"서울특별시 용산구 서빙고로 137" },
+        { name:"낙산공원", type:"지진옥외대피소", lat:37.580477, lng:127.007450, address:"서울특별시 종로구 낙산길 41" },
+        { name:"서서울호수공원", type:"지진옥외대피소", lat:37.527196, lng:126.830734, address:"서울특별시 양천구 남부순환로64길 20" },
+        { name:"선유도공원", type:"지진옥외대피소", lat:37.543353, lng:126.900931, address:"서울특별시 영등포구 선유로 343" },
+        { name:"양재시민의숲", type:"지진옥외대피소", lat:37.471355, lng:127.035814, address:"서울특별시 서초구 매헌로 99" },
+        { name:"남산공원", type:"지진옥외대피소", lat:37.551169, lng:126.988227, address:"서울특별시 중구 삼일대로 231" },
+        { name:"망원한강공원", type:"지진옥외대피소", lat:37.555210, lng:126.895450, address:"서울특별시 마포구 마포나루길 467" },
+
+        // 응급의료기관 10개
+        { name:"서울대학교병원", type:"응급의료기관", lat:37.579617, lng:126.999169, address:"서울특별시 종로구 대학로 101" },
+        { name:"세브란스병원", type:"응급의료기관", lat:37.562344, lng:126.940819, address:"서울특별시 서대문구 연세로 50-1" },
+        { name:"삼성서울병원", type:"응급의료기관", lat:37.488241, lng:127.085444, address:"서울특별시 강남구 일원로 81" },
+        { name:"서울아산병원", type:"응급의료기관", lat:37.526070, lng:127.108570, address:"서울특별시 송파구 올림픽로43길 88" },
+        { name:"국립중앙의료원", type:"응급의료기관", lat:37.567208, lng:127.005671, address:"서울특별시 중구 을지로 245" },
+        { name:"고려대학교 안암병원", type:"응급의료기관", lat:37.587040, lng:127.026546, address:"서울특별시 성북구 고려대로 73" },
+        { name:"한양대학교병원", type:"응급의료기관", lat:37.559945, lng:127.044009, address:"서울특별시 성동구 왕십리로 222-1" },
+        { name:"강북삼성병원", type:"응급의료기관", lat:37.568917, lng:126.967938, address:"서울특별시 종로구 새문안로 29" },
+        { name:"중앙대학교병원", type:"응급의료기관", lat:37.506526, lng:126.960531, address:"서울특별시 동작구 흑석로 102" },
+        { name:"이대목동병원", type:"응급의료기관", lat:37.536616, lng:126.886578, address:"서울특별시 양천구 안양천로 1071" },
+
+        // 보건소 25개
+        { name:"종로구보건소", type:"보건소", lat:37.573505, lng:126.979148, address:"서울특별시 종로구 자하문로19길 36" },
+        { name:"중구보건소", type:"보건소", lat:37.564090, lng:126.997940, address:"서울특별시 중구 다산로39길 16" },
+        { name:"용산구보건소", type:"보건소", lat:37.532616, lng:126.990276, address:"서울특별시 용산구 녹사평대로 150" },
+        { name:"성동구보건소", type:"보건소", lat:37.563350, lng:127.036925, address:"서울특별시 성동구 마장로23길 10" },
+        { name:"광진구보건소", type:"보건소", lat:37.538484, lng:127.082293, address:"서울특별시 광진구 자양로 117" },
+        { name:"동대문구보건소", type:"보건소", lat:37.574368, lng:127.039638, address:"서울특별시 동대문구 천호대로 145" },
+        { name:"중랑구보건소", type:"보건소", lat:37.606560, lng:127.092652, address:"서울특별시 중랑구 봉화산로 179" },
+        { name:"성북구보건소", type:"보건소", lat:37.589420, lng:127.016725, address:"서울특별시 성북구 화랑로 63" },
+        { name:"강북구보건소", type:"보건소", lat:37.639740, lng:127.025470, address:"서울특별시 강북구 한천로 897" },
+        { name:"도봉구보건소", type:"보건소", lat:37.668773, lng:127.047070, address:"서울특별시 도봉구 방학로3길 117" },
+        { name:"노원구보건소", type:"보건소", lat:37.654259, lng:127.056297, address:"서울특별시 노원구 노해로 437" },
+        { name:"은평구보건소", type:"보건소", lat:37.602695, lng:126.929148, address:"서울특별시 은평구 은평로 195" },
+        { name:"서대문구보건소", type:"보건소", lat:37.579225, lng:126.936783, address:"서울특별시 서대문구 연희로 242" },
+        { name:"마포구보건소", type:"보건소", lat:37.566347, lng:126.901806, address:"서울특별시 마포구 월드컵로 212" },
+        { name:"양천구보건소", type:"보건소", lat:37.517020, lng:126.866545, address:"서울특별시 양천구 목동서로 339" },
+        { name:"강서구보건소", type:"보건소", lat:37.550964, lng:126.849532, address:"서울특별시 강서구 공항대로 561" },
+        { name:"구로구보건소", type:"보건소", lat:37.495410, lng:126.887456, address:"서울특별시 구로구 구로중앙로28길 66" },
+        { name:"금천구보건소", type:"보건소", lat:37.456940, lng:126.895447, address:"서울특별시 금천구 시흥대로73길 70" },
+        { name:"영등포구보건소", type:"보건소", lat:37.526292, lng:126.895977, address:"서울특별시 영등포구 당산로 123" },
+        { name:"동작구보건소", type:"보건소", lat:37.512400, lng:126.939252, address:"서울특별시 동작구 장승배기로10길 42" },
+        { name:"관악구보건소", type:"보건소", lat:37.478165, lng:126.951504, address:"서울특별시 관악구 관악로 145" },
+        { name:"서초구보건소", type:"보건소", lat:37.483669, lng:127.032733, address:"서울특별시 서초구 남부순환로 2584" },
+        { name:"강남구보건소", type:"보건소", lat:37.517305, lng:127.047502, address:"서울특별시 강남구 선릉로 668" },
+        { name:"송파구보건소", type:"보건소", lat:37.514543, lng:127.106597, address:"서울특별시 송파구 올림픽로 326" },
+        { name:"강동구보건소", type:"보건소", lat:37.530125, lng:127.123762, address:"서울특별시 강동구 성내로 45" }
+    ];
+
+    let leafletMap;
+    let mapInitialized = false;
+    let userMarker = null;
+    let facilityMarkers = [];
+    let userPosition = null;
+    let currentFacilityFilter = "전체";
+
+    function initLeafletMap() {
+        leafletMap = L.map('leafletMap').setView([37.5665, 126.9780], 11);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(leafletMap);
+
+        mapInitialized = true;
+        renderFacilities();
+    }
+
+    function getTagClass(type) {
+        if (type === "지진옥외대피소") return "shelter";
+        if (type === "응급의료기관") return "emergency";
+        if (type === "보건소") return "health";
+        return "hospital";
+    }
+
+    function getIcon(type) {
+        if (type === "지진옥외대피소") return "🏞️";
+        if (type === "응급의료기관") return "🚑";
+        if (type === "보건소") return "🏥";
+        return "🏥";
+    }
+
+    function makeDivIcon(type) {
+        const color = type === "지진옥외대피소" ? "#2e7d32" :
+                      type === "응급의료기관" ? "#c62828" :
+                      type === "보건소" ? "#1565c0" : "#6a1b9a";
+
+        return L.divIcon({
+            className: "",
+            html: `<div style="background:${color};color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.35);font-size:16px;">${getIcon(type)}</div>`,
+            iconSize: [32, 32],
+            iconAnchor: [16, 16],
+            popupAnchor: [0, -16]
+        });
+    }
+
+    function renderFacilities() {
+        if (!leafletMap) return;
+
+        facilityMarkers.forEach(marker => leafletMap.removeLayer(marker));
+        facilityMarkers = [];
+
+        let data = facilities.filter(item => {
+            return currentFacilityFilter === "전체" || item.type === currentFacilityFilter;
+        });
+
+        if (userPosition) {
+            data = data.map(item => ({
+                ...item,
+                distance: getDistanceKm(userPosition.lat, userPosition.lng, item.lat, item.lng)
+            })).sort((a, b) => a.distance - b.distance);
+        }
+
+        const list = document.getElementById("facilityList");
+        list.innerHTML = "";
+
+        data.forEach((item, index) => {
+            const marker = L.marker([item.lat, item.lng], { icon: makeDivIcon(item.type) })
+                .addTo(leafletMap)
+                .bindPopup(`
+                    <strong>${item.name}</strong><br>
+                    ${item.type}<br>
+                    <small>${item.address}</small>
+                `);
+
+            facilityMarkers.push(marker);
+
+            const distanceText = userPosition && item.distance !== undefined
+                ? `<p class="distance">약 ${item.distance.toFixed(2)}km</p>`
+                : `<p class="small">현재 위치를 누르면 거리가 표시됩니다.</p>`;
+
+            const card = document.createElement("div");
+            card.className = "facility-card";
+            card.innerHTML = `
+                <span class="tag ${getTagClass(item.type)}">${item.type}</span>
+                <strong>${index + 1}. ${getIcon(item.type)} ${item.name}</strong>
+                ${distanceText}
+                <p class="small">${item.address}</p>
+            `;
+
+            card.onclick = () => {
+                leafletMap.setView([item.lat, item.lng], 15);
+                marker.openPopup();
+            };
+
+            list.appendChild(card);
+        });
+
+        document.getElementById("mapStatus").innerText =
+            userPosition
+            ? `총 ${data.length}개 시설을 현재 위치 기준 가까운 순서로 표시했습니다.`
+            : `총 ${data.length}개 시설을 지도에 표시했습니다.`;
+    }
+
+    function setFacilityFilter(type, clickedButton) {
+        currentFacilityFilter = type;
+
+        document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+        clickedButton.classList.add("active");
+
+        renderFacilities();
+    }
+
+    function findMyLocation() {
+        if (!navigator.geolocation) {
+            document.getElementById("mapStatus").innerText = "이 브라우저는 위치 기능을 지원하지 않습니다.";
+            return;
+        }
+
+        document.getElementById("mapStatus").innerText = "현재 위치를 확인하는 중입니다...";
+
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                userPosition = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                const latlng = [userPosition.lat, userPosition.lng];
+
+                if (userMarker) leafletMap.removeLayer(userMarker);
+
+                userMarker = L.marker(latlng, {
+                    icon: L.divIcon({
+                        className: "",
+                        html: `<div style="background:#111;color:white;padding:6px 10px;border-radius:18px;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.35);font-size:13px;font-weight:bold;">내 위치</div>`,
+                        iconSize: [70, 30],
+                        iconAnchor: [35, 15]
+                    })
+                }).addTo(leafletMap).bindPopup("현재 위치").openPopup();
+
+                leafletMap.setView(latlng, 14);
+                renderFacilities();
+            },
+            error => {
+                document.getElementById("mapStatus").innerText =
+                    "위치 정보를 가져올 수 없습니다. 브라우저 위치 권한을 허용하거나 HTTPS/localhost에서 실행하세요.";
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+    }
+
+    function resetToSeoul() {
+        if (!leafletMap) return;
+        leafletMap.setView([37.5665, 126.9780], 11);
+    }
+
+    function getDistanceKm(lat1, lng1, lat2, lng2) {
+        const R = 6371;
+        const dLat = toRad(lat2 - lat1);
+        const dLng = toRad(lng2 - lng1);
+
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(toRad(lat1)) *
+            Math.cos(toRad(lat2)) *
+            Math.sin(dLng / 2) *
+            Math.sin(dLng / 2);
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
+    function toRad(value) {
+        return value * Math.PI / 180;
+    }
+</script>
+
+</body>
+</html>

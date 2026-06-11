@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>불 꺼진 등대 — 지정학적 위기와 대한민국의 에너지</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+
+  <style>
+    /* ─────────────────────────────────────────────
+       CSS 변수 (지정학적 리스크 테마)
+       ───────────────────────────────────────────── */
+    :root {
+      --bg: #faf8f4;
+      --text: #1a1a1a;
+      --text-soft: #4a4a4a;
+      --text-muted: #888;
+      --accent: #d35400;      /* 경각심을 주는 딥 오렌지 */
+      --accent-secondary: #2980b9; /* 보조 색상 (블루) */
+      --hook-bg: #11141a;    /* 무거운 리스크를 상징하는 다크 톤 */
+      --hook-text: #faf8f4;
+      --rule: #d4cfc4;
+      --column: 720px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Gowun Batang', serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .column {
+      max-width: var(--column);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* 1. 훅(Hook) — 풀스크린 */
+    .hook {
+      background: var(--hook-bg);
+      color: var(--hook-text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+    }
+    .hook .eyebrow {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.3em;
+      color: var(--accent);
+      margin-bottom: 40px;
+      font-weight: 500;
+    }
+    .hook .big-number {
+      font-family: 'Gowun Batang', serif;
+      font-size: clamp(80px, 18vw, 160px);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      margin-bottom: 24px;
+    }
+    .hook .big-number .percent {
+      font-size: 0.5em;
+      color: var(--accent);
+      vertical-align: top;
+      margin-left: 4px;
+    }
+    .hook .hook-text {
+      font-size: clamp(18px, 2.5vw, 24px);
+      max-width: 580px;
+      line-height: 1.6;
+      color: rgba(250, 248, 244, 0.85);
+    }
+    .hook .scroll-cue {
+      margin-top: 60px;
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 12px;
+      color: rgba(250, 248, 244, 0.5);
+      letter-spacing: 0.2em;
+    }
+
+    /* 2. 컨텍스트 */
+    .context {
+      padding: 100px 0 60px;
+    }
+    .context h2 {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+    .context .lead {
+      font-size: 22px;
+      line-height: 1.6;
+      color: var(--text);
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+    }
+    .context p {
+      color: var(--text-soft);
+      margin-bottom: 20px;
+      text-align: justify;
+    }
+
+    /* 3. 본문 챕터 공통 스타일 */
+    .chapter {
+      padding: 40px 0;
+    }
+    .chapter-mark {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .chapter h3 {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      color: #2c3e50;
+    }
+    .chapter p {
+      color: var(--text-soft);
+      margin-bottom: 20px;
+      text-align: justify;
+    }
+    .chapter p strong {
+      color: var(--text);
+      font-weight: 700;
+      background: linear-gradient(transparent 60%, rgba(211, 84, 0, 0.15) 60%);
+      padding: 0 2px;
+    }
+    .highlight {
+      font-weight: bold;
+      color: #c0392b;
+    }
+    .highlight-blue {
+      font-weight: bold;
+      color: #2980b9;
+    }
+    
+    /* 강조 텍스트 박스 */
+    .insight-box {
+        background-color: #fff;
+        border-left: 4px solid var(--accent);
+        padding: 24px;
+        margin: 40px 0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .insight-box p {
+        margin-bottom: 0;
+        font-size: 17px;
+        color: #333;
+        font-weight: 500;
+    }
+
+    /* 인포그래픽 리스트 */
+    .info-list {
+        list-style: none;
+        padding: 0;
+        margin: 30px 0;
+    }
+    .info-list li {
+        background: #fff;
+        padding: 20px 24px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .info-list h4 {
+        font-family: 'IBM Plex Sans KR', sans-serif;
+        color: #2c3e50;
+        font-size: 18px;
+        margin-bottom: 8px;
+        font-weight: 700;
+    }
+    .info-list p {
+        margin-bottom: 0;
+        font-size: 15px;
+    }
+    .savings-tag {
+        display: inline-block;
+        background: var(--accent);
+        color: white;
+        font-family: 'IBM Plex Sans KR', sans-serif;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 6px 16px;
+        border-radius: 20px;
+    }
+
+    /* 차트 레이아웃 */
+    .chart-block {
+      margin: 60px 0;
+    }
+    .chart-block.wide {
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 24px;
+    }
+    .chart-fill {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 32px 24px 20px;
+      position: relative;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+    .chart-fill svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .canvas-container {
+      position: relative;
+      height: 480px;
+      width: 100%;
+    }
+    .canvas-container.small {
+      height: 320px; 
+    }
+    .canvas-container.medium {
+      height: 360px;
+    }
+    
+    /* 분리된 차트들을 상하/좌우로 나열하기 위한 그리드 레이아웃 */
+    .chart-grid-top {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .chart-grid-bottom {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .chart-grid-bottom .chart-fill {
+      flex: 1 1 auto;
+      max-width: 440px; 
+      width: 100%;
+    }
+
+    .chart-title-container {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+    .chart-title-container h4 {
+        color: #2c3e50;
+        font-family: 'IBM Plex Sans KR', sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+    .chart-subtitle {
+        font-family: 'IBM Plex Sans KR', sans-serif;
+        font-size: 14px;
+        color: var(--text-muted);
+    }
+    .chart-caption {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 14px;
+      color: #555;
+      margin-top: 16px;
+      text-align: center;
+      line-height: 1.6;
+      background-color: #f8f9fa;
+      padding: 16px;
+      border-radius: 6px;
+      border-left: 3px solid #d4cfc4;
+    }
+    .data-source {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 12px;
+      color: #999;
+      text-align: right;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+
+    .rule {
+      max-width: 80px;
+      margin: 60px auto;
+      border: none;
+      border-top: 1px solid var(--rule);
+    }
+
+    /* 배 구조 설명 블록용 스타일 */
+    .ship-class-box {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+    }
+    .ship-class-box h5 {
+      font-size: 17px;
+      color: var(--accent);
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+    .ship-class-box ul {
+      font-size: 15px;
+      font-weight: 400;
+      padding-left: 20px;
+      margin-bottom: 15px;
+      color: #4a4a4a;
+    }
+    .ship-class-box li {
+      margin-bottom: 6px;
+    }
+
+    /* 시각적 계산 표 (인포그래픽) 스타일 */
+    .calculation-box {
+      background-color: #f8f9fa;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 24px;
+      margin: 0 0 20px 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .calc-header {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .calc-steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .calc-steps .step {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 16px 12px;
+      flex: 1;
+      min-width: 130px;
+    }
+    .calc-steps .step.result {
+      background: rgba(211, 84, 0, 0.05);
+      border-color: #d35400;
+    }
+    .calc-steps .step.result .step-value {
+      color: #d35400;
+    }
+    .step-title {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .step-value {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+    .step-desc {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.4;
+    }
+    .step-operator {
+      font-size: 20px;
+      font-weight: 700;
+      color: #b3afa6;
+    }
+
+    /* 각 그래프 밑 개별 범례 스타일 */
+    .mini-legend {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin-top: 16px;
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 11.5px;
+      color: #555;
+    }
+    .legend-group {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .mini-legend-item {
+      display: flex;
+      align-items: center;
+    }
+    .mini-legend-box {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      margin-right: 4px;
+      display: inline-block;
+    }
+
+    /* 기사 및 SMR 그리드 스타일 (결 파트 추가 요소) */
+    .article-box {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 32px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+    .smr-grid {
+      display: grid;
+      gap: 20px;
+      margin-top: 24px;
+    }
+    .smr-grid.three-cols {
+      grid-template-columns: repeat(3, 1fr); 
+    }
+    .smr-grid.two-cols {
+      grid-template-columns: repeat(2, 1fr); 
+    }
+    .smr-card {
+      background: #f8fafc;
+      border-top: 4px solid var(--accent-secondary);
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .smr-card h5 {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 16px;
+      color: #2d3748;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .smr-card p {
+      font-size: 14.5px;
+      color: #4a5568;
+      margin-bottom: 0;
+      text-align: left;
+      line-height: 1.6;
+    }
+    
+    /* 참고문헌 스타일 */
+    .reference-section {
+      margin-top: 80px;
+      padding-top: 30px;
+      border-top: 1px solid #d4cfc4;
+      font-family: 'IBM Plex Sans KR', sans-serif;
+    }
+    .reference-section h4 {
+      font-size: 15px;
+      color: #2c3e50;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .reference-section ul {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.6;
+      list-style-type: none;
+      padding: 0;
+    }
+    .reference-section li {
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <section class="hook">
+    <div class="eyebrow">GEOPOLITICAL RISK & ENERGY</div>
+    <div class="big-number">400<span class="percent">%</span></div>
+    <div class="hook-text">
+      단 1개월 만에 국제 유가가 4배 폭등했을 때,<br>
+      대한민국 경제 성장률은 5%p 추락했다.
+    </div>
+    <div class="scroll-cue">아래로 스크롤하세요 ↓</div>
+  </section>
+
+  <section class="context">
+    <div class="column">
+      <h2>왜 이 이야기인가</h2>
+      <p class="lead">
+        지정학적 위기가 촉발한 에너지 격변은 단순한 과거의 기록이 아닌, 언제든 반복될 수 있는 우리의 현재진행형 생존 문제입니다.
+      </p>
+      <p>
+        대한민국은 에너지를 외부 공급망에 전적으로 의존하는 구조적 취약성을 안고 있습니다. 세계 시장을 흔들었던 분쟁과 유가 충격의 역사적 궤적을 데이터로 추적하며, 우리가 마주했던 첫 번째 경고들을 복기합니다.
+      </p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section class="chapter">
+    <div class="column">
+      <div class="chapter-mark">CHAPTER 01 — 기(起)</div>
+      <h3>반세기 동안 반복된 유가 쇼크의 기록</h3>
+      <p>
+        1967년부터 2005년까지의 국제 유가는 평탄하게 흐르지 않았습니다. 중동 전쟁, 이란 혁명 등 <strong>지정학적 리스크가 폭발할 때마다 유가는 수직으로 솟구쳤습니다</strong>.
+      </p>
+    </div>
+
+    <div class="chart-block wide">
+      <div class="chart-fill">
+        <svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <style>
+              .grid-line { stroke: #ebe7e0; stroke-width: 1; }
+              .axis-text { font-family: 'IBM Plex Sans KR', sans-serif; font-size: 11px; fill: #888; }
+              .line-label { font-family: 'IBM Plex Sans KR', sans-serif; font-size: 11px; font-weight: 700; fill: #d35400; }
+              .ann-text { font-family: 'IBM Plex Sans KR', sans-serif; font-size: 10px; fill: #666; }
+              .ann-title { font-family: 'IBM Plex Sans KR', sans-serif; font-size: 11px; fill: #d35400; font-weight: 700; }
+              .y-tick { font-family: 'IBM Plex Sans KR', sans-serif; font-size: 10px; fill: #b3afa6; }
+            </style>
+          </defs>
+
+          <text x="360" y="24" font-family="'IBM Plex Sans KR', sans-serif" font-size="20" font-weight="700" fill="#2c3e50" text-anchor="middle">국제유가 장기추이와 주요 유가 급등사례</text>
+          <text x="360" y="44" font-family="'IBM Plex Sans KR', sans-serif" font-size="13" fill="#888" text-anchor="middle">1967년부터 2005년까지</text>
+
+          <line class="grid-line" x1="50" y1="320" x2="690" y2="320"/>
+          <line class="grid-line" x1="50" y1="242.7" x2="690" y2="242.7" stroke-dasharray="3,4"/>
+          <line class="grid-line" x1="50" y1="165.3" x2="690" y2="165.3" stroke-dasharray="3,4"/>
+          <line class="grid-line" x1="50" y1="88.0" x2="690" y2="88.0" stroke-dasharray="3,4"/>
+          
+          <text class="y-tick" x="42" y="323" text-anchor="end">$0</text>
+          <text class="y-tick" x="42" y="246" text-anchor="end">$20</text>
+          <text class="y-tick" x="42" y="168" text-anchor="end">$40</text>
+          <text class="y-tick" x="42" y="91" text-anchor="end">$60</text>
+
+          <line x1="164.0" y1="55" x2="164.0" y2="320" stroke="#d4cfc4" stroke-width="1" stroke-dasharray="2,2"/>
+          <text class="ann-title" x="168" y="258">1차 파동 ($3→$13)</text>
+          <text class="ann-text" x="168" y="271">● 요인: 제4차 중동전쟁</text>
+
+          <line x1="267.0" y1="55" x2="267.0" y2="320" stroke="#d4cfc4" stroke-width="1" stroke-dasharray="2,2"/>
+          <text class="ann-title" x="272" y="157">2차 파동 ($15→$39)</text>
+          <text class="ann-text" x="272" y="170">● 요인: 이란혁명·전쟁</text>
+
+          <line x1="438.7" y1="55" x2="438.7" y2="320" stroke="#d4cfc4" stroke-width="1" stroke-dasharray="2,2"/>
+          <text class="ann-title" x="443" y="154">걸프전쟁 ($17→$41)</text>
+          <text class="ann-text" x="443" y="167">● 요인: 이라크의 쿠웨이트 침공</text>
+
+          <line x1="592.5" y1="55" x2="592.5" y2="320" stroke="#e67e22" stroke-width="1" stroke-dasharray="2,2" opacity="0.6"/>
+          <text class="ann-title" x="510" y="178" fill="#e67e22" text-anchor="start">2000년 OPEC 밴드제</text>
+          <text class="ann-text" x="510" y="191" text-anchor="start">● 요인: OPEC의 결속력 강화</text>
+          <text class="ann-text" x="510" y="204" text-anchor="start">  및 목표유가밴드제</text>
+
+          <text class="ann-title" x="685" y="70" fill="#c0392b" text-anchor="end">2004-2005년 폭등기</text>
+          <text class="ann-text" x="685" y="83" text-anchor="end">● 요인: 중국의 석유수요 급증</text>
+
+          <circle cx="684.5" cy="54.6" r="4" fill="#d35400"/>
+          <text class="line-label" x="690" y="46" text-anchor="end">$68.63</text>
+
+          <path d="M50.0,308.4 L51.3,308.4 L52.7,308.4 L54.0,308.4 L55.4,308.4 L56.8,308.4 L58.2,308.4 L59.6,308.1 L60.9,308.1 L62.3,308.1 L63.7,308.1 L65.1,308.1 L66.5,308.1 L67.8,308.1 L69.2,308.1 L70.5,308.1 L71.9,308.1 L73.3,308.1 L74.7,308.1 L76.1,308.1 L77.4,308.1 L78.8,308.1 L80.2,308.1 L81.6,308.1 L83.0,308.1 L84.2,307.4 L85.6,307.0 L87.0,307.0 L88.4,307.0 L89.8,307.0 L91.2,307.0 L92.6,307.0 L93.9,307.0 L95.3,307.0 L96.7,307.0 L98.1,307.0 L99.5,307.0 L100.7,307.0 L102.1,307.0 L103.5,307.0 L104.9,307.0 L106.2,307.2 L107.6,307.2 L109.0,307.2 L110.4,307.2 L111.8,307.2 L113.1,306.2 L114.5,306.2 L115.9,306.2 L117.2,306.2 L118.6,306.2 L119.9,306.2 L121.3,306.2 L122.7,306.2 L124.1,306.2 L125.5,306.2 L126.8,306.2 L128.2,306.2 L129.6,306.2 L131.0,306.2 L132.4,306.2 L133.7,306.2 L135.1,306.2 L136.5,306.2 L137.9,306.2 L139.2,306.2 L140.6,306.2 L142.0,306.2 L143.4,306.2 L144.8,306.2 L146.1,306.2 L147.5,306.2 L148.9,306.2 L150.2,306.2 L151.6,306.2 L152.9,306.2 L154.3,306.2 L155.7,306.2 L157.1,303.3 L158.5,303.3 L159.8,303.3 L161.2,303.3 L162.6,303.3 L164.0,280.9 L165.4,280.9 L166.6,280.9 L168.0,280.9 L169.4,280.9 L170.8,280.9 L172.2,280.9 L173.6,280.9 L174.9,280.9 L176.3,276.8 L177.7,276.8 L179.1,276.8 L180.5,276.8 L181.9,276.8 L183.1,276.8 L184.5,276.8 L185.9,276.8 L187.3,276.8 L188.6,276.8 L189.9,276.8 L191.3,276.8 L192.7,276.8 L194.1,276.8 L195.4,276.8 L196.8,276.8 L198.2,273.5 L199.6,273.2 L201.0,272.9 L202.4,272.9 L203.8,272.9 L205.1,272.9 L206.5,272.9 L207.9,266.3 L209.3,266.3 L210.7,266.3 L212.0,266.3 L213.4,266.3 L214.8,266.3 L216.1,266.3 L217.5,266.3 L218.9,266.3 L220.3,266.3 L221.6,266.3 L223.0,262.6 L224.4,262.6 L225.8,262.6 L227.2,262.6 L228.5,262.6 L229.9,262.6 L231.3,262.6 L232.6,262.6 L234.0,262.6 L235.3,262.6 L236.7,262.6 L238.1,262.6 L239.5,262.6 L240.9,262.6 L242.2,262.6 L243.6,262.6 L245.0,262.6 L246.4,262.6 L247.8,258.7 L249.0,258.7 L250.4,258.7 L251.8,250.0 L253.2,246.1 L254.5,235.9 L255.9,217.5 L257.3,209.8 L258.7,207.9 L260.1,200.1 L261.5,194.3 L262.9,194.3 L264.3,176.9 L265.6,173.1 L267.0,167.3 L268.3,167.3 L269.7,167.3 L271.1,167.3 L272.5,173.1 L273.9,180.8 L275.2,180.8 L276.6,180.8 L278.0,176.9 L279.4,173.1 L280.8,173.1 L282.0,173.1 L283.4,173.1 L284.8,173.1 L286.2,180.8 L287.5,180.8 L288.9,180.8 L290.3,180.8 L291.7,184.7 L293.1,180.8 L294.4,184.7 L295.8,189.1 L297.2,198.0 L298.5,209.9 L299.9,190.7 L301.3,181.1 L302.7,184.4 L304.0,187.9 L305.4,188.7 L306.8,182.2 L308.2,182.0 L309.6,188.0 L310.9,197.3 L312.3,199.4 L313.7,208.1 L315.0,206.7 L316.4,201.6 L317.7,203.0 L319.1,198.7 L320.5,196.3 L321.9,197.9 L323.3,202.6 L324.6,202.6 L326.0,207.0 L327.4,205.5 L328.8,204.1 L330.2,201.9 L331.5,200.7 L332.9,203.0 L334.2,200.8 L335.6,205.0 L337.0,213.3 L338.4,207.0 L339.8,205.3 L341.1,210.0 L342.5,214.4 L343.9,217.9 L345.3,217.9 L346.7,216.6 L348.0,210.6 L349.4,213.2 L350.7,212.4 L352.1,216.1 L353.5,215.1 L354.9,211.4 L356.3,207.6 L357.6,202.5 L359.0,205.0 L360.4,218.3 L361.8,246.7 L363.2,268.8 L364.4,280.4 L365.8,268.3 L367.2,264.7 L368.6,270.5 L369.9,276.6 L371.3,258.4 L372.7,263.2 L374.1,261.0 L375.5,262.0 L376.8,250.7 L378.2,247.6 L379.6,256.4 L380.9,247.2 L382.3,247.5 L383.7,245.1 L385.0,241.8 L386.4,237.1 L387.8,243.6 L389.2,244.1 L390.6,242.8 L392.0,248.4 L393.3,255.3 L394.7,254.4 L396.1,258.2 L397.4,253.9 L398.8,250.0 L400.2,252.2 L401.6,261.2 L402.9,256.7 L404.3,261.3 L405.7,268.5 L407.1,267.6 L408.5,260.4 L409.8,253.8 L411.2,254.3 L412.6,249.6 L413.9,241.6 L415.3,241.2 L416.6,242.9 L418.0,241.5 L419.4,249.1 L420.8,247.2 L422.2,242.1 L423.5,243.1 L424.9,243.2 L426.3,235.6 L427.7,232.3 L429.1,236.7 L430.4,241.4 L431.8,248.5 L433.1,252.4 L434.5,254.1 L435.9,240.5 L437.3,213.9 L438.7,167.2 L440.0,183.5 L441.4,207.6 L442.8,209.9 L444.2,235.3 L445.6,245.5 L446.8,244.1 L448.2,238.8 L449.6,238.2 L451.0,240.5 L452.3,236.1 L453.7,233.9 L455.1,234.0 L456.5,229.9 L457.9,236.9 L459.2,246.0 L460.6,246.8 L462.0,247.7 L463.3,244.6 L464.7,239.3 L466.1,234.4 L467.5,235.6 L468.8,235.6 L470.2,237.0 L471.6,235.6 L473.0,240.0 L474.4,243.0 L475.7,244.6 L477.1,241.6 L478.5,240.6 L479.8,241.0 L481.2,240.6 L482.6,242.5 L484.0,247.2 L485.3,250.6 L486.7,249.5 L488.1,247.6 L489.5,254.4 L490.9,260.6 L492.2,265.1 L493.6,261.1 L495.0,263.9 L496.3,262.9 L497.7,254.6 L499.0,249.2 L500.4,245.1 L501.8,241.5 L503.2,251.9 L504.6,249.0 L505.9,249.8 L507.3,250.2 L508.7,251.3 L510.1,248.5 L511.5,248.4 L512.8,245.8 L514.2,241.3 L515.5,247.0 L516.9,252.8 L518.3,251.9 L519.7,250.8 L521.1,252.2 L522.4,251.7 L523.8,249.4 L525.2,244.4 L526.6,251.3 L528.0,244.3 L529.3,237.1 L530.7,239.0 L532.0,243.6 L533.4,239.1 L534.8,240.9 L536.2,234.0 L537.6,226.4 L538.9,230.1 L540.3,228.4 L541.7,219.9 L543.1,226.6 L544.5,241.5 L545.7,241.3 L547.1,241.9 L548.5,238.8 L549.9,243.4 L551.2,241.9 L552.6,244.0 L554.0,238.3 L555.4,238.4 L556.8,246.0 L558.1,251.8 L559.5,253.5 L560.9,260.3 L562.2,259.1 L563.6,259.8 L565.0,261.2 L566.4,264.7 L567.7,264.8 L569.1,268.6 L570.5,257.4 L571.9,264.0 L573.3,276.0 L574.6,273.1 L576.0,270.5 L577.4,272.4 L578.7,255.6 L580.1,247.7 L581.4,254.8 L582.8,245.3 L584.2,240.7 L585.6,234.4 L587.0,225.1 L588.3,235.7 L589.7,223.8 L591.1,220.4 L592.5,213.1 L593.9,201.8 L595.2,216.1 L596.6,220.6 L597.9,207.8 L599.3,194.6 L600.7,213.7 L602.1,192.1 L603.5,200.6 L604.9,193.6 L606.2,190.0 L607.6,216.7 L609.0,209.3 L610.4,214.2 L611.7,218.0 L613.1,209.9 L614.4,210.2 L615.8,218.0 L617.2,216.8 L618.6,217.0 L620.0,229.4 L621.3,238.0 L622.7,244.8 L624.1,242.8 L625.5,243.8 L626.9,235.8 L628.1,218.7 L629.5,214.4 L630.9,221.9 L632.3,216.4 L633.6,215.5 L635.0,208.0 L636.4,201.7 L637.8,214.9 L639.2,216.1 L640.5,199.3 L641.9,190.4 L643.3,177.9 L644.6,199.6 L646.0,219.1 L647.4,205.7 L648.8,203.4 L650.1,201.8 L651.5,197.2 L652.9,207.1 L654.3,206.9 L655.7,202.7 L657.0,194.3 L658.4,191.8 L659.8,180.5 L661.1,181.8 L662.5,175.7 L663.9,165.7 L665.3,177.2 L666.6,150.9 L668.0,156.7 L669.4,128.4 L670.8,119.8 L672.2,129.9 L673.5,152.3 L674.9,133.4 L676.3,119.9 L677.6,106.1 L679.0,129.8 L680.3,118.6 L681.7,101.0 L683.1,85.3 L684.5,54.6 L685.9,64.0 L687.2,88.8 L688.6,98.3 L690.0,83.9"
+            fill="none" stroke="#d35400" stroke-width="2.5" stroke-linejoin="round"/>
+
+          <text class="axis-text" x="98.1" y="345" text-anchor="middle">1970</text>
+          <text class="axis-text" x="180.5" y="345" text-anchor="middle">1975</text>
+          <text class="axis-text" x="262.9" y="345" text-anchor="middle">1980</text>
+          <text class="axis-text" x="345.3" y="345" text-anchor="middle">1985</text>
+          <text class="axis-text" x="427.7" y="345" text-anchor="middle">1990</text>
+          <text class="axis-text" x="510.1" y="345" text-anchor="middle">1995</text>
+          <text class="axis-text" x="592.5" y="345" text-anchor="middle">2000</text>
+          <text class="axis-text" x="674.9" y="345" text-anchor="middle">2005</text>
+        </svg>
+      </div>
+      <div class="chart-caption">
+        장기 데이터 흐름상 평탄하던 국제 유가는 특정 지정학적 이벤트를 마주할 때마다 계단식 충격 상승을 기록했습니다.
+      </div>
+    </div>
+
+    <div class="column">
+      <p>
+        충격의 핵심은 <strong>단기간 내 폭등하는 속도</strong>에 있었습니다. 제1차 파동은 1개월 만에 4배 이상 수직 상승했으며, 걸프전쟁 또한 단 3개월 만에 공급망 불안으로 가격이 두 배 이상 치솟았습니다.
+      </p>
+    </div>
+
+    <div class="chart-block wide">
+      <div class="chart-fill">
+        <svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <style>
+              .bar-label { font-family: 'IBM Plex Sans KR', sans-serif; font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+              .bar-sub { font-family: 'IBM Plex Sans KR', sans-serif; font-size: 11.5px; fill: #888; }
+              .bar-value { font-family: 'IBM Plex Sans KR', sans-serif; font-size: 13.5px; font-weight: 700; fill: #4a4a4a; }
+              .hl-time { fill: #d35400; font-weight: 700; }
+              .hl-price { fill: #c0392b; font-weight: 700; }
+              .axis-grid { stroke: #ebe7e0; stroke-width: 1; }
+            </style>
+          </defs>
+
+          <line class="axis-grid" x1="180" y1="30" x2="180" y2="330"/>
+          <line class="axis-grid" x1="295" y1="30" x2="295" y2="330" stroke-dasharray="3,3"/>
+          <line class="axis-grid" x1="410" y1="30" x2="410" y2="330" stroke-dasharray="3,3"/>
+          <line class="axis-grid" x1="525" y1="30" x2="525" y2="330" stroke-dasharray="3,3"/>
+          <line class="axis-grid" x1="640" y1="30" x2="640" y2="330" stroke-dasharray="3,3"/>
+          
+          <text class="bar-sub" x="180" y="22" text-anchor="middle">1</text>
+          <text class="bar-sub" x="295" y="22" text-anchor="middle">2</text>
+          <text class="bar-sub" x="410" y="22" text-anchor="middle">3</text>
+          <text class="bar-sub" x="525" y="22" text-anchor="middle">4</text>
+
+          <text class="bar-label" x="20" y="65">제1차 석유파동</text>
+          <text class="bar-sub" x="20" y="82">1973년 (<tspan class="hl-time">1개월 소요</tspan>)</text>
+          <text class="bar-sub" x="20" y="99">중동 금수조치</text>
+          <rect x="180" y="52" width="379" height="26" fill="#d35400" rx="4"/>
+          <text class="bar-value" x="565" y="70">4.3배 <tspan class="hl-price">($3 → $13)</tspan></text>
+
+          <text class="bar-label" x="20" y="135">제2차 석유파동</text>
+          <text class="bar-sub" x="20" y="152">1979년 (<tspan class="hl-time">5개월 소요</tspan>)</text>
+          <text class="bar-sub" x="20" y="169">이란혁명</text>
+          <rect x="180" y="122" width="184" height="26" fill="#d35400" opacity="0.85" rx="4"/>
+          <text class="bar-value" x="370" y="140">2.6배 <tspan class="hl-price">($15 → $39)</tspan></text>
+
+          <text class="bar-label" x="20" y="205">걸프전쟁</text>
+          <text class="bar-sub" x="20" y="222">1990년 (<tspan class="hl-time">3개월 소요</tspan>)</text>
+          <text class="bar-sub" x="20" y="239">이라크의 쿠웨이트 침공</text>
+          <rect x="180" y="192" width="161" height="26" fill="#d35400" opacity="0.7" rx="4"/>
+          <text class="bar-value" x="347" y="210">2.4배 <tspan class="hl-price">($17 → $41)</tspan></text>
+
+          <text class="bar-label" x="20" y="285">OPEC의 결속력 강화</text>
+          <text class="bar-sub" x="20" y="302">2000년 (<tspan class="hl-time">15개월 소요</tspan>)</text>
+          <text class="bar-sub" x="20" y="319">목표유가밴드제</text>
+          <rect x="180" y="272" width="126" height="26" fill="#d35400" opacity="0.55" rx="4"/>
+          <text class="bar-value" x="312" y="290">2.1배 <tspan class="hl-price">($15 → $32)</tspan></text>
+        </svg>
+      </div>
+      <div class="chart-caption">
+        지정학적 리스크 발발 시 공급망 교란이 유가를 밀어 올리는 속도는 파괴적이었습니다. 단기적인 지정학적 쇼크뿐만 아니라 산유국의 담합(OPEC) 등 구조적 요인 역시 가격의 급등을 주도했습니다.
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter">
+    <div class="column">
+      <div class="chapter-mark">CHAPTER 02 — 승(承)</div>
+      <h3>반복되는 역사, 전쟁의 총성과 요동치는 기름값</h3>
+      
+      <div class="insight-box">
+          <p>지정학적 위기는 원유 공급망을 직접적으로 타격하며, 이는 곧장 대한민국의 실물 경제와 국민의 일상을 흔듭니다. <strong>2022년 러시아-우크라이나 전쟁</strong>과 <strong>2026년 미-이란 분쟁</strong>의 데이터는 이러한 위기가 어떻게 즉각적인 가격 폭등으로 이어지는지 증명합니다.</p>
+      </div>
+    </div>
+
+    <div class="chart-block wide">
+      <div class="chart-fill">
+        <div class="canvas-container">
+          <canvas id="dubaiCrudeChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-caption">
+        두 전쟁 모두 발발 직후 1~3개월 내에 유가가 수직 상승했습니다. 2022년 러-우 전쟁 당시 110달러 선을 돌파했던 유가는, 중동의 핵심 산유국이 개입된 2026년 미-이란 갈등 시 단기간에 <span class="highlight">배럴당 128달러</span>를 상회하며 과거보다 훨씬 더 깊고 가파른 충격을 주었습니다.
+      </div>
+    </div>
+
+    <div class="column">
+      <p>
+        이러한 국제 유가의 폭등은 수입 물가를 끌어올려, 시차를 두고 국내 주유소 가격표를 빠르게 바꾸어 놓습니다. 이는 가계의 지출 부담을 늘려 소비 여력을 위축시키고, 동시에 운송 및 제조 기업들의 생산 비용을 증가시켜 <strong>전반적인 국가 경제의 인플레이션(물가 상승)</strong>을 유발하는 치명적인 연쇄 반응을 일으킵니다.
+      </p>
+    </div>
+
+    <div class="chart-block wide">
+      <div class="chart-fill">
+        <div class="canvas-container">
+          <canvas id="domesticGasolineChart"></canvas>
+        </div>
+        <div class="data-source"></div>
+      </div>
+      <div class="chart-caption">
+        국제 유가의 충격파는 국내 주유소 가격에 즉각 반영되었습니다. <strong>22년 2월 24일 러시아-우크라이나 전쟁 발발, 26년 2월 28일 미국과 이란 전쟁</strong> 이후 <strong>2022년에는 1월 1,635원에서 시작해 4월 1,976원까지 치솟았으며, 이후 6월과 7월에는 2,000원을 돌파</strong>하는 등 고유가 시대를 맞이했습니다. <strong>2026년 역시 1월 1,704원에서 4월 1,986원까지</strong> 가파른 상승 곡선을 그리며, 지정학적 위기가 우리 일상 물가에 치명적인 연쇄 반응을 일으키고 있음을 여실히 보여줍니다.
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" style="background-color: #f4ede4; padding-top: 60px; padding-bottom: 80px; margin-top: 40px;">
+    <div class="column">
+      <div class="chapter-mark">CHAPTER 03 — 전(轉)</div>
+      <h3>그렇다면 대한민국은 왜 중동의 영향을 받을 수밖에 없는가?</h3>
+      <p>
+        글로벌 유가 위기가 닥칠 때마다 왜 한국은 유독 그 충격을 크게 체감하게 될까요? 그 해답은 우리나라의 구조적인 에너지 수급 형태에 있습니다. 우리가 <strong>중동 산유국에 막대하게 의존할 수밖에 없는 이유</strong>는 크게 3가지로 요약할 수 있습니다.
+      </p>
+    </div>
+
+    <div class="column">
+      <ul class="info-list">
+        <li>
+            <h4>1. 지리적 근접성: 압도적인 운송 단가 우위</h4>
+            <p>중동은 다른 주요 산유국(미국, 남미 등)에 비해 우리나라와 지리적으로 가깝습니다. 이는 원유를 들여오는 <strong>수송 단가를 획기적으로 낮추고 운송 기간을 단축</strong>하는 절대적인 이점이 됩니다.</p>
+        </li>
+      </ul>
+    </div>
+
+    <div class="chart-block wide">
+      <div class="chart-fill">
+        <div class="canvas-container">
+          <canvas id="transportCostChart"></canvas>
+        </div>
+        <div class="data-source"></div>
+      </div>
+      <div class="chart-caption">
+        최근 6년간의 수송 단가를 비교해 보면 중동산 원유 수송 단가는 <strong>항상 1달러 후반대</strong>를 유지하여 다른 대륙보다 압도적으로 저렴합니다. 반면 세계 평균이나 미국산 원유는 <strong>3~4달러에 육박</strong>하여 중동에 비해 2배 이상의 물류비용 격차가 발생합니다.
+      </div>
+    </div>
+
+    <div class="column">
+      <div class="insight-box ship-class-box" style="margin-top: -20px; border-left-color: #2c3e50;">
+        <p style="font-weight: bold; margin-bottom: 12px; color: #2c3e50;">[참고] 수심과 인프라가 결정하는 운송 효율: 선급별 항구 접근성 비교</p>
+        <p style="font-size: 15px; font-weight: 400; margin-bottom: 20px;">중동, 미국, 캐나다 항구의 수심(흘수)과 터미널 인프라에 따라 정박 가능한 유조선의 규모가 크게 달라집니다. 파나막스(Panamax), 수에즈막스(Suezmax), VLCC 순으로 각 선급의 특징과 지역별 정박 환경을 정리했습니다.</p>
+
+        <h5>1. 파나막스 (Panamax)</h5>
+        <ul>
+          <li><strong>적재 용량:</strong> 약 50,000 ~ 80,000 DWT (재화중량톤수)</li>
+          <li><strong>특징:</strong> 파나마 운하 통과용으로 설계되어 흘수(수면 아래 깊이)가 약 12m 내외로 얕습니다.</li>
+          <li><strong>중동 항구:</strong> 주요 항구 정박이 가능하나, 장거리 원유 운송 시 경제성이 크게 떨어져 주로 정제유 운반에 사용됩니다.</li>
+          <li><strong>미/캐나다 항구:</strong> 수심 제한이 있는 미국 걸프만 내륙 항구(휴스턴 등)나 캐나다 밴쿠버 등 상업 항구에 해상 환적 없이 제약 없는 접근이 가능합니다.</li>
+        </ul>
+
+        <h5>2. 수에즈막스 (Suezmax)</h5>
+        <ul>
+          <li><strong>적재 용량:</strong> 약 120,000 ~ 200,000 DWT</li>
+          <li><strong>특징:</strong> 수에즈 운하를 통과할 수 있는 최대 크기로, 흘수는 약 16~17m 수준입니다.</li>
+          <li><strong>중동 항구:</strong> 모든 주요 수출 터미널에 무리 없이 정박 가능하며 주로 유럽/미주 노선에 투입됩니다.</li>
+          <li><strong>미/캐나다 항구:</strong> 미국은 최근 수심 준설로 입항이 개선 중이나 여전히 환적이나 부분 하역이 필요한 내륙 항구가 많습니다. 캐나다 대서양 연안은 접근이 용이하나, 서부 밴쿠버 터미널은 아프라막스(Aframax)급으로 제한되어 진입이 어렵습니다.</li>
+        </ul>
+
+        <h5>3. VLCC (초대형 유조선)</h5>
+        <ul>
+          <li><strong>적재 용량:</strong> 약 200,000 ~ 320,000 DWT</li>
+          <li><strong>특징:</strong> 흘수가 20m 이상으로 깊은 수심을 요구하는 <strong>세계 장거리 원유 운송의 핵심 선박</strong>입니다.</li>
+          <li><strong>중동 항구:</strong> 라스 타누라, 미나 알 아마디 등 중동의 주요 터미널은 애초에 VLCC에 맞춰 설계되어(해상 계류장 등) <strong>가장 경제적인 초대형 선적 및 정박이 완벽하게 가능합니다.</strong></li>
+          <li><strong>미/캐나다 항구:</strong> 깊은 수심 탓에 대부분의 내륙 항구 진입이 불가능합니다. 미국의 일부 해상 터미널(LOOP 등)과 캐나다 동부 심해 항구 등 극소수만 수용 가능하며, 그 외 지역은 해상 환적(Lightering)이라는 번거로운 추가 작업을 거쳐야 합니다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="column">
+      <ul class="info-list">
+        <li>
+            <h4>2. 국내 정유설비와의 완벽한 핏(Fit): 고도화 설비</h4>
+            <p>중동에서 생산되는 대표적 유종인 <strong>'두바이유(Dubai Crude)'</strong>는 황 성분이 많고 점도가 높은 '사워 오일(Sour Oil)'. 정제가 까다롭고 부식을 유발하여 WTI나 브렌트유 대비 가격이 가장 저렴하다는 특징이 있습니다.</p>
+            <p style="margin-top: 10px;">하지만 대한민국 정유사들은 이 까다로운 기름을 고부가가치 제품으로 뽑아낼 수 있는 <strong>'고도화 설비'</strong>를 완벽하게 갖추고 있습니다. 저렴한 중동산 원유를 도입함으로써 <strong>설비 활용도를 극대화하고 막대한 수익을 창출</strong>하는 것입니다.</p>
+
+            <div style="text-align: center; margin: 35px 0;">
+              <div class="savings-tag" style="margin: 0; font-size: 16px; padding: 6px 16px;">💸 효과: 연간 약 6조 5,000억 원 원가 절감 (국가 예산의 약 1% 규모)</div>
+            </div>
+
+            <div class="calculation-box">
+              <div class="calc-header">💡 어떻게 연간 6.5조 원이 절감될까? (2024년 기준 시뮬레이션)</div>
+              <div class="calc-steps">
+                <div class="step">
+                  <div class="step-title">① 중동 원유 수입량</div>
+                  <div class="step-value">7.36억 배럴</div>
+                  <div class="step-desc">24년 총 수입량의 71.5%<br>(출처: KOSIS)</div>
+                </div>
+                <div class="step-operator">×</div>
+                <div class="step">
+                  <div class="step-title">② 유가 차이(스프레드)</div>
+                  <div class="step-value">약 $6.5</div>
+                  <div class="step-desc">두바이유와 브렌트유의<br>배럴당 평균 가격차</div>
+                </div>
+                <div class="step-operator">×</div>
+                <div class="step">
+                  <div class="step-title">③ 원/달러 환율</div>
+                  <div class="step-value">1,364.15원</div>
+                  <div class="step-desc">24년 연평균 고시 기준<br>(출처: 미국 IRS)</div>
+                </div>
+                <div class="step-operator">=</div>
+                <div class="step result">
+                  <div class="step-title">총 원가 절감액</div>
+                  <div class="step-value">약 6.5조 원</div>
+                  <div class="step-desc">24년 대한민국 예산<br>(656.6조 원)의 <strong>약 1%</strong></div>
+                </div>
+              </div>
+            </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="column">
+      <ul class="info-list">
+        <li>
+            <h4>3. 지정학적 재편: 역설적으로 커진 중동 접근성</h4>
+            <p>2022년 발발한 러시아-우크라이나 전쟁은 글로벌 원유 공급망을 완전히 재편했습니다. 미국과 유럽(EU)은 러시아산 원유 수입을 강력히 통제하며 비(非)중동 산유국 확보 경쟁에 뛰어들었습니다. </p>
+            <p style="margin-top: 10px;">반면 <strong>중국과 인도</strong>는 서방의 제재 실효를 피해 저렴해진 <strong>러시아산 원유를 블랙홀처럼 흡수</strong>했습니다. 아시아의 거물들이 러시아로 시선을 돌리면서, <strong>자연스럽게 중동산 원유의 아시아(한국 등) 공급 여력이 넓어지는 결과</strong>를 낳았습니다.</p>
+        </li>
+      </ul>
+    </div>
+
+    <div class="chart-block wide">
+      <div class="chart-title-container">
+        <h4>러-우 전쟁 전후 주요국 원유 수입 비중 변화</h4>
+        <div class="chart-subtitle">러시아산 제재에 따른 글로벌 공급망 재편 (2021 vs 2025)</div>
+      </div>
+      
+      <div class="chart-grid-top">
+        <div class="chart-fill">
+          <div class="canvas-container small">
+            <canvas id="chinaImportChart"></canvas>
+          </div>
+          <div class="mini-legend">
+            <div class="legend-group">
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(41, 128, 185, 0.3); border: 1px solid rgba(41, 128, 185, 0.8);"></span> 중동 (2021년)</div>
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(41, 128, 185, 0.95);"></span> 중동 (2025년)</div>
+            </div>
+            <div class="legend-group">
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(192, 57, 43, 0.3); border: 1px solid rgba(192, 57, 43, 0.8);"></span> 러시아 (2021년)</div>
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(192, 57, 43, 0.95);"></span> 러시아 (2025년)</div>
+            </div>
+            <div class="legend-group">
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(189, 195, 199, 0.2); border: 1px solid rgba(149, 165, 166, 0.5);"></span> 기타 국가 (2021년)</div>
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(149, 165, 166, 0.4);"></span> 기타 국가 (2025년)</div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-fill">
+          <div class="canvas-container small">
+            <canvas id="indiaImportChart"></canvas>
+          </div>
+          <div class="mini-legend">
+            <div class="legend-group">
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(41, 128, 185, 0.3); border: 1px solid rgba(41, 128, 185, 0.8);"></span> 중동 (2021년)</div>
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(41, 128, 185, 0.95);"></span> 중동 (2025년)</div>
+            </div>
+            <div class="legend-group">
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(192, 57, 43, 0.3); border: 1px solid rgba(192, 57, 43, 0.8);"></span> 러시아 (2021년)</div>
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(192, 57, 43, 0.95);"></span> 러시아 (2025년)</div>
+            </div>
+            <div class="legend-group">
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(189, 195, 199, 0.2); border: 1px solid rgba(149, 165, 166, 0.5);"></span> 기타 국가 (2021년)</div>
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(149, 165, 166, 0.4);"></span> 기타 국가 (2025년)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-grid-bottom">
+        <div class="chart-fill">
+          <div class="canvas-container small">
+            <canvas id="euImportChart"></canvas>
+          </div>
+          <div class="mini-legend">
+            <div class="legend-group">
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(41, 128, 185, 0.3); border: 1px solid rgba(41, 128, 185, 0.8);"></span> 중동 (2021년)</div>
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(41, 128, 185, 0.95);"></span> 중동 (2025년)</div>
+            </div>
+            <div class="legend-group">
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(192, 57, 43, 0.3); border: 1px solid rgba(192, 57, 43, 0.8);"></span> 러시아 (2021년)</div>
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(192, 57, 43, 0.95);"></span> 러시아 (2025년)</div>
+            </div>
+            <div class="legend-group">
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(189, 195, 199, 0.2); border: 1px solid rgba(149, 165, 166, 0.5);"></span> 기타 국가 (2021년)</div>
+                <div class="mini-legend-item"><span class="mini-legend-box" style="background: rgba(149, 165, 166, 0.4);"></span> 기타 국가 (2025년)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="chart-caption">
+        러-우 전쟁 발발 이전인 2021년 대비 2025년의 수입 비중을 살펴보면, <strong>EU는 러시아산 원유를 사실상 퇴출(24.9% → 1.9%)</strong>시켰습니다. 반면 <strong>중국과 인도는 러시아산 비중을 대폭 늘리며(인도는 2.4% → 32.1%) 기존의 중동산 수입 비중을 줄였고</strong>, 이는 한국이 중동산 원유를 안정적으로 확보할 수 있는 반사이익으로 작용했습니다.
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" style="padding-top: 80px; background-color: #fff;">
+    <div class="column">
+      <div class="chapter-mark">CHAPTER 04 — 결(結)</div>
+      <h3>중동 리스크의 해법: 공급망 다변화와 기술 안보</h3>
+      <p>지정학적 위기를 극복하고 에너지 주권을 확보하기 위한 대한민국의 대응은 이미 시작되었습니다. <strong>단기적인 수급 다변화</strong>부터 <strong>미래 기술을 통한 근본적 체질 개선</strong>까지, 입체적인 전략이 실행되고 있습니다.</p>
+    </div>
+
+    <div class="chart-block wide">
+      <div class="chart-fill">
+        <div class="canvas-container medium">
+          <canvas id="koreaDependenceChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-caption">
+        대한민국은 리스크 분산을 위해 중동 중심의 원유 수입선에서 벗어나 꾸준히 다변화를 추진해 왔습니다. 실제 통계 데이터에 따르면, <strong>2015년 81.7%에 달했던 중동 원유 의존도는 2025년에 이르러 68.3%까지 가시적으로 감소</strong>했습니다. <strong>미국과 남미 등 비중동 지역의 수입 비중이 18.3%에서 31.7%로 확대</strong>된 것은, 글로벌 지정학적 쇼크가 발생했을 때 실물 공급망의 충격을 방어하는 든든한 조커 카드가 됩니다.
+      </div>
+    </div>
+
+    <div class="chart-block wide">
+      <div class="chart-title-container">
+        <h4>국가 비상 대응: 원유 도입선 다변화 현황</h4>
+        <div class="chart-subtitle">중동 의존도 탈피를 위한 17개국 대체 공급망 구축</div>
+      </div>
+      <div class="calculation-box" style="background-color: #fff; border-top: 4px solid var(--accent-secondary);">
+        <div class="calc-steps">
+          <div class="step">
+            <div class="step-title">대체 도입국</div>
+            <div class="step-value">17개국</div>
+            <div class="step-desc">미국, 브라질, 노르웨이 등<br>글로벌 공급망 확장</div>
+          </div>
+          <div class="step-operator">+</div>
+          <div class="step">
+            <div class="step-title">확보 물량</div>
+            <div class="step-value">1.1억 배럴</div>
+            <div class="step-desc">비상시 즉시 투입 가능한<br>대체 원유 확보 완료</div>
+          </div>
+          <div class="step-operator">+</div>
+          <div class="step">
+            <div class="step-title">비축유 스와프</div>
+            <div class="step-value">3,000만+</div>
+            <div class="step-desc">정부-민간 연계<br>실전형 수급 안전판</div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-caption">
+        정부는 중동 분쟁 장기화에 대비해 17개국으로부터 예년의 70% 수준인 1억 1천만 배럴의 대체선을 확보했습니다. 이는 단순한 수치를 넘어, 국내 정유 설비의 유연성과 결합하여 어떠한 지정학적 충격에도 굴하지 않는 '시스템 복원력'을 의미합니다.
+      </div>
+    </div>
+
+    <div class="chart-block wide">
+      <div class="chart-title-container">
+        <h4>차세대 에너지 안보: SMR 기술 동맹 현황</h4>
+        <div class="chart-subtitle">SK·한수원·테라파워 협력을 통한 글로벌 시장 진출 본격화</div>
+      </div>
+      
+      <div class="article-box">
+        <p style="font-size: 16px; color: var(--text-soft); margin-bottom: 28px;">
+          최태원 SK그룹 회장과 빌 게이츠 창업자가 손잡은 미국 차세대 SMR 기업 <strong>테라파워</strong>가 미국 원자력규제위원회로부터 상업용 원자로 건설 승인을 획득했습니다. SK의 지분 투자와 한수원의 운영 노하우가 결합되어 미래 에너지 시장의 주도권을 확보합니다.
+        </p>
+
+        <div class="calc-header" style="font-size: 16px; margin-bottom: 20px; color: var(--accent-secondary); text-align: left; padding-left: 10px; border-left: 3px solid var(--accent-secondary);">
+          💡 4세대 SMR '나트륨(Natrium)' 기술의 핵심 메커니즘
+        </div>
+
+        <div class="smr-grid three-cols">
+          <div class="smr-card">
+            <h5>① 뛰어난 친환경성</h5>
+            <p>기존 대형 원전 대비 <strong>사용후 핵연료 발생량을 약 90%까지 획기적으로 감축</strong>하여 폐기물 처리 부담을 최소화합니다.</p>
+          </div>
+          <div class="smr-card">
+            <h5>② 파괴적인 안전성</h5>
+            <p>물 대신 끓는점이 880도에 달하는 <strong>액체 나트륨 냉각재</strong>를 사용하여, 고온에서도 폭발 위험 없이 안전한 운전이 가능합니다.</p>
+          </div>
+          <div class="smr-card">
+            <h5>③ 지능형 전력 수급</h5>
+            <p>자체 ESS 기능을 통해 전력 수요에 따라 출력을 조절하는 <strong>부하 추종</strong>이 가능하여 AI 데이터센터 기저부하에 최적화되었습니다.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="chart-caption" style="margin-top: 20px;">
+         기사에 따르면, 이번 협력은 단순 투자를 넘어 설계부터 기자재 공급까지 아우르는 'SMR 생태계 일괄 구축'을 목표로 합니다. 이는 지정학적 리스크에 흔들리지 않는 에너지 자립의 핵심 열쇠가 될 것입니다.
+      </div>
+    </div>
+
+    <div class="chart-block wide">
+      <div class="chart-title-container">
+        <h4>궁극적 에너지 자립: 재생에너지 가속화와 '에너지 고속도로'</h4>
+        <div class="chart-subtitle">수입 화석연료 의존도를 낮추는 2035년 80% 청정 전력 비전</div>
+      </div>
+      
+      <div class="article-box">
+        <p style="font-size: 17px; color: var(--text-soft); margin-bottom: 24px; text-align: justify;">
+          우리가 앞서 목격했듯이, 해외 분쟁에 따른 유가 폭등은 한국 경제를 뿌리째 흔드는 고질적인 위협이었습니다. 로렌스 버클리 국립연구소(LBNL)의 시나리오는 이러한 '수입 의존적 에너지 구조'에서 탈피하는 가장 현실적인 해법을 제시합니다.
+        </p>
+        <p style="font-size: 17px; color: var(--text-soft); margin-bottom: 32px; text-align: justify;">
+          핵심은 2035년까지 청정 전력 비중을 80%까지 끌어올리는 것입니다. 풍부한 바람과 햇빛을 활용한 재생에너지가 전체의 절반을 담당하고, 차세대 SMR을 포함한 원자력이 튼튼한 기저 전력을 보완합니다. 이를 통해 수입에 의존하던 화석연료 비중을 20%로 낮춤으로써, 지정학적 리스크에 흔들리지 않는 진정한 에너지 주권을 실현할 수 있습니다.
+        </p>
+
+        <div class="calc-header" style="font-size: 16px; margin-bottom: 20px; color: var(--accent-secondary); text-align: left; padding-left: 10px; border-left: 3px solid var(--accent-secondary);">
+          📊 LBNL 시나리오: 2035년 대한민국 에너지 믹스 목표
+        </div>
+        
+        <div class="canvas-container" style="height: 200px; margin-bottom: 40px;">
+          <canvas id="lbnlMixBarChart"></canvas>
+        </div>
+
+        <div class="calc-header" style="font-size: 16px; margin-bottom: 16px; color: var(--accent-secondary); text-align: left; padding-left: 10px; border-left: 3px solid var(--accent-secondary);">
+          🚀 국가 안보를 위한 핵심 인프라: 에너지 고속도로
+        </div>
+        <div class="smr-grid two-cols">
+          <div class="smr-card">
+            <h5>전국을 잇는 U자형 전력망</h5>
+            <p>서해안과 남해안의 거점 발전소에서 생산된 청정 에너지를 수도권과 주요 산업 단지로 손실 없이 보냅니다. 특히 수도권에 밀집된 반도체, AI 데이터센터 등 첨단 산업의 막대한 전력 수요를 충당하기 위해 필수적인 동맥 역할을 수행하며, 지역 간 전력 불균형을 해소합니다.</p>
+          </div>
+          <div class="smr-card">
+            <h5>에너지 안보의 최후 보루</h5>
+            <p>자체 생산된 전력을 유기적으로 순환시켜 특정 항만 봉쇄나 수급 차질 시에도 국가 기능을 안전하게 유지합니다. 해외 에너지 수입이 완전히 끊기는 최악의 '블랙아웃' 시나리오에서도, 주요 군사 및 국가 핵심 시설이 마비되지 않도록 전력을 우회 공급하는 강력한 회복 탄력성(Resilience)을 제공합니다.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="chart-caption" style="margin-top: 20px;">
+        결국 대한민국의 미래 에너지는 단순한 '경제'의 문제를 넘어 '생존'과 '안보'의 문제입니다. 자국 생산 전력을 극대화하고 이를 효율적으로 분배하는 고속도로망이 갖춰질 때, 비로소 외부 리스크로부터 자유로운 대한민국이 완성됩니다.
+      </div>
+    </div>
+
+    <div class="chart-block wide" style="margin-top: 60px;">
+      <div class="insight-box" style="background-color: #f8f5f0; border-left: 5px solid var(--accent); padding: 40px; box-shadow: 0 8px 24px rgba(0,0,0,0.06);">
+        <h4 style="color: var(--accent); font-family: 'IBM Plex Sans KR'; letter-spacing: 0.1em; margin-bottom: 20px; font-weight: 700;">CONCLUSION: ENERGY SOVEREIGNTY</h4>
+        <p style="color: var(--text); font-size: 18.5px; line-height: 1.75; text-align: justify; font-family: 'Gowun Batang', serif; margin-bottom: 0;">
+          반복되는 <strong>지정학적 충격(기)</strong>과 <strong>유가 폭등의 궤적(승)</strong>은 우리에게 분명한 경고를 던집니다.<br><br>
+          효율성이라는 명목 아래 방치해 온 <strong>기형적인 중동 의존 구조(전)</strong>를 끊어내지 못하면 위기는 반복될 수밖에 없습니다. 다변화된 공급망과 차세대 기술을 아우르는 <strong>'거대한 시스템의 전환'(결)</strong>만이 해답입니다.<br><br>
+          외부 리스크에 결코 흔들리지 않는 <strong>'진정한 에너지 주권(Energy Sovereignty)'</strong>의 실현, 이것이 대한민국이 마주한 가장 시급한 생존 과제입니다.
+        </p>
+      </div>
+    </div>
+
+    <div class="column">
+
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      Chart.defaults.font.family = "'IBM Plex Sans KR', sans-serif";
+      Chart.defaults.color = '#555';
+      
+      const legendMarginPlugin = {
+        id: 'legendMargin',
+        beforeInit(chart) {
+          if (!chart.legend) return;
+          const originalFit = chart.legend.fit;
+          chart.legend.fit = function fit() {
+            if (originalFit) originalFit.bind(chart.legend)();
+            this.height += 20; 
+          };
+        }
+      };
+      
+      // 4번째 차트 전용 (국내 휘발유 '원')
+      const gasolineLabelPlugin = {
+        id: 'gasolineLabelPlugin',
+        afterDatasetsDraw(chart, args, pluginOptions) {
+          if(chart.canvas.id !== 'domesticGasolineChart') return;
+          const { ctx, data } = chart;
+          ctx.save();
+          ctx.font = 'bold 13px "IBM Plex Sans KR"';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          
+          chart.data.datasets.forEach((dataset, i) => {
+            const meta = chart.getDatasetMeta(i);
+            if (!meta.hidden) {
+              meta.data.forEach((element, index) => {
+                const dataValue = dataset.data[index];
+                const dataString = Math.round(dataValue).toLocaleString() + '원';
+                ctx.fillStyle = i === 0 ? '#2980b9' : '#d35400';
+                ctx.fillText(dataString, element.x, element.y - 8);
+              });
+            }
+          });
+          ctx.restore();
+        }
+      };
+
+      // 5번째 차트 전용 (수송 단가 막대 차트 레이블 '$')
+      const transportLabelPlugin = {
+        id: 'transportLabelPlugin',
+        afterDatasetsDraw(chart, args, pluginOptions) {
+          if(chart.canvas.id !== 'transportCostChart') return;
+          const { ctx, data } = chart;
+          ctx.save();
+          ctx.font = 'bold 12px "IBM Plex Sans KR"';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          
+          chart.data.datasets.forEach((dataset, i) => {
+            const meta = chart.getDatasetMeta(i);
+            if (!meta.hidden) {
+              meta.data.forEach((element, index) => {
+                const dataValue = dataset.data[index];
+                const dataString = '$' + dataValue.toFixed(2);
+                if (i === 0) ctx.fillStyle = '#d35400'; // 중동
+                else if (i === 1) ctx.fillStyle = '#7f8c8d'; // 세계
+                else ctx.fillStyle = '#2980b9'; // 미국
+                ctx.fillText(dataString, element.x, element.y - 5);
+              });
+            }
+          });
+          ctx.restore();
+        }
+      };
+
+// 6번째 수입 비중 차트 공통 레이블 플러그인 (%) - 간격 통일 및 겹침 방지 최적화
+      const importLabelPlugin = {
+        id: 'importLabelPlugin',
+        afterDatasetsDraw(chart, args, pluginOptions) {
+          if(!chart.canvas.id.includes('ImportChart')) return;
+          const { ctx, data } = chart;
+          ctx.save();
+          ctx.font = 'bold 11.5px "IBM Plex Sans KR"';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+           
+          const dataset0 = data.datasets[0].data;
+          const dataset1 = data.datasets[1].data;
+
+          chart.data.datasets.forEach((dataset, i) => {
+            const meta = chart.getDatasetMeta(i);
+            if (!meta.hidden) {
+              meta.data.forEach((element, index) => {
+                const val0 = dataset0[index];
+                const val1 = dataset1[index];
+                const dataValue = dataset.data[index];
+                 
+                // 기본 간격을 -4로 설정하여 기타 국가 항목들처럼 막대에 바짝 붙도록 만듭니다.
+                let offset = -4; 
+                 
+                // 두 막대의 값 차이가 너무 적어 텍스트가 겹칠 위험이 있는 경우에만 미세하게 조정 (-16 대신 -12와 0으로 간격 좁힘)
+                if (Math.abs(val0 - val1) < 4) {
+                    if (val0 > val1) {
+                        offset = (i === 0) ? -12 : 0;
+                    } else if (val1 > val0) {
+                        offset = (i === 0) ? 0 : -12;
+                    } else {
+                        offset = (i === 0) ? -12 : 0;
+                    }
+                }
+
+                const dataString = dataValue.toFixed(1) + '%';
+                 
+                if (index === 0) ctx.fillStyle = i === 0 ? '#3498db' : '#2980b9'; // 중동
+                else if (index === 1) ctx.fillStyle = i === 0 ? '#e74c3c' : '#c0392b'; // 러시아
+                else ctx.fillStyle = i === 0 ? '#95a5a6' : '#7f8c8d'; // 기타
+
+                ctx.fillText(dataString, element.x, element.y + offset);
+              });
+            }
+          });
+          ctx.restore();
+        }
+      };
+      
+      // 3. 두바이유 가격 비교 차트 (선 차트) - [수정 완료된 버전: 데이터 라벨 표시 및 겹침 방지 적용]
+      const ctxDubai = document.getElementById('dubaiCrudeChart').getContext('2d');
+      
+      // 그라데이션 시각 효과 강화
+      let gradientBlue = ctxDubai.createLinearGradient(0, 0, 0, 400);
+      gradientBlue.addColorStop(0, 'rgba(41, 128, 185, 0.6)'); 
+      gradientBlue.addColorStop(1, 'rgba(41, 128, 185, 0.0)');
+      
+      let gradientRed = ctxDubai.createLinearGradient(0, 0, 0, 400);
+      gradientRed.addColorStop(0, 'rgba(211, 84, 0, 0.6)'); 
+      gradientRed.addColorStop(1, 'rgba(211, 84, 0, 0.0)');
+
+      new Chart(ctxDubai, {
+        type: 'line',
+        data: {
+          labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
+          datasets: [
+            {
+              label: '2022년 러-우 전쟁 시기',
+              data: [83.47, 92.36, 110.93, 102.82, 108.16, 113.27],
+              borderColor: '#2980b9',
+              backgroundColor: gradientBlue,
+              borderWidth: 4,
+              pointBackgroundColor: '#fff',
+              pointBorderColor: '#2980b9',
+              pointBorderWidth: 2.5,
+              pointRadius: 6,
+              pointHoverRadius: 9,
+              pointHoverBackgroundColor: '#2980b9',
+              pointHoverBorderColor: '#fff',
+              pointHoverBorderWidth: 3,
+              fill: true,
+              tension: 0.4
+            },
+            {
+              label: '2026년 미-이란 분쟁 시기',
+              data: [61.97, 68.4, 128.52, 105.7, 103.15, 95.11],
+              borderColor: '#d35400',
+              backgroundColor: gradientRed,
+              borderWidth: 4,
+              pointBackgroundColor: '#fff',
+              pointBorderColor: '#d35400',
+              pointBorderWidth: 2.5,
+              pointRadius: 6,
+              pointHoverRadius: 9,
+              pointHoverBackgroundColor: '#d35400',
+              pointHoverBorderColor: '#fff',
+              pointHoverBorderWidth: 3,
+              fill: true,
+              tension: 0.4
+            }
+          ]
+        },
+        // ✨ ChartDataLabels 플러그인 차트 개별 활성화
+        plugins: [legendMarginPlugin, window.ChartDataLabels], 
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            // ✨ 데이터 라벨(DataLabels) 설정 추가
+            datalabels: {
+              display: true,
+              formatter: function(value) {
+                return value + '$'; // 숫자 뒤에 달러($) 기호 추가
+              },
+              color: function(context) {
+                // 선 색상과 라벨 글씨 색상 일치시켜 가독성 확보
+                return context.datasetIndex === 0 ? '#2980b9' : '#d35400';
+              },
+              font: {
+                family: "'IBM Plex Sans KR', sans-serif",
+                weight: 'bold',
+                size: 13
+              },
+              // 겹침 방지: 같은 달(Month)에서 값이 더 큰 그래프는 라벨을 '위로', 작은 그래프는 '아래로' 자동 정렬
+              align: function(context) {
+                const idx = context.dataIndex;
+                const dsIdx = context.datasetIndex;
+                const val22 = context.chart.data.datasets[0].data[idx];
+                const val26 = context.chart.data.datasets[1].data[idx];
+                
+                if (dsIdx === 0) { // 22년 데이터
+                  return val22 >= val26 ? 'top' : 'bottom';
+                } else {           // 26년 데이터
+                  return val26 >= val22 ? 'top' : 'bottom';
+                }
+              },
+              offset: 8 // 라벨과 그래프 포인트 사이의 여백
+            },
+            legend: {
+              position: 'top',
+              labels: { usePointStyle: true, padding: 20, font: { size: 13, weight: '500' } }
+            },
+            title: {
+              display: true,
+              text: '국제 유가(두바이유)의 급등: 2022년 vs 2026년',
+              font: { size: 20, family: "'IBM Plex Sans KR', sans-serif", weight: 'bold' },
+              color: '#2c3e50',
+              padding: { top: 0, bottom: 5 }
+            },
+            subtitle: {
+              display: true,
+              text: '전쟁 발발에 따른 월별 유가 추이',
+              font: { size: 14, family: "'IBM Plex Sans KR', sans-serif" },
+              color: '#888',
+              padding: { bottom: 20 }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(25, 30, 40, 0.9)',
+              titleColor: '#fff',
+              bodyColor: '#e2e8f0',
+              borderColor: 'rgba(255,255,255,0.1)',
+              borderWidth: 1,
+              padding: 14,
+              cornerRadius: 8,
+              usePointStyle: true,
+              callbacks: {
+                label: function(context) { return context.dataset.label + ': $' + context.parsed.y; }
+              }
+            }
+          },
+          scales: {
+            x: { 
+              grid: { display: false },
+              ticks: { font: { weight: '600', color: '#666' } }
+            },
+            y: {
+              title: { display: true, text: '가격 (달러/배럴)', font: { size: 12, weight: '600' }, color: '#888' },
+              beginAtZero: true, 
+              grid: { display: false, drawBorder: false }, 
+              ticks: { font: { color: '#888' } }
+            }
+          }
+        }
+      });
+
+      // 4. 국내 보통휘발유 가격 비교 (막대 차트)
+      const ctxDomestic = document.getElementById('domesticGasolineChart').getContext('2d');
+      let gradBarBlue = ctxDomestic.createLinearGradient(0, 0, 0, 400);
+      gradBarBlue.addColorStop(0, 'rgba(41, 128, 185, 0.9)');
+      gradBarBlue.addColorStop(1, 'rgba(41, 128, 185, 0.3)');
+      let gradBarRed = ctxDomestic.createLinearGradient(0, 0, 0, 400);
+      gradBarRed.addColorStop(0, 'rgba(211, 84, 0, 0.9)');
+      gradBarRed.addColorStop(1, 'rgba(211, 84, 0, 0.3)');
+
+      new Chart(ctxDomestic, {
+        type: 'bar',
+        data: {
+          labels: ['1월', '2월', '3월', '4월'],
+          datasets: [
+            {
+              label: '2022년 보통휘발유 가격',
+              data: [1635.22, 1714.61, 1938.46, 1976.53],
+              backgroundColor: gradBarBlue,
+              borderColor: 'rgba(41, 128, 185, 1)',
+              borderWidth: 2,
+              borderRadius: 8,
+              barPercentage: 0.65,
+              categoryPercentage: 0.75
+            },
+            {
+              label: '2026년 보통휘발유 가격',
+              data: [1704.38, 1714.61, 1836.41, 1986.07],
+              backgroundColor: gradBarRed,
+              borderColor: 'rgba(211, 84, 0, 1)',
+              borderWidth: 2,
+              borderRadius: 8,
+              barPercentage: 0.65,
+              categoryPercentage: 0.75
+            }
+          ]
+        },
+        plugins: [gasolineLabelPlugin, legendMarginPlugin],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: { padding: { top: 10 } },
+          plugins: {
+            legend: {
+                position: 'top',
+                labels: { usePointStyle: true, padding: 20, font: { size: 13, weight: '500' } }
+            },
+            title: {
+                display: true,
+                text: '전쟁 발발 후 국내 주유소 보통휘발유 가격 변화',
+                font: { size: 20, family: "'IBM Plex Sans KR', sans-serif", weight: 'bold' },
+                color: '#2c3e50',
+                padding: { top: 0, bottom: 5 }
+            },
+            subtitle: {
+                display: true,
+                text: '위기 발생 전후 월별 평균 가격 비교',
+                font: { size: 14, family: "'IBM Plex Sans KR', sans-serif" },
+                color: '#888',
+                padding: { bottom: 20 }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              titleColor: '#333',
+              bodyColor: '#666',
+              borderColor: '#e0e0e0',
+              borderWidth: 1,
+              padding: 12,
+              usePointStyle: true,
+              callbacks: {
+                label: function(context) { return context.dataset.label + ': ' + Math.round(context.parsed.y).toLocaleString() + '원'; }
+              }
+            }
+          },
+          scales: {
+            x: { grid: { display: false } },
+            y: {
+              title: { display: true, text: '평균 판매가격 (원/리터)', font: {size: 12} },
+              beginAtZero: true,
+              grid: { color: '#f0f0f0', drawBorder: false }
+            }
+          }
+        }
+      });
+
+      // 5. 수송 단가 비교 (막대 차트)
+      const ctxTransport = document.getElementById('transportCostChart').getContext('2d');
+      new Chart(ctxTransport, {
+        type: 'bar',
+        data: {
+          labels: ['2020년', '2021년', '2022년', '2023년', '2024년', '2025년'],
+          datasets: [
+            {
+              label: '중동 (Middle East)',
+              data: [1.70, 1.41, 1.82, 1.92, 1.85, 1.87],
+              backgroundColor: 'rgba(211, 84, 0, 0.85)',
+              borderColor: 'rgba(211, 84, 0, 1)',
+              borderWidth: 1,
+              borderRadius: 4,
+              barPercentage: 0.7,
+              categoryPercentage: 0.8
+            },
+            {
+              label: '세계 평균 (비중동)',
+              data: [3.19, 2.07, 2.87, 3.58, 3.46, 2.99], 
+              backgroundColor: 'rgba(127, 140, 141, 0.6)',
+              borderColor: 'rgba(127, 140, 141, 1)',
+              borderWidth: 1,
+              borderRadius: 4,
+              barPercentage: 0.7,
+              categoryPercentage: 0.8
+            },
+            {
+              label: '미국 (USA)',
+              data: [4.30, 2.32, 3.17, 3.92, 3.89, 3.93], 
+              backgroundColor: 'rgba(41, 128, 185, 0.8)',
+              borderColor: 'rgba(41, 128, 185, 1)',
+              borderWidth: 1,
+              borderRadius: 4,
+              barPercentage: 0.7,
+              categoryPercentage: 0.8
+            }
+          ]
+        },
+        plugins: [legendMarginPlugin, transportLabelPlugin],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: { padding: { top: 15 } },
+          plugins: {
+            legend: {
+                position: 'top',
+                labels: { usePointStyle: true, padding: 20, font: { size: 13, weight: '500' } }
+            },
+            title: {
+                display: true,
+                text: '주요 지역별 원유 수송 단가 추이',
+                font: { size: 20, family: "'IBM Plex Sans KR', sans-serif", weight: 'bold' },
+                color: '#2c3e50',
+                padding: { top: 0, bottom: 5 }
+            },
+            subtitle: {
+                display: true,
+                text: '중동의 압도적인 물류비용 우위 확인 (2020~2025)',
+                font: { size: 14, family: "'IBM Plex Sans KR', sans-serif" },
+                color: '#888',
+                padding: { bottom: 20 }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              titleColor: '#333',
+              bodyColor: '#666',
+              borderColor: '#e0e0e0',
+              borderWidth: 1,
+              padding: 12,
+              usePointStyle: true,
+              callbacks: {
+                label: function(context) { return context.dataset.label + ': $' + context.parsed.y + ' / 배럴'; }
+              }
+            }
+          },
+          scales: {
+            x: { grid: { display: false } },
+            y: {
+              title: { display: true, text: '수송 단가 (달러/배럴)', font: {size: 12} },
+              beginAtZero: true,
+              max: 5,
+              grid: { color: '#f0f0f0', drawBorder: false }
+            }
+          }
+        }
+      });
+
+      // 6. 러-우 전쟁 전후 수입 비중 비교
+      const bg2021 = [
+        'rgba(41, 128, 185, 0.3)',  
+        'rgba(192, 57, 43, 0.3)',   
+        'rgba(189, 195, 199, 0.2)', 
+        'rgba(189, 195, 199, 0.2)', 
+        'rgba(189, 195, 199, 0.2)', 
+        'rgba(189, 195, 199, 0.2)'  
+      ];
+      
+      const border2021 = [
+        'rgba(41, 128, 185, 0.8)',
+        'rgba(192, 57, 43, 0.8)',
+        'rgba(149, 165, 166, 0.5)',
+        'rgba(149, 165, 166, 0.5)',
+        'rgba(149, 165, 166, 0.5)',
+        'rgba(149, 165, 166, 0.5)'
+      ];
+
+      const bg2025 = [
+        'rgba(41, 128, 185, 0.95)',  
+        'rgba(192, 57, 43, 0.95)',   
+        'rgba(149, 165, 166, 0.4)',  
+        'rgba(149, 165, 166, 0.4)',  
+        'rgba(149, 165, 166, 0.4)',  
+        'rgba(149, 165, 166, 0.4)'   
+      ];
+
+      const importChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: { padding: { top: 10 } },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            titleColor: '#333',
+            bodyColor: '#666',
+            borderColor: '#e0e0e0',
+            borderWidth: 1,
+            padding: 8,
+            usePointStyle: true,
+            callbacks: {
+              label: function(context) { return context.dataset.label + ': ' + context.parsed.y + '%'; }
+            }
+          }
+        },
+        scales: {
+          x: { grid: { display: false } },
+          y: {
+            beginAtZero: true,
+            max: 70, 
+            grid: { color: '#f0f0f0', drawBorder: false },
+            ticks: { font: { size: 10 } }
+          }
+        }
+      };
+
+      // 6-1. 중국 수입 비중
+      const ctxChina = document.getElementById('chinaImportChart').getContext('2d');
+      new Chart(ctxChina, {
+        type: 'bar',
+        data: {
+          labels: ['중동', '러시아', '미국', '아프리카', '유럽', '기타'],
+          datasets: [
+            {
+              label: '2021년',
+              data: [50.3, 15.6, 2.3, 13.0, 4.3, 14.4],
+              backgroundColor: bg2021, borderColor: border2021, borderWidth: 1, borderRadius: 4, barPercentage: 0.7
+            },
+            {
+              label: '2025년',
+              data: [42.4, 17.8, 0.4, 9.7, 0.8, 28.9],
+              backgroundColor: bg2025, borderColor: border2021, borderWidth: 1, borderRadius: 4, barPercentage: 0.7
+            }
+          ]
+        },
+        plugins: [importLabelPlugin],
+        options: {
+          ...importChartOptions,
+          plugins: { ...importChartOptions.plugins, title: { display: true, text: '중국 수입 비중', font: { size: 16 } } }
+        }
+      });
+
+      // 6-2. 인도 수입 비중
+      const ctxIndia = document.getElementById('indiaImportChart').getContext('2d');
+      new Chart(ctxIndia, {
+        type: 'bar',
+        data: {
+          labels: ['중동', '러시아', '미국', '아프리카', '유럽', '기타'],
+          datasets: [
+            {
+              label: '2021년',
+              data: [60.9, 2.4, 9.9, 14.3, 1.5, 11.0],
+              backgroundColor: bg2021, borderColor: border2021, borderWidth: 1, borderRadius: 4, barPercentage: 0.7
+            },
+            {
+              label: '2025년',
+              data: [48.3, 32.1, 6.8, 7.7, 0.1, 5.0],
+              backgroundColor: bg2025, borderColor: border2021, borderWidth: 1, borderRadius: 4, barPercentage: 0.7
+            }
+          ]
+        },
+        plugins: [importLabelPlugin],
+        options: {
+          ...importChartOptions,
+          plugins: { ...importChartOptions.plugins, title: { display: true, text: '인도 수입 비중', font: { size: 16 } } }
+        }
+      });
+
+      // 6-3. EU 수입 비중
+      const ctxEU = document.getElementById('euImportChart').getContext('2d');
+      new Chart(ctxEU, {
+        type: 'bar',
+        data: {
+          labels: ['중동', '러시아', '미국', '아프리카', '유럽', '기타'],
+          datasets: [
+            {
+              label: '2021년',
+              data: [11.9, 24.9, 8.9, 21.3, 14.7, 18.2],
+              backgroundColor: bg2021, borderColor: border2021, borderWidth: 1, borderRadius: 4, barPercentage: 0.7
+            },
+            {
+              label: '2025년',
+              data: [12.1, 1.9, 15.1, 23.6, 19.3, 27.9],
+              backgroundColor: bg2025, borderColor: border2021, borderWidth: 1, borderRadius: 4, barPercentage: 0.7
+            }
+          ]
+        },
+        plugins: [importLabelPlugin],
+        options: {
+          ...importChartOptions,
+          plugins: { ...importChartOptions.plugins, title: { display: true, text: 'EU 수입 비중', font: { size: 16 } } }
+        }
+      });
+
+      // ─────────────────────────────────────────────────────────────
+      // '결' 파트 그래프 스크립트 연결
+      // ─────────────────────────────────────────────────────────────
+      Chart.register(window.ChartDataLabels);
+
+      // 7. 한국의 원유 수입 지역별 비중 변화 (누적 막대 그래프 - 가로선 제거 반영)
+      const ctxKoreaDependence = document.getElementById('koreaDependenceChart').getContext('2d');
+      
+      let gradME = ctxKoreaDependence.createLinearGradient(0, 0, 0, 400);
+      gradME.addColorStop(0, 'rgba(211, 84, 0, 0.9)');
+      gradME.addColorStop(1, 'rgba(211, 84, 0, 0.4)');
+
+      let gradNonME = ctxKoreaDependence.createLinearGradient(0, 0, 0, 400);
+      gradNonME.addColorStop(0, 'rgba(41, 128, 185, 0.95)');
+      gradNonME.addColorStop(1, 'rgba(41, 128, 185, 0.5)');
+
+      new Chart(ctxKoreaDependence, {
+        type: 'bar',
+        data: {
+          labels: ['2015년', '2025년'], 
+          datasets: [
+            {
+              label: '중동 국가 비중 (의존도 감소)',
+              data: [81.7, 68.3], 
+              backgroundColor: gradME,     
+              borderWidth: 2,
+              borderColor: 'rgba(211, 84, 0, 1)'
+            },
+            {
+              label: '비중동 국가 비중 (다변화 증가)',
+              data: [18.3, 31.7], 
+              backgroundColor: gradNonME,  
+              borderWidth: 2,
+              borderColor: 'rgba(41, 128, 185, 1)'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: { padding: { top: 20, right: 30, left: 30, bottom: 20 } },
+          scales: {
+            x: { stacked: true, grid: { display: false } },
+            y: { 
+              stacked: true, 
+              max: 100, 
+              title: { display: true, text: '수입 비중 (%)', font: {size: 12} }, 
+              grid: { display: false } 
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'bottom', 
+              labels: { usePointStyle: true, padding: 20, font: { size: 14, weight: '700' } }
+            },
+            title: {
+              display: true,
+              text: '한국 원유 수입국 및 원유 수입량 변화', 
+              font: { size: 20, family: "'IBM Plex Sans KR', sans-serif", weight: 'bold' },
+              color: '#2c3e50',
+              padding: { top: 0, bottom: 5 }
+            },
+            subtitle: {
+              display: true,
+              text: '(2015년 ~ 2025년)',
+              font: { size: 14, family: "'IBM Plex Sans KR', sans-serif" },
+              color: '#888',
+              padding: { bottom: 20 }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              titleColor: '#333',
+              bodyColor: '#666',
+              borderColor: '#e0e0e0',
+              borderWidth: 1,
+              padding: 12,
+              usePointStyle: true,
+              callbacks: {
+                label: function(context) { return context.dataset.label + ': ' + context.parsed.y + '%'; }
+              }
+            },
+            datalabels: {
+              color: '#fff',
+              font: { family: "'IBM Plex Sans KR', sans-serif", weight: 'bold', size: 14 },
+              textAlign: 'center', 
+              formatter: function(value, context) {
+                if (context.dataIndex === 1) {
+                  if (context.datasetIndex === 0) {
+                    return value + '%\n(▼ 13.4%p)'; 
+                  } else {
+                    return value + '%\n(▲ 13.4%p)'; 
+                  }
+                }
+                return value + '%';
+              },
+              anchor: 'center',
+              align: 'center'
+            }
+          }
+        }
+      });
+
+      // 8. LBNL 2035 청정 전력 믹스 시나리오 (가로 막대 그래프)
+      const ctxMixBar = document.getElementById('lbnlMixBarChart').getContext('2d');
+      new Chart(ctxMixBar, {
+        type: 'bar',
+        data: {
+          labels: ['재생에너지 (태양광/풍력)', '원자력 발전', '화석연료 (수입 의존)'],
+          datasets: [{
+            data: [50, 30, 20],
+            backgroundColor: ['#27ae60', '#2c3e50', '#d35400'],
+            borderRadius: 6,
+            barThickness: 35
+          }]
+        },
+        options: {
+          indexAxis: 'y', // 막대를 가로로 눕히는 설정
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { 
+              max: 100, 
+              grid: { display: false }, 
+              ticks: { callback: (v) => v + '%' } 
+            },
+            y: { 
+              grid: { display: false }, 
+              ticks: { font: { family: "'IBM Plex Sans KR', sans-serif", weight: 'bold', size: 14 } } 
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) { return context.parsed.x + '%'; }
+              }
+            },
+            datalabels: {
+              anchor: 'end', 
+              align: 'right', 
+              color: '#333', 
+              font: { family: "'IBM Plex Sans KR', sans-serif", weight: 'bold', size: 15 },
+              formatter: (v) => v + '%'
+            }
+          }
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

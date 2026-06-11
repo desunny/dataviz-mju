@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>긍정 뉴스는 정말 가격 상승을 의미하는가? | 비트코인 뉴스 감정과 가격 변동 관계 분석</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0b0f19;
+            --bg-card: #151d30;
+            --bg-accent: #1e2942;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --brand: #f59e0b;
+            --brand-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --positive: #10b981;
+            --negative: #ef4444;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Noto Sans KR', sans-serif;
+            line-height: 1.7;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: relative;
+            background: radial-gradient(circle at top right, rgba(245, 158, 11, 0.08), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(30, 58, 138, 0.2), transparent 50%),
+                        #0e1424;
+            padding: 100px 20px 80px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-tag {
+            font-family: 'Outfit', sans-serif;
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--brand);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 24px;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        header h1 span {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header .subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 40px auto;
+            font-weight: 300;
+        }
+
+        .meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            font-size: 14px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            padding-top: 24px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* 컨테이너 맥스폭을 늘려 전체적으로 시원하게 배치 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .section-intro {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .section-intro::before {
+            content: '“';
+            position: absolute;
+            top: -20px;
+            left: 40px;
+            font-size: 100px;
+            font-family: 'Outfit', sans-serif;
+            color: rgba(245, 158, 11, 0.15);
+            line-height: 1;
+        }
+
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .intro-grid { grid-template-columns: 1fr; }
+        }
+
+        .intro-text p {
+            font-size: 17px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .intro-text p strong {
+            color: var(--text-primary);
+        }
+
+        .intro-highlight {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid var(--brand);
+            padding: 20px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .intro-highlight h4 {
+            font-size: 18px;
+            color: var(--brand);
+            margin-bottom: 8px;
+        }
+
+        .story-block {
+            margin-bottom: 80px;
+        }
+
+        .block-header {
+            margin-bottom: 30px;
+        }
+
+        .block-no {
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            color: var(--brand);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .story-block h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .block-desc {
+            color: var(--text-secondary);
+            font-size: 16px;
+            max-width: 800px;
+        }
+
+        /* [핵심 수정] 이미지 확대를 위해 1열(위아래) 구조로 변경 및 패딩 최적화 */
+        .visualization-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column; /* 세로 배치로 변경 */
+            gap: 40px;
+        }
+
+        /* [핵심 수정] 이미지 컨테이너가 부모 너비를 100% 채우도록 수정 */
+        .img-container {
+            background: rgba(11, 15, 25, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* [핵심 수정] 이미지 너비를 100%로 키우고 고해상도 대응 크기 제한 설정 */
+        .img-container img {
+            width: 100%;
+            max-width: 1100px; /* 차트가 너무 흐려지지 않는 선에서 최대 크기 확보 */
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.4);
+        }
+
+        /* 코멘터리 영역 넓게 쓰도록 수정 */
+        .commentary {
+            width: 100%;
+        }
+
+        .commentary h3 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--brand);
+        }
+
+        .commentary-list {
+            list-style: none;
+        }
+
+        .commentary-list li {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .commentary-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--brand);
+            font-size: 22px;
+            top: -4px;
+        }
+
+        .badge-grid {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-size: 14px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .badge.pos { background: rgba(16, 185, 129, 0.15); color: var(--positive); }
+        .badge.neg { background: rgba(239, 68, 110, 0.15); color: var(--negative); }
+        .badge.neut { background: rgba(148, 163, 184, 0.15); color: var(--text-secondary); }
+
+        .step-card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .step-card-grid { grid-template-columns: 1fr; }
+        }
+
+        .step-card {
+            background: var(--bg-accent);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .step-card h4 {
+            font-size: 16px;
+            color: var(--brand);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .summary-section {
+            background: linear-gradient(180deg, var(--bg-card) 0%, #0e1526 100%);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 50px;
+            text-align: center;
+        }
+
+        .summary-section h2 {
+            font-size: 32px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            text-align: left;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .summary-grid { grid-template-columns: 1fr; }
+        }
+
+        .summary-item {
+            display: flex;
+            gap: 16px;
+        }
+
+        .summary-icon {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--brand);
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .summary-content h4 {
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .summary-content p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <span class="header-tag">DATA ANALYSIS REPORT</span>
+        <h1>긍정 뉴스는 정말 <span>가격 상승</span>을 의미하는가?</h1>
+        <p class="subtitle">비트코인 뉴스 기사 감정과 실제 가격 변동의 메커니즘 분석</p>
+        
+        <div class="meta-info">
+            <div style="display: flex; align-items: center; gap: 6px;"><i class="fa-regular fa-file-lines"></i> 스토리텔링 목업</div>
+            <div style="display: flex; align-items: center; gap: 6px;"><i class="fa-regular fa-calendar"></i> 2024 데이터 분석</div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <section class="section-intro">
+            <div class="intro-grid">
+                <div class="intro-text">
+                    <p>학업이나 직장을 병행하는 <strong>대다수의 개인 투자자들</strong>은 전문적인 차트 분석이나 기술적 분석을 깊게 공부할 시간이 절대적으로 부족합니다.</p>
+                    <p>그렇다 보니 자연스럽게 포털 뉴스의 헤드라인, 인터넷 기사 제목, 혹은 커뮤니티의 시장 분위기를 보고 투자 결정을 내리게 되는 경우가 많습니다.</p>
+                    <p>"지금 이 종목이 유망하다고 긍정적인 뉴스가 쏟아지고 있는데, 과연 지금 진입해도 수익이 날까?" 누구나 한 번쯤 해보았을 고민입니다.</p>
+                </div>
+                <div class="intro-highlight">
+                    <h4>분석의 출발점</h4>
+                    <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">정말 미디어에 긍정적인 뉴스 기사가 많이 노출되면 가격이 상승하고 개인 투자자가 수익을 낼 수 있을까요? <strong>2024년 비트코인 뉴스 기사 6,454개</strong>와 가격 데이터를 매칭하여 팩트 기반 검증을 시도했습니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="story-block">
+            <div class="block-header">
+                <span class="block-no">DATA VIEW 01</span>
+                <h2>월별 뉴스 감정(긍정/부정)과 가격 추이 비교</h2>
+                <p class="block-desc">2024년 한 해 동안 발생한 감정별 뉴스 수량의 흐름과 가격 변동 추이를 직관적으로 결합한 데이터입니다.</p>
+            </div>
+
+            <div class="visualization-box">
+                <div class="img-container">
+                    <img src="sentiment_price_chart.png" alt="2024년 월별 긍정/부정 기사 vs 비트코인 가격">
+                </div>
+                <div class="commentary">
+                    <h3><i class="fa-solid fa-chart-line"></i> 동조화 현상과 예외 구간</h3>
+                    <ul class="commentary-list">
+                        <li><strong>급등 및 최고점 동조화 (1~3월 / 10~11월):</strong> 긍정 기사의 개수가 부정 기사보다 압도적으로 많아질 때, 실제 비트코인 가격이 급등하거나 연중 최고 수준까지 도달하는 명확한 연관성을 보여줍니다.</li>
+                        <li><strong>모순 구간 (4월, 12월):</strong> 부정 기사보다 긍정 기사가 더 많았음에도 불구하고 오히려 가격이 눈에 띄게 떨어지는 현상이 관찰되었습니다.</li>
+                        <li><strong>횡보 정체 구간 (5~9월):</strong> 긍정/부정 기사의 수량 편차 및 등락과 무관하게 가격이 박스권에 갇혀 횡보하며 큰 변동이 없었습니다.</li>
+                    </ul>
+                    <div class="badge-grid">
+                        <span class="badge pos">1-3월 급등</span>
+                        <span class="badge neg">4월 역행</span>
+                        <span class="badge neut">5-9월 횡보</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="story-block">
+            <div class="block-header">
+                <span class="block-no">DATA VIEW 02</span>
+                <h2>텍스트 마이닝: 뉴스 기사 주요 키워드 분석</h2>
+                <p class="block-desc">투자자들의 눈에 피드백된 뉴스가 단순히 '좋다/나쁘다'의 감정 수준인지, 아니면 다른 정보를 품고 있는지 워드클라우드로 정량화했습니다.</p>
+            </div>
+
+            <div class="visualization-box">
+                <div class="commentary">
+                    <h3><i class="fa-solid fa-cloud"></i> 단순 감정을 넘어선 시장 환경 단어</h3>
+                    <p style="font-size: 16px; color: var(--text-secondary); margin-bottom: 15px;">
+                        단순히 투자자의 심리를 직접적으로 자극하는 단어뿐만 아니라, 거시적이고 구조적인 경제 환경 단어들이 밀도 높게 추출되었습니다.
+                    </p>
+                    <div class="step-card-grid">
+                        <div class="step-card">
+                            <h4><i class="fa-solid fa-bolt"></i> 감정 자극</h4>
+                            <p>상승, 급등, 돌파, 하락 등 시세 반응 단어</p>
+                        </div>
+                        <div class="step-card">
+                            <h4><i class="fa-solid fa-layer-group"></i> 제도 여건</h4>
+                            <p>ETF, 상장, 현물, 자산 등 자본시장 진입 요소</p>
+                        </div>
+                        <div class="step-card">
+                            <h4><i class="fa-solid fa-globe"></i> 거시 경제</h4>
+                            <p>트럼프, 미국 등 정치·정책적 거대 변수</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="img-container">
+                    <img src="wordcloud_top15.png" alt="2024년 핵심 키워드 TOP 15 워드클라우드">
+                </div>
+            </div>
+        </section>
+
+        <section class="story-block">
+            <div class="block-header">
+                <span class="block-no">DATA VIEW 03</span>
+                <h2>원인 분석: 제도적 요인과 심리적 요인의 상호작용</h2>
+                <p class="block-desc">뉴스를 시장의 판을 바꾸는 '제도적 요인'과 기대/불안을 자극하는 '심리적 요인'으로 심층 분류하여 누적 영역 그래프로 추적한 결과입니다.</p>
+            </div>
+
+            <div class="visualization-box">
+                <div class="img-container">
+                    <img src="impact_price_chart.png" alt="2024년 제도/심리 영향력과 비트코인 가격 추이">
+                </div>
+                <div class="commentary">
+                    <h3><i class="fa-solid fa-arrows-spin"></i> 제도와 심리의 동반 상승 메커니즘</h3>
+                    <ul class="commentary-list">
+                        <li><strong>1월 (제도 선행 현상):</strong> '미국 현물 비트코인 ETF 승인'이라는 제도적 대형 호재가 발생하며 파란색(제도 영향력) 영역이 먼저 가파르게 상승합니다. 이때 심리는 비교적 낮은 수준이었습니다.</li>
+                        <li><strong>2~3월 (심리 전이 및 폭발):</strong> 제도가 안정화되면서 투자 심리가 결합해 주황색(심리 영향력) 영역이 동반 폭발했고, 이 시기에 가격이 큰 폭으로 상승했습니다.</li>
+                        <li><strong>11월 (동시 결합 및 수직 상승):</strong> '트럼프 대통령 당선' 이슈로 친가상자산 정책 기대(제도)와 극대화된 기대감(심리)이 동시에 피크를 찍으며 가격이 급격하게 폭등하는 구간과 일치합니다.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="summary-section">
+            <h2>Insight & Conclusion</h2>
+            <p style="color: var(--text-secondary); max-width: 650px; margin: 0 auto 30px auto; font-size: 16px;">
+                데이터 분석이 개인 투자자에게 주는 최종 제언: 뉴스를 읽는 시각의 전환이 필요합니다.
+            </p>
+            
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-icon"><i class="fa-solid fa-filter"></i></div>
+                    <div class="summary-content">
+                        <h4>단순 감정 맹신의 위험성</h4>
+                        <p>긍정 뉴스가 많다고 무조건 오르고, 부정 뉴스가 많다고 무조건 내리지 않습니다. 4월 and 12월의 가격 역행 구간이 이를 증명합니다.</p>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                    <div class="summary-content">
+                        <h4>뉴스의 이면과 배경 분석</h4>
+                        <p>해당 뉴스가 단순히 자극적인 어휘만 나열하는지, 혹은 시장의 판을 바꾸는 제도적 사건(ETF, 거시 정책)을 담고 있는지 원인과 배경을 함께 분석해야 투자 의사결정에 실질적인 도움이 됩니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>© 2026 비트코인 뉴스 감정과 가격 변동의 관계 분석 | 데이터 분석 스토리텔링 목업 페이지</p>
+    </footer>
+
+</body>
+</html>

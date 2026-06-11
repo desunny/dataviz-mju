@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>지도에 없는 핫플 — 데이터가 가리킨 서울의 진짜 성장 상권</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Song+Myung&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f3efe6; --ink:#14213d; --soft:#3c4458; --mute:#8a8377;
+  --navy:#1b2a4a; --red:#b5341f; --amber:#c8881a; --teal:#2c6e6b; --gold:#e8b84b;
+  --line:#d8d0c2; --hookbg:#14213d; --col:720px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'IBM Plex Sans KR',sans-serif;background:var(--paper);color:var(--ink);
+  line-height:1.85;font-size:17px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.col{max-width:var(--col);margin:0 auto;padding:0 26px}
+.serif{font-family:'Song Myung',serif}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+/* progress bar */
+#prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--gold);z-index:99}
+
+/* HOOK */
+.hook{background:var(--hookbg);color:var(--paper);min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:48px 24px;position:relative}
+.hook .eyebrow{font-size:12px;letter-spacing:.36em;color:var(--gold);margin-bottom:34px;font-weight:600}
+.hook .big{font-family:'Song Myung',serif;font-size:clamp(78px,17vw,184px);line-height:.95;letter-spacing:-.03em}
+.hook .big .slash{color:var(--gold);margin:0 .12em;font-weight:300}
+.hook .big .small{font-size:.42em;color:rgba(243,239,230,.55)}
+.hook .htext{font-size:clamp(17px,2.4vw,22px);max-width:560px;line-height:1.6;color:rgba(243,239,230,.82);margin-top:30px}
+.hook .htext b{color:var(--gold);font-weight:600}
+.hookgrid{max-width:340px;width:80%;margin:42px auto 0;display:block}
+.hookgrid .lit{animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.cue{margin-top:46px;font-size:11px;letter-spacing:.24em;color:rgba(243,239,230,.45)}
+
+/* generic section */
+section{padding:96px 0}
+.kicker{font-size:12.5px;letter-spacing:.26em;font-weight:600;margin-bottom:22px;text-transform:uppercase}
+.context .kicker{color:var(--red)}
+.lead{font-family:'Song Myung',serif;font-size:clamp(23px,3.2vw,32px);line-height:1.5;letter-spacing:-.01em;margin-bottom:26px}
+p.body{font-size:17.5px;color:var(--soft);margin-bottom:20px}
+p.body b{color:var(--ink);font-weight:600}
+.pull{font-family:'Song Myung',serif;font-size:clamp(21px,2.8vw,27px);line-height:1.55;color:var(--ink);
+  border-left:3px solid var(--gold);padding:6px 0 6px 26px;margin:34px 0}
+
+/* chapter marker */
+.chapter{border-top:1px solid var(--line)}
+.cmark{display:flex;align-items:baseline;gap:16px;margin-bottom:14px}
+.cmark .no{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--gold);font-weight:500;letter-spacing:.1em}
+.cmark .stage{font-size:12.5px;letter-spacing:.22em;color:var(--mute);font-weight:600}
+.chapter h2{font-family:'Song Myung',serif;font-size:clamp(30px,4.6vw,46px);line-height:1.18;letter-spacing:-.02em;margin-bottom:26px}
+
+/* chart block */
+.figure{margin:40px 0;background:#fbf9f4;border:1px solid var(--line);border-radius:4px;padding:26px 24px 20px}
+.figure .ftitle{font-size:14.5px;font-weight:700;margin-bottom:3px}
+.figure .fsub{font-size:12.5px;color:var(--mute);margin-bottom:16px}
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.chart .ax{font-family:'IBM Plex Mono',monospace;font-size:10.5px;fill:var(--mute)}
+.chart .lbl{font-family:'IBM Plex Sans KR',sans-serif;font-size:11.5px;font-weight:600}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .qd{font-size:11px;font-weight:600;fill:var(--mute);letter-spacing:.04em}
+.fcap{font-size:12.5px;color:var(--mute);margin-top:14px;line-height:1.6;border-top:1px dashed var(--line);padding-top:12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;font-size:12px;color:var(--soft)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:18px;height:3px;border-radius:2px;display:inline-block}
+
+/* stat strip */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin:34px 0;border-radius:4px;overflow:hidden}
+.stat{background:#fbf9f4;padding:22px 18px;text-align:center}
+.stat .n{font-family:'Song Myung',serif;font-size:clamp(30px,5vw,42px);line-height:1;letter-spacing:-.02em}
+.stat .n.red{color:var(--red)} .stat .n.teal{color:var(--teal)}
+.stat .l{font-size:12px;color:var(--mute);margin-top:9px;line-height:1.4}
+
+/* table */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:30px 0}
+.card{background:#fbf9f4;border:1px solid var(--line);border-radius:4px;padding:18px 18px 16px}
+.card.lead-card{grid-column:1/-1;border-left:3px solid var(--teal)}
+.card h4{font-size:16px;margin-bottom:4px}
+.card .meta{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--teal);margin-bottom:8px}
+.card p{font-size:13.5px;color:var(--soft);line-height:1.6}
+
+/* conclusion */
+.conclusion{background:var(--ink);color:var(--paper)}
+.conclusion .kicker{color:var(--gold)}
+.conclusion h2{font-family:'Song Myung',serif;font-size:clamp(28px,4.4vw,44px);line-height:1.28;letter-spacing:-.02em;margin-bottom:30px}
+.conclusion h2 em{color:var(--gold);font-style:normal}
+.conclusion p{font-size:17px;color:rgba(243,239,230,.78);margin-bottom:18px}
+.conclusion p b{color:var(--paper)}
+.takeaways{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:38px}
+.tk{border-top:2px solid var(--gold);padding-top:14px}
+.tk .h{font-size:13px;letter-spacing:.16em;color:var(--gold);font-weight:600;margin-bottom:8px}
+.tk p{font-size:13.5px;color:rgba(243,239,230,.72);margin:0}
+
+/* colophon */
+.colophon{padding:60px 0 90px;border-top:1px solid var(--line)}
+.colophon h3{font-size:12px;letter-spacing:.2em;color:var(--mute);margin-bottom:8px;font-weight:600}
+.colophon p{font-size:13px;color:var(--soft);margin-bottom:22px;line-height:1.7}
+
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s ease}
+.reveal.in{opacity:1;transform:none}
+
+@media(max-width:680px){
+  .stats,.takeaways{grid-template-columns:1fr}
+  .cards{grid-template-columns:1fr}
+  section{padding:70px 0}
+  .chart .lbl{font-size:13px}
+}
+
+/* 건강성 지수 / 액션 추가 */
+.indexwrap{margin-top:6px}
+.action{background:#fbf9f4}
+.action .kicker{color:var(--red)}
+.actiongrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+.acard{border:1px solid var(--line);border-radius:5px;padding:22px 20px;background:#fff}
+.acard .role{font-size:12px;letter-spacing:.16em;font-weight:700;margin-bottom:4px}
+.acard h4{font-family:'Song Myung',serif;font-size:21px;margin-bottom:14px;line-height:1.3}
+.acard ul{list-style:none;margin:0;padding:0}
+.acard li{font-size:13.5px;color:var(--soft);line-height:1.55;padding:8px 0 8px 18px;position:relative;border-top:1px dashed var(--line)}
+.acard li:first-child{border-top:none}
+.acard li::before{content:"→";position:absolute;left:0;color:var(--gold);font-weight:700}
+.acard .watch{margin-top:12px;font-size:12px;color:var(--mute);background:var(--paper);border-radius:4px;padding:9px 11px;line-height:1.5}
+.acard .watch b{color:var(--ink)}
+.a-policy{border-top:3px solid var(--navy)} .a-invest{border-top:3px solid var(--teal)} .a-found{border-top:3px solid var(--amber)}
+@media(max-width:680px){.actiongrid{grid-template-columns:1fr}}
+
+@media(prefers-reduced-motion:reduce){.reveal{transition:none;opacity:1;transform:none}.hookgrid .lit{animation:none}}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+
+<!-- HOOK -->
+<header class="hook">
+  <div class="eyebrow">DATA STORY · 서울 발달상권</div>
+  <div class="big"><span>5</span><span class="slash">/</span><span>163</span></div>
+  <p class="htext">서울 발달상권 163곳 중, 매출·점포·인구·점포당 매출이 <b>모두 늘어난 곳</b>은 단 다섯 곳. 그 안에 성수도, 가로수길도, 명동도 없었다.</p>
+  <div class="hookgrid-wrap"><svg viewBox="0 0 400 180" class="hookgrid" role="img" aria-label="163곳 중 5곳">
+<rect x="0" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="20" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="40" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="60" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="80" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="100" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="120" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="140" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="160" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="180" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="200" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="220" y="0" width="15" height="15" rx="2" fill="#e8b84b" class=lit/>
+<rect x="240" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="260" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="280" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="300" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="320" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="340" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="360" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="380" y="0" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="0" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="20" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="40" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="60" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="80" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="100" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="120" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="140" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="160" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="180" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="200" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="220" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="240" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="260" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="280" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="300" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="320" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="340" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="360" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="380" y="20" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="0" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="20" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="40" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="60" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="80" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="100" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="120" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="140" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="160" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="180" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="200" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="220" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="240" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="260" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="280" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="300" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="320" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="340" y="40" width="15" height="15" rx="2" fill="#e8b84b" class=lit/>
+<rect x="360" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="380" y="40" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="0" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="20" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="40" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="60" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="80" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="100" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="120" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="140" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="160" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="180" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="200" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="220" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="240" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="260" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="280" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="300" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="320" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="340" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="360" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="380" y="60" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="0" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="20" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="40" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="60" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="80" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="100" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="120" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="140" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="160" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="180" y="80" width="15" height="15" rx="2" fill="#e8b84b" class=lit/>
+<rect x="200" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="220" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="240" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="260" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="280" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="300" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="320" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="340" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="360" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="380" y="80" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="0" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="20" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="40" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="60" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="80" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="100" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="120" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="140" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="160" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="180" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="200" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="220" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="240" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="260" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="280" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="300" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="320" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="340" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="360" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="380" y="100" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="0" y="120" width="15" height="15" rx="2" fill="#e8b84b" class=lit/>
+<rect x="20" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="40" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="60" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="80" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="100" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="120" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="140" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="160" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="180" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="200" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="220" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="240" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="260" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="280" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="300" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="320" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="340" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="360" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="380" y="120" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="0" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="20" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="40" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="60" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="80" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="100" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="120" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="140" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="160" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="180" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="200" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="220" y="140" width="15" height="15" rx="2" fill="#e8b84b" class=lit/>
+<rect x="240" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="260" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="280" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="300" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="320" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="340" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="360" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="380" y="140" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="0" y="160" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="20" y="160" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+<rect x="40" y="160" width="15" height="15" rx="2" fill="rgba(243,239,230,0.13)" />
+</svg></div>
+  <div class="cue">스크롤하세요 ↓</div>
+</header>
+
+<!-- CONTEXT -->
+<section class="context">
+  <div class="col reveal">
+    <div class="kicker">왜 이 이야기인가</div>
+    <p class="lead">‘뜨는 상권’ 하면 우리는 성수동을, 연남동을, 가로수길을 떠올린다.</p>
+    <p class="body">그런데 서울시 상권분석서비스의 발달상권 163곳을 놓고 <b>면적당 인구·매출·점포 수·점포당 매출</b>이 2024년에서 2025년 사이 <b>네 가지 모두 증가한 곳</b>만 골라내자, 전혀 다른 이름들이 떠올랐다. 둔촌역, 몽촌토성역, 어린이대공원역, 을지로3가역, 그리고 개봉동.</p>
+    <p class="body">통념이 부르는 핫플과, 데이터가 가리킨 성장 상권의 목록이 어긋난다. 같은 ‘발달상권’인데 왜 다를까. 이 어긋남을 한국부동산원 임대 데이터로 들여다본다.</p>
+    <p class="pull">지도에 그려진 핫플과, 실제 땅 위에서 자라는 상권은 같지 않았다.</p>
+  </div>
+</section>
+
+<!-- CH1 -->
+<section class="chapter">
+  <div class="col reveal">
+    <div class="cmark"><span class="no">CH 01</span><span class="stage">起 · 통념</span></div>
+    <h2>우리가 ‘핫플’이라 부르는 곳</h2>
+    <p class="body">성수·가로수길·연남·명동. SNS 언급량과 주말 유동인구로 보면 이들은 단연 서울의 주인공이다. 사람들은 화제성을 곧 성장이라 믿는다. <b>시끄러운 곳이 곧 잘되는 곳</b>이라고.</p>
+    <p class="body">하지만 ‘화제’와 ‘성장’은 같은 말이 아니다. 화제성은 임대료를 끌어올리고, 임대료는 그 화제를 만든 가게들을 다시 밀어낸다. 데이터는 바로 그 지점을 드러낸다.</p>
+    <div class="figure">
+      <div class="ftitle">핫플의 두 갈래 — ① 비어가는 거리 (중대형 상가 공실률)</div>
+      <div class="fsub">한국부동산원 상업용부동산 임대동향 · 단위 %</div>
+      <svg viewBox="0 0 680 380" class="chart" role="img">
+<text x="46.0" y="366" class="ax" text-anchor="middle">24Q3</text>
+<text x="239.6" y="366" class="ax" text-anchor="middle">25Q1</text>
+<text x="433.2" y="366" class="ax" text-anchor="middle">25Q3</text>
+<text x="530.0" y="366" class="ax" text-anchor="middle">25Q4</text>
+<path d="M46.0 210.2 L142.8 203.9 L239.6 192.5 L336.4 86.4 L433.2 90.6 L530.0 51.0" fill="none" stroke="#b5341f" stroke-width="3" opacity="1" stroke-linejoin="round"/>
+<circle cx="530.0" cy="51.0" r="3.5" fill="#b5341f" opacity="1"/>
+<text x="538.0" y="55.0" class="lbl" fill="#b5341f" opacity="1">청담 27%</text>
+<path d="M46.0 168.6 L142.8 186.2 L239.6 187.3 L336.4 197.7 L433.2 182.1 L530.0 173.8" fill="none" stroke="#c8881a" stroke-width="3" opacity="1" stroke-linejoin="round"/>
+<circle cx="530.0" cy="173.8" r="3.5" fill="#c8881a" opacity="1"/>
+<text x="538.0" y="177.8" class="lbl" fill="#c8881a" opacity="1">신사역 16%</text>
+<path d="M46.0 129.0 L142.8 129.0 L239.6 186.2 L336.4 186.2 L433.2 194.6 L530.0 194.6" fill="none" stroke="#8a8377" stroke-width="1.4" opacity="0.45" stroke-linejoin="round"/>
+<circle cx="530.0" cy="194.6" r="3.5" fill="#8a8377" opacity="0.45"/>
+<text x="538.0" y="198.6" class="lbl" fill="#8a8377" opacity="0.45">이태원 14%</text>
+<path d="M46.0 141.5 L142.8 209.1 L239.6 219.5 L336.4 261.1 L433.2 250.7 L530.0 259.0" fill="none" stroke="#2c6e6b" stroke-width="3" opacity="1" stroke-linejoin="round"/>
+<circle cx="530.0" cy="259.0" r="3.5" fill="#2c6e6b" opacity="1"/>
+<text x="538.0" y="263.0" class="lbl" fill="#2c6e6b" opacity="1">명동 7%</text>
+</svg>
+      <div class="legend"><span><i style="background:#b5341f"></i>청담</span><span><i style="background:#c8881a"></i>신사(가로수길)</span><span><i style="background:#2c6e6b"></i>명동(관광 회복)</span><span><i style="background:#8a8377"></i>이태원</span></div>
+      <div class="fcap">청담의 중대형 공실률은 2024년 3분기 12.1%에서 2025년 4분기 <b>27.4%</b>로 1년 만에 두 배 넘게 뛰었다. 신사(가로수길)는 14~16%대 고공행진. 반면 명동은 외국인 관광 회복으로 공실이 빠르게 줄어, 같은 ‘핫플’도 길이 갈린다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CH2 -->
+<section class="chapter">
+  <div class="col reveal">
+    <div class="cmark"><span class="no">CH 02</span><span class="stage">承 · 반전</span></div>
+    <h2>화제의 대가는 임대료였다</h2>
+    <p class="body">공실이 늘지 않은 핫플도 안심할 수 없다. 다른 쪽 끝에는 <b>임대료가 폭등하는</b> 상권이 있다. 성수동이 속한 뚝섬 상권의 임대가격지수는 2024년 2분기를 100으로 놓을 때 2026년 1분기 <b>121</b>까지 치솟았다. 압구정·명동도 105~108로 올랐다.</p>
+    <div class="figure">
+      <div class="ftitle">핫플의 두 갈래 — ② 끓어오르는 임대료 (중대형 임대가격지수, 24Q2=100)</div>
+      <div class="fsub">한국부동산원 상업용부동산 임대동향 · 지수</div>
+      <svg viewBox="0 0 680 380" class="chart" role="img">
+<line x1="46" y1="278.2" x2="530" y2="278.2" stroke="#8a8377" stroke-dasharray="2 4" stroke-width="1"/>
+<text x="46" y="272.2" class="ax">100</text>
+<text x="46.0" y="366" class="ax" text-anchor="middle">23Q4</text>
+<text x="153.6" y="366" class="ax" text-anchor="middle">24Q2</text>
+<text x="261.1" y="366" class="ax" text-anchor="middle">24Q4</text>
+<text x="368.7" y="366" class="ax" text-anchor="middle">25Q2</text>
+<text x="476.2" y="366" class="ax" text-anchor="middle">25Q4</text>
+<text x="530.0" y="366" class="ax" text-anchor="middle">26Q1</text>
+<path d="M46.0 319.8 L99.8 300.2 L153.6 278.2 L207.3 228.5 L261.1 189.2 L314.9 166.1 L368.7 123.4 L422.4 96.8 L476.2 65.6 L530.0 30.9" fill="none" stroke="#b5341f" stroke-width="3" opacity="1" stroke-linejoin="round"/>
+<circle cx="530.0" cy="30.9" r="3.5" fill="#b5341f" opacity="1"/>
+<text x="538.0" y="34.9" class="lbl" fill="#b5341f" opacity="1">뚝섬 121</text>
+<path d="M46.0 293.2 L99.8 287.5 L153.6 278.2 L207.3 272.4 L261.1 267.8 L314.9 242.4 L368.7 227.4 L422.4 213.5 L476.2 199.6 L530.0 184.6" fill="none" stroke="#c8881a" stroke-width="3" opacity="1" stroke-linejoin="round"/>
+<circle cx="530.0" cy="184.6" r="3.5" fill="#c8881a" opacity="1"/>
+<text x="538.0" y="188.6" class="lbl" fill="#c8881a" opacity="1">압구정 108</text>
+<path d="M46.0 297.9 L99.8 288.6 L153.6 278.2 L207.3 266.7 L261.1 255.1 L314.9 250.5 L368.7 244.7 L422.4 233.2 L476.2 211.2 L530.0 182.3" fill="none" stroke="#2c6e6b" stroke-width="3" opacity="1" stroke-linejoin="round"/>
+<circle cx="530.0" cy="182.3" r="3.5" fill="#2c6e6b" opacity="1"/>
+<text x="538.0" y="186.3" class="lbl" fill="#2c6e6b" opacity="1">명동 108</text>
+<path d="M46.0 287.5 L99.8 287.5 L153.6 278.2 L207.3 277.1 L261.1 273.6 L314.9 270.1 L368.7 267.8 L422.4 257.4 L476.2 229.7 L530.0 212.4" fill="none" stroke="#8a8377" stroke-width="1.4" opacity="0.45" stroke-linejoin="round"/>
+<circle cx="530.0" cy="212.4" r="3.5" fill="#8a8377" opacity="0.45"/>
+<text x="538.0" y="216.4" class="lbl" fill="#8a8377" opacity="0.45">청담 106</text>
+</svg>
+      <div class="legend"><span><i style="background:#b5341f"></i>뚝섬(성수)</span><span><i style="background:#c8881a"></i>압구정</span><span><i style="background:#2c6e6b"></i>명동</span><span><i style="background:#8a8377"></i>청담</span></div>
+      <div class="fcap">뚝섬(성수)은 2년 새 임대료지수가 <b>+21%</b>. 화제성이 임대료를 밀어올리면, 개성 있는 가게는 버티지 못하고 떠난다. 청담처럼 ‘공실로’ 비거나, 성수처럼 ‘임대료로’ 걸러지거나 — 방향은 달라도 둘 다 상권의 체력을 깎는다.</p></div>
+    </div>
+    <p class="pull">한쪽 핫플은 비어서, 다른 쪽 핫플은 비싸서 흔들린다.</p>
+  </div>
+</section>
+
+<!-- CH3 -->
+<section class="chapter">
+  <div class="col reveal">
+    <div class="cmark"><span class="no">CH 03</span><span class="stage">轉 · 발견</span></div>
+    <h2>데이터가 가리킨 다섯 곳</h2>
+    <p class="body">네 지표가 모두 오른 다섯 상권은 화제의 중심이 아니었다. 공통점은 단 하나, <b>사람이 늘었다는 것</b>. 새 아파트가 들어서고, 대학과 공원이 받치고, 직장인이 모이는 — 조용히 인구가 차오른 곳들이었다.</p>
+    <div class="stats">
+      <div class="stat"><div class="n teal">+13.0%</div><div class="l">둔촌역 면적당 인구<br>(올림픽파크포레온 1.2만 세대 입주)</div></div>
+      <div class="stat"><div class="n teal">+14.1%</div><div class="l">몽촌토성역 매출<br>(방이동·송리단길 + 올림픽공원)</div></div>
+      <div class="stat"><div class="n teal">82</div><div class="l">어린이대공원역 업종 수<br>(대학·공원·외국인 복합수요)</div></div>
+    </div>
+    <div class="figure">
+      <div class="ftitle">같은 기간, 이들의 거리는 비지 않았다 (중대형 공실률)</div>
+      <div class="fsub">한국부동산원 · 인접 대표상권으로 매칭 · 단위 %</div>
+      <svg viewBox="0 0 680 380" class="chart" role="img">
+<text x="46.0" y="366" class="ax" text-anchor="middle">24Q3</text>
+<text x="239.6" y="366" class="ax" text-anchor="middle">25Q1</text>
+<text x="433.2" y="366" class="ax" text-anchor="middle">25Q3</text>
+<text x="530.0" y="366" class="ax" text-anchor="middle">25Q4</text>
+<path d="M46.0 255.9 L142.8 261.1 L239.6 261.1 L336.4 252.8 L433.2 223.7 L530.0 222.6" fill="none" stroke="#2c6e6b" stroke-width="3" opacity="1" stroke-linejoin="round"/>
+<circle cx="530.0" cy="222.6" r="3.5" fill="#2c6e6b" opacity="1"/>
+<text x="538.0" y="226.6" class="lbl" fill="#2c6e6b" opacity="1">건대입구 11%</text>
+<path d="M46.0 239.3 L142.8 249.7 L239.6 224.7 L336.4 215.4 L433.2 232.0 L530.0 206.0" fill="none" stroke="#1b2a4a" stroke-width="3" opacity="1" stroke-linejoin="round"/>
+<circle cx="530.0" cy="206.0" r="3.5" fill="#1b2a4a" opacity="1"/>
+<text x="538.0" y="210.0" class="lbl" fill="#1b2a4a" opacity="1">잠실/송파 12%</text>
+<path d="M46.0 264.2 L142.8 259.0 L239.6 263.2 L336.4 266.3 L433.2 259.0 L530.0 254.9" fill="none" stroke="#c8881a" stroke-width="3" opacity="1" stroke-linejoin="round"/>
+<circle cx="530.0" cy="254.9" r="3.5" fill="#c8881a" opacity="1"/>
+<text x="538.0" y="258.9" class="lbl" fill="#c8881a" opacity="1">천호 8%</text>
+</svg>
+      <div class="legend"><span><i style="background:#2c6e6b"></i>건대입구(≈어린이대공원역)</span><span><i style="background:#1b2a4a"></i>잠실/송파(≈몽촌토성역)</span><span><i style="background:#c8881a"></i>천호(≈둔촌역)</span></div>
+      <div class="fcap">청담(27%)·신사(15%) 같은 폭주 없이 7~12%대에서 안정적으로 움직인다. 천호(둔촌역권)는 내내 7%대를 유지했다. 화제는 덜해도, 거리는 채워져 있다.</div>
+    </div>
+    <div class="figure">
+      <div class="ftitle">임대료도 ‘완만하게’ 오른다 (임대가격지수, 24Q2=100)</div>
+      <div class="fsub">한국부동산원 · 지수</div>
+      <svg viewBox="0 0 680 380" class="chart" role="img">
+<line x1="46" y1="278.2" x2="530" y2="278.2" stroke="#8a8377" stroke-dasharray="2 4" stroke-width="1"/>
+<text x="46" y="272.2" class="ax">100</text>
+<text x="46.0" y="366" class="ax" text-anchor="middle">23Q4</text>
+<text x="153.6" y="366" class="ax" text-anchor="middle">24Q2</text>
+<text x="261.1" y="366" class="ax" text-anchor="middle">24Q4</text>
+<text x="368.7" y="366" class="ax" text-anchor="middle">25Q2</text>
+<text x="476.2" y="366" class="ax" text-anchor="middle">25Q4</text>
+<text x="530.0" y="366" class="ax" text-anchor="middle">26Q1</text>
+<path d="M46.0 273.6 L99.8 274.8 L153.6 278.2 L207.3 279.4 L261.1 280.5 L314.9 280.5 L368.7 280.5 L422.4 282.8 L476.2 284.0 L530.0 286.3" fill="none" stroke="#2c6e6b" stroke-width="3" opacity="1" stroke-linejoin="round"/>
+<circle cx="530.0" cy="286.3" r="3.5" fill="#2c6e6b" opacity="1"/>
+<text x="538.0" y="290.3" class="lbl" fill="#2c6e6b" opacity="1">건대입구 99</text>
+<path d="M46.0 281.7 L99.8 279.4 L153.6 278.2 L207.3 275.9 L261.1 273.6 L314.9 271.3 L368.7 270.1 L422.4 262.0 L476.2 255.1 L530.0 251.6" fill="none" stroke="#1b2a4a" stroke-width="3" opacity="1" stroke-linejoin="round"/>
+<circle cx="530.0" cy="251.6" r="3.5" fill="#1b2a4a" opacity="1"/>
+<text x="538.0" y="255.6" class="lbl" fill="#1b2a4a" opacity="1">잠실/송파 102</text>
+<path d="M46.0 272.4 L99.8 277.1 L153.6 278.2 L207.3 273.6 L261.1 270.1 L314.9 269.0 L368.7 267.8 L422.4 262.0 L476.2 257.4 L530.0 254.0" fill="none" stroke="#c8881a" stroke-width="3" opacity="1" stroke-linejoin="round"/>
+<circle cx="530.0" cy="254.0" r="3.5" fill="#c8881a" opacity="1"/>
+<text x="538.0" y="258.0" class="lbl" fill="#c8881a" opacity="1">천호 102</text>
+</svg>
+      <div class="legend"><span><i style="background:#2c6e6b"></i>건대입구</span><span><i style="background:#1b2a4a"></i>잠실/송파</span><span><i style="background:#c8881a"></i>천호</span></div>
+      <div class="fcap">뚝섬(+21%)·압구정(+8%)과 달리 100~102 사이의 완만한 곡선. 임대료가 가게를 밀어내지 않는, <b>점포가 버틸 수 있는</b> 상권이다. 건대입구는 오히려 소폭 하락해 진입 문턱이 낮아졌다.</div>
+    </div>
+    <div class="figure">
+      <div class="ftitle">그리고 이 성장은 ‘한 해의 반짝임’이 아니었다 (연 매출, 억원)</div>
+      <div class="fsub">서울시 상권분석서비스 · 2021–2025</div>
+      <svg viewBox="0 0 680 340" class="chart" role="img">
+<text x="40.0" y="324" class="ax" text-anchor="middle">2021</text>
+<text x="165.0" y="324" class="ax" text-anchor="middle">2022</text>
+<text x="290.0" y="324" class="ax" text-anchor="middle">2023</text>
+<text x="415.0" y="324" class="ax" text-anchor="middle">2024</text>
+<text x="540.0" y="324" class="ax" text-anchor="middle">2025</text>
+<path d="M40.0 266.3 L165.0 257.8 L290.0 257.6 L415.0 271.7 L540.0 259.2" fill="none" stroke="#8a8377" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="540.0" cy="259.2" r="3.5" fill="#8a8377"/>
+<text x="548.0" y="259.2" class="lbl" fill="#8a8377">어린이대공원 795억</text>
+<text x="548.0" y="274.2" class="ax" fill="#8a8377">CAGR +1.2%/년</text>
+<path d="M40.0 283.7 L165.0 276.3 L290.0 268.3 L415.0 261.7 L540.0 241.3" fill="none" stroke="#c8881a" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="540.0" cy="241.3" r="3.5" fill="#c8881a"/>
+<text x="548.0" y="241.3" class="lbl" fill="#c8881a">몽촌토성 892억</text>
+<text x="548.0" y="256.3" class="ax" fill="#c8881a">CAGR +7.7%/년</text>
+<path d="M40.0 114.3 L165.0 104.9 L290.0 83.2 L415.0 84.1 L540.0 42.2" fill="none" stroke="#2c6e6b" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="540.0" cy="42.2" r="3.5" fill="#2c6e6b"/>
+<text x="548.0" y="42.2" class="lbl" fill="#2c6e6b">둔촌 1966억</text>
+<text x="548.0" y="57.2" class="ax" fill="#2c6e6b">CAGR +5.7%/년</text>
+</svg>
+      <div class="fcap">몽촌토성역은 5년간 연평균 <b>+7.7%</b>, 둔촌역 <b>+5.7%</b>로 꾸준히 우상향 — 단년 변동이 아닌 추세다. 같은 기간 몽촌토성역 상주인구는 2,455명에서 4,991명으로 두 배가 됐다. 반면 어린이대공원역은 +1.2%로 완만한 ‘안정형’이다.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CH3.5 건강성 지수 -->
+<section class="chapter">
+  <div class="col reveal">
+    <div class="cmark"><span class="no">CH 03.5</span><span class="stage">轉 · 지수화</span></div>
+    <h2>163곳을 한 줄에 세우면</h2>
+    <p class="body">‘네 지표 모두 증가’는 통과/탈락의 이분법이다. 이를 점수로 바꿔 보자. 매출·점포 수·면적당 인구·점포당 매출의 변화율을 표준화해 평균 낸 뒤 백분위(0~100)로 환산한 <b>상권 건강성 지수</b>다. 단순하고 투명하게, 네 숫자만 쓴다.</p>
+    <div class="figure">
+      <div class="ftitle">상권 건강성 지수 — 서울 발달상권 163곳</div>
+      <div class="fsub">회색 눈금=나머지 상권 / 청록=데이터가 고른 5곳 / 빨강=통념적 핫플</div>
+      <div class="indexwrap"><svg viewBox="0 0 680 320" class="chart" role="img">
+<line x1="24" y1="180" x2="656" y2="180" stroke="#d8d0c2" stroke-width="1.5"/>
+<line x1="24.0" y1="175" x2="24.0" y2="185" stroke="#8a8377"/>
+<text x="24.0" y="202" class="ax" text-anchor="middle">0</text>
+<line x1="182.0" y1="175" x2="182.0" y2="185" stroke="#8a8377"/>
+<text x="182.0" y="202" class="ax" text-anchor="middle">25</text>
+<line x1="340.0" y1="175" x2="340.0" y2="185" stroke="#8a8377"/>
+<text x="340.0" y="202" class="ax" text-anchor="middle">50</text>
+<line x1="498.0" y1="175" x2="498.0" y2="185" stroke="#8a8377"/>
+<text x="498.0" y="202" class="ax" text-anchor="middle">75</text>
+<line x1="656.0" y1="175" x2="656.0" y2="185" stroke="#8a8377"/>
+<text x="656.0" y="202" class="ax" text-anchor="middle">100</text>
+<text x="24" y="220" class="ax">← 취약</text>
+<text x="656" y="220" class="ax" text-anchor="end">건강 →</text>
+<line x1="656.0" y1="173" x2="656.0" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="652.2" y1="173" x2="652.2" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="644.6" y1="173" x2="644.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="636.4" y1="173" x2="636.4" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="628.8" y1="173" x2="628.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="625.0" y1="173" x2="625.0" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="617.4" y1="173" x2="617.4" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="613.7" y1="173" x2="613.7" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="609.2" y1="173" x2="609.2" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="605.4" y1="173" x2="605.4" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="601.6" y1="173" x2="601.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="597.9" y1="173" x2="597.9" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="594.1" y1="173" x2="594.1" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="590.3" y1="173" x2="590.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="586.5" y1="173" x2="586.5" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="578.3" y1="173" x2="578.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="574.5" y1="173" x2="574.5" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="570.7" y1="173" x2="570.7" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="566.9" y1="173" x2="566.9" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="563.1" y1="173" x2="563.1" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="559.3" y1="173" x2="559.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="551.1" y1="173" x2="551.1" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="547.3" y1="173" x2="547.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="543.5" y1="173" x2="543.5" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="539.7" y1="173" x2="539.7" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="535.9" y1="173" x2="535.9" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="532.1" y1="173" x2="532.1" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="528.3" y1="173" x2="528.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="523.9" y1="173" x2="523.9" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="520.1" y1="173" x2="520.1" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="512.5" y1="173" x2="512.5" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="505.0" y1="173" x2="505.0" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="501.2" y1="173" x2="501.2" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="496.7" y1="173" x2="496.7" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="492.9" y1="173" x2="492.9" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="489.2" y1="173" x2="489.2" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="485.4" y1="173" x2="485.4" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="481.6" y1="173" x2="481.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="477.8" y1="173" x2="477.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="474.0" y1="173" x2="474.0" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="470.2" y1="173" x2="470.2" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="465.8" y1="173" x2="465.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="462.0" y1="173" x2="462.0" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="458.2" y1="173" x2="458.2" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="454.4" y1="173" x2="454.4" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="450.6" y1="173" x2="450.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="446.8" y1="173" x2="446.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="443.0" y1="173" x2="443.0" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="438.6" y1="173" x2="438.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="434.8" y1="173" x2="434.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="431.0" y1="173" x2="431.0" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="427.2" y1="173" x2="427.2" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="423.4" y1="173" x2="423.4" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="419.6" y1="173" x2="419.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="415.8" y1="173" x2="415.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="411.4" y1="173" x2="411.4" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="407.6" y1="173" x2="407.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="403.8" y1="173" x2="403.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="400.0" y1="173" x2="400.0" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="396.2" y1="173" x2="396.2" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="392.5" y1="173" x2="392.5" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="388.7" y1="173" x2="388.7" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="384.9" y1="173" x2="384.9" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="380.4" y1="173" x2="380.4" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="372.9" y1="173" x2="372.9" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="365.3" y1="173" x2="365.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="361.5" y1="173" x2="361.5" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="357.7" y1="173" x2="357.7" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="353.3" y1="173" x2="353.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="349.5" y1="173" x2="349.5" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="345.7" y1="173" x2="345.7" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="338.1" y1="173" x2="338.1" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="334.3" y1="173" x2="334.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="330.5" y1="173" x2="330.5" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="326.7" y1="173" x2="326.7" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="322.3" y1="173" x2="322.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="318.5" y1="173" x2="318.5" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="314.7" y1="173" x2="314.7" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="310.9" y1="173" x2="310.9" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="307.1" y1="173" x2="307.1" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="303.3" y1="173" x2="303.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="299.6" y1="173" x2="299.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="295.1" y1="173" x2="295.1" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="291.3" y1="173" x2="291.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="287.5" y1="173" x2="287.5" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="283.8" y1="173" x2="283.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="280.0" y1="173" x2="280.0" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="276.2" y1="173" x2="276.2" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="272.4" y1="173" x2="272.4" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="268.6" y1="173" x2="268.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="264.2" y1="173" x2="264.2" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="260.4" y1="173" x2="260.4" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="256.6" y1="173" x2="256.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="252.8" y1="173" x2="252.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="249.0" y1="173" x2="249.0" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="245.2" y1="173" x2="245.2" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="241.4" y1="173" x2="241.4" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="237.0" y1="173" x2="237.0" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="233.2" y1="173" x2="233.2" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="225.6" y1="173" x2="225.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="221.8" y1="173" x2="221.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="218.0" y1="173" x2="218.0" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="214.2" y1="173" x2="214.2" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="209.8" y1="173" x2="209.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="206.0" y1="173" x2="206.0" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="202.2" y1="173" x2="202.2" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="198.4" y1="173" x2="198.4" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="194.6" y1="173" x2="194.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="190.8" y1="173" x2="190.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="187.1" y1="173" x2="187.1" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="183.3" y1="173" x2="183.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="178.8" y1="173" x2="178.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="175.0" y1="173" x2="175.0" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="171.3" y1="173" x2="171.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="167.5" y1="173" x2="167.5" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="163.7" y1="173" x2="163.7" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="159.9" y1="173" x2="159.9" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="156.1" y1="173" x2="156.1" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="151.7" y1="173" x2="151.7" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="147.9" y1="173" x2="147.9" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="144.1" y1="173" x2="144.1" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="140.3" y1="173" x2="140.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="136.5" y1="173" x2="136.5" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="132.7" y1="173" x2="132.7" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="128.9" y1="173" x2="128.9" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="125.1" y1="173" x2="125.1" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="120.7" y1="173" x2="120.7" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="113.1" y1="173" x2="113.1" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="109.3" y1="173" x2="109.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="105.5" y1="173" x2="105.5" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="101.7" y1="173" x2="101.7" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="97.9" y1="173" x2="97.9" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="93.5" y1="173" x2="93.5" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="89.7" y1="173" x2="89.7" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="85.9" y1="173" x2="85.9" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="82.1" y1="173" x2="82.1" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="78.4" y1="173" x2="78.4" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="74.6" y1="173" x2="74.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="70.8" y1="173" x2="70.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="66.3" y1="173" x2="66.3" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="62.6" y1="173" x2="62.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="58.8" y1="173" x2="58.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="55.0" y1="173" x2="55.0" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="51.2" y1="173" x2="51.2" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="47.4" y1="173" x2="47.4" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="43.6" y1="173" x2="43.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="39.8" y1="173" x2="39.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="35.4" y1="173" x2="35.4" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="31.6" y1="173" x2="31.6" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="27.8" y1="173" x2="27.8" y2="187" stroke="#8a8377" stroke-width="1" opacity="0.25"/>
+<line x1="116.9" y1="171" x2="116.9" y2="189" stroke="#b5341f" stroke-width="2.5"/>
+<line x1="116.9" y1="189" x2="116.9" y2="227.0" stroke="#b5341f" stroke-width="0.8" opacity="0.5"/>
+<text x="116.9" y="236.0" class="lbl" fill="#b5341f" text-anchor="middle">가로수길</text>
+<line x1="229.4" y1="171" x2="229.4" y2="189" stroke="#b5341f" stroke-width="2.5"/>
+<line x1="229.4" y1="189" x2="229.4" y2="247.0" stroke="#b5341f" stroke-width="0.8" opacity="0.5"/>
+<text x="229.4" y="256.0" class="lbl" fill="#b5341f" text-anchor="middle">홍대</text>
+<line x1="341.9" y1="171" x2="341.9" y2="189" stroke="#b5341f" stroke-width="2.5"/>
+<line x1="341.9" y1="189" x2="341.9" y2="227.0" stroke="#b5341f" stroke-width="0.8" opacity="0.5"/>
+<text x="341.9" y="236.0" class="lbl" fill="#b5341f" text-anchor="middle">연남</text>
+<line x1="369.1" y1="171" x2="369.1" y2="189" stroke="#b5341f" stroke-width="2.5"/>
+<line x1="369.1" y1="189" x2="369.1" y2="247.0" stroke="#b5341f" stroke-width="0.8" opacity="0.5"/>
+<text x="369.1" y="256.0" class="lbl" fill="#b5341f" text-anchor="middle">성수</text>
+<line x1="376.7" y1="171" x2="376.7" y2="189" stroke="#b5341f" stroke-width="2.5"/>
+<line x1="376.7" y1="189" x2="376.7" y2="227.0" stroke="#b5341f" stroke-width="0.8" opacity="0.5"/>
+<text x="376.7" y="236.0" class="lbl" fill="#b5341f" text-anchor="middle">이태원</text>
+<line x1="508.7" y1="171" x2="508.7" y2="189" stroke="#b5341f" stroke-width="2.5"/>
+<line x1="508.7" y1="189" x2="508.7" y2="247.0" stroke="#b5341f" stroke-width="0.8" opacity="0.5"/>
+<text x="508.7" y="256.0" class="lbl" fill="#b5341f" text-anchor="middle">청담</text>
+<line x1="516.3" y1="171" x2="516.3" y2="189" stroke="#b5341f" stroke-width="2.5"/>
+<line x1="516.3" y1="189" x2="516.3" y2="227.0" stroke="#b5341f" stroke-width="0.8" opacity="0.5"/>
+<text x="516.3" y="236.0" class="lbl" fill="#b5341f" text-anchor="middle">압구정</text>
+<line x1="582.1" y1="171" x2="582.1" y2="189" stroke="#b5341f" stroke-width="2.5"/>
+<line x1="582.1" y1="189" x2="582.1" y2="247.0" stroke="#b5341f" stroke-width="0.8" opacity="0.5"/>
+<text x="582.1" y="256.0" class="lbl" fill="#b5341f" text-anchor="middle">명동</text>
+<line x1="554.9" y1="171" x2="554.9" y2="189" stroke="#2c6e6b" stroke-width="3"/>
+<line x1="554.9" y1="171" x2="554.9" y2="130.0" stroke="#2c6e6b" stroke-width="0.8" opacity="0.5"/>
+<text x="554.9" y="124.0" class="lbl" fill="#2c6e6b" text-anchor="middle">을지로3가 84</text>
+<line x1="621.2" y1="171" x2="621.2" y2="189" stroke="#2c6e6b" stroke-width="3"/>
+<line x1="621.2" y1="171" x2="621.2" y2="110.0" stroke="#2c6e6b" stroke-width="0.8" opacity="0.5"/>
+<text x="621.2" y="104.0" class="lbl" fill="#2c6e6b" text-anchor="middle">개봉동 94</text>
+<line x1="632.6" y1="171" x2="632.6" y2="189" stroke="#2c6e6b" stroke-width="3"/>
+<line x1="632.6" y1="171" x2="632.6" y2="130.0" stroke="#2c6e6b" stroke-width="0.8" opacity="0.5"/>
+<text x="632.6" y="124.0" class="lbl" fill="#2c6e6b" text-anchor="middle">어린이대공원 96</text>
+<line x1="640.2" y1="171" x2="640.2" y2="189" stroke="#2c6e6b" stroke-width="3"/>
+<line x1="640.2" y1="171" x2="640.2" y2="110.0" stroke="#2c6e6b" stroke-width="0.8" opacity="0.5"/>
+<text x="640.2" y="104.0" class="lbl" fill="#2c6e6b" text-anchor="middle">몽촌토성 98</text>
+<line x1="648.4" y1="171" x2="648.4" y2="189" stroke="#2c6e6b" stroke-width="3"/>
+<line x1="648.4" y1="171" x2="648.4" y2="130.0" stroke="#2c6e6b" stroke-width="0.8" opacity="0.5"/>
+<text x="648.4" y="124.0" class="lbl" fill="#2c6e6b" text-anchor="middle">둔촌 99</text>
+</svg></div>
+      <div class="fcap">데이터가 고른 다섯 곳은 오른쪽 끝(84~99점)에 모여 있고, 통념적 핫플은 가운데부터 왼쪽까지 흩어진다. <b>가로수길은 163곳 중 140위(15점)</b>, 홍대 111위, 성수 75위. 명동(20위)만 관광 회복으로 예외적으로 높다.</div>
+    </div>
+    <p class="body">한 가지 함정도 드러난다. 지수 최상위 일부(오금·구로전화국)는 매출·점포당 매출만 급등하고 <b>점포 수와 인구는 오히려 줄었다</b>. ‘평균은 높지만 균형은 깨진’ 상권이다. 그래서 네 지표가 <b>모두</b> 오른 ‘균형 성장’ 조건이 더 엄격하고 믿을 만한 기준이 된다 — 그 조건을 통과한 건 끝내 다섯 곳뿐이다.</p>
+    <p class="pull">평균이 높은 것과, 모든 축이 함께 오르는 것은 다르다.</p>
+  </div>
+</section>
+
+<!-- CH4 -->
+<section class="chapter">
+  <div class="col reveal">
+    <div class="cmark"><span class="no">CH 04</span><span class="stage">結 · 이유</span></div>
+    <h2>화제성 상권 vs 구조적 건강 상권</h2>
+    <p class="body">두 유형의 차이는 ‘성장의 엔진’에 있다. <b>화제성 상권</b>은 외부 유입과 트렌드로 타오르지만, 임대료 급등이 그 불씨인 가게들을 태워버린다. <b>구조적 건강 상권</b>은 배후 인구가 수요를 떠받쳐, 점포가 늘어도 점포당 매출이 함께 오르는 선순환을 만든다.</p>
+    <div class="figure">
+      <div class="ftitle">서울 상권의 지형도 — 화제성과 내실은 다른 축이다</div>
+      <div class="fsub">가로축: 화제성·임대료 압력 / 세로축: 인구 기반 내실 성장</div>
+      <svg viewBox="0 0 680 470" class="chart" role="img">
+<rect x="64" y="34" width="552" height="362" fill="none" stroke="#d8d0c2"/>
+<line x1="340.0" y1="34" x2="340.0" y2="396" stroke="#d8d0c2" stroke-dasharray="3 4"/>
+<line x1="64" y1="215.0" x2="616" y2="215.0" stroke="#d8d0c2" stroke-dasharray="3 4"/>
+<text x="340.0" y="426" class="ax" text-anchor="middle">화제성 · 임대료 압력  →</text>
+<text x="50" y="215.0" class="ax" text-anchor="middle" transform="rotate(-90 50 215.0)">내실 성장 (인구 · 점포당매출)  →</text>
+<text x="78" y="56" class="qd" fill="#2c6e6b">구조적 건강 ★</text>
+<text x="602" y="56" class="qd" text-anchor="end">화제+내실(드문 이상형)</text>
+<text x="78" y="384" class="qd">정체 · 조용</text>
+<text x="602" y="384" class="qd" text-anchor="end" fill="#b5341f">과열 · 쇠퇴 위험</text>
+<circle cx="538.7" cy="287.4" r="6" fill="#b5341f"/>
+<text x="528.7" y="291.4" class="lbl" fill="#b5341f" text-anchor="end">성수·뚝섬</text>
+<circle cx="406.2" cy="338.1" r="6" fill="#b5341f"/>
+<text x="396.2" y="342.1" class="lbl" fill="#b5341f" text-anchor="end">청담</text>
+<circle cx="367.6" cy="316.4" r="6" fill="#b5341f"/>
+<text x="377.6" y="320.4" class="lbl" fill="#b5341f" text-anchor="start">신사·가로수길</text>
+<circle cx="516.6" cy="229.5" r="6" fill="#c8881a"/>
+<text x="506.6" y="233.5" class="lbl" fill="#c8881a" text-anchor="end">압구정로데오</text>
+<circle cx="472.5" cy="251.2" r="6" fill="#c8881a"/>
+<text x="462.5" y="255.2" class="lbl" fill="#c8881a" text-anchor="end">명동</text>
+<circle cx="229.6" cy="135.4" r="6" fill="#2c6e6b"/>
+<text x="239.6" y="139.4" class="lbl" fill="#2c6e6b" text-anchor="start">어린이대공원역</text>
+<circle cx="284.8" cy="99.2" r="6" fill="#2c6e6b"/>
+<text x="294.8" y="103.2" class="lbl" fill="#2c6e6b" text-anchor="start">몽촌토성역</text>
+<circle cx="240.6" cy="70.2" r="6" fill="#2c6e6b"/>
+<text x="250.6" y="74.2" class="lbl" fill="#2c6e6b" text-anchor="start">둔촌역</text>
+</svg>
+      <div class="fcap">오른쪽 위·아래(성수·청담·신사·압구정)는 뜨겁지만 임대료·공실 압력에 노출돼 있다. 왼쪽 아래의 ★ 구역 — 둔촌·몽촌토성·어린이대공원 — 이 데이터가 고른 ‘구조적 건강’ 상권이다.</div>
+    </div>
+    <div class="cards">
+      <div class="card lead-card"><h4>왜 이 차이가 중요한가</h4><p>화제성은 빠르게 오르고 빠르게 식는다(경리단길·가로수길). 인구 기반 성장은 느리지만 무너지지 않는다. 지속가능성의 무게중심이 ‘얼마나 시끄러운가’에서 ‘얼마나 많은 사람이 사는가’로 옮겨간다.</p></div>
+      <div class="card"><h4>정책</h4><div class="meta">지자체</div><p>화제성 상권엔 임대료 안정(장기안심상가·상생협약)을, 인구 기반 상권엔 생활상권·보행일상권 육성을. 공실률·점포당 매출을 조기경보 지표로.</p></div>
+      <div class="card"><h4>투자·창업</h4><div class="meta">소상공인</div><p>유동인구·SNS보다 배후 거주인구·생존율·임대료 부담률을 보라. 폐업 100만 시대, 화제보다 ‘버틸 수 있는 자리’가 안전하다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACTION -->
+<section class="action">
+  <div class="col reveal">
+    <div class="kicker">그래서, 무엇을 할 것인가</div>
+    <h2 class="lead" style="margin-bottom:8px">화제성과 내실은 다른 처방을 필요로 한다.</h2>
+    <p class="body" style="margin-bottom:6px">같은 ‘성장’이라도 누가 보느냐에 따라 할 일이 갈린다. 세 주체의 행동 지침으로 옮겨 본다.</p>
+    <div class="actiongrid">
+      <div class="acard a-policy">
+        <div class="role" style="color:var(--navy)">정책 · 지자체</div>
+        <h4>비는 곳은 채우고,<br>차는 곳은 지킨다</h4>
+        <ul>
+          <li>화제성 상권(성수·가로수길·청담)엔 임대료 안정장치 — 장기안심상가·상생협약·프랜차이즈 입점 심사</li>
+          <li>인구 기반 상권엔 생활상권·보행일상권 육성과 정주여건 투자</li>
+          <li>건강성 지수·공실률을 분기 모니터링 지표로 상시 공표</li>
+        </ul>
+        <div class="watch"><b>경보 기준</b> · 공실률 두 자릿수 진입 또는 점포당 매출 2분기 연속 하락 시 개입 강화</div>
+      </div>
+      <div class="acard a-invest">
+        <div class="role" style="color:var(--teal)">투자 · 자산</div>
+        <h4>‘뜨는 곳’보다<br>‘버티는 곳’</h4>
+        <ul>
+          <li>유동인구·SNS 화제성이 아니라 배후 거주·상주인구 증가를 1차 지표로</li>
+          <li>임대료가 매출보다 빨리 오르는 상권(성수 임대료지수 +21%)은 수익률 함정 경계</li>
+          <li>건강성 상위 + 임대료 완만 구간(둔촌·천호·잠실)을 우선 검토</li>
+        </ul>
+        <div class="watch"><b>판단 기준</b> · 임대료 상승률이 매출 상승률을 추월하면 진입 보류</div>
+      </div>
+      <div class="acard a-found">
+        <div class="role" style="color:var(--amber)">창업 · 소상공인</div>
+        <h4>폐업 100만 시대,<br>자리가 생존을 정한다</h4>
+        <ul>
+          <li>화제성 상권의 높은 임대료·권리금·짧은 수명 리스크를 직시</li>
+          <li>배후 거주인구·점포당 매출·생존율이 받쳐 주는 자리 우선</li>
+          <li>대단지 입주 배후상권(둔촌)·직주근접 오피스상권(을지로) 같은 고정수요형 입지</li>
+        </ul>
+        <div class="watch"><b>점검 기준</b> · 임대료 부담률(임대료÷예상매출)이 20%를 넘으면 입지 재고</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSION -->
+<section class="conclusion">
+  <div class="col reveal">
+    <div class="kicker">결론</div>
+    <h2>지금 <em>시끄러운 곳</em>이 아니라,<br>사람이 모여 <em>사는 곳</em>이 오래 간다.</h2>
+    <p>통념적 핫플과 데이터가 뽑은 핫플이 달랐던 건 분석의 오류가 아니다. <b>두 리스트가 측정한 ‘성장’의 종류가 달랐을 뿐</b>이다. 하나는 화제의 총량을, 하나는 인구가 떠받치는 내실을 본다.</p>
+    <p>한국부동산원 데이터는 그 차이를 분명히 보여준다. 청담은 비어가고 성수는 비싸지는 동안, 둔촌·몽촌토성·어린이대공원의 거리는 조용히 채워졌다.</p>
+    <p>핫플의 정의를 바꿀 때가 됐다. 우리가 더 관심 갖고 키워야 할 곳은, 카메라가 모이는 거리가 아니라 <b>사람이 돌아오는 동네</b>일지 모른다.</p>
+    <div class="takeaways">
+      <div class="tk"><div class="h">起承</div><p>핫플은 비어가거나(청담 27%) 비싸지며(성수 +21%) 체력을 잃는다.</p></div>
+      <div class="tk"><div class="h">轉</div><p>데이터가 고른 5곳은 인구가 늘고 거리가 안정된 곳이었다.</p></div>
+      <div class="tk"><div class="h">結</div><p>화제성≠지속가능성. 무게중심은 인구·내실로 옮겨가야 한다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- COLOPHON -->
+<footer class="colophon">
+  <div class="col">
+    <h3>‘통념적 핫플’의 정의</h3>
+    <p>별도의 핫플 목록이 아니라, 미디어·업계에서 ‘뜨는 상권’으로 통용되는 8곳을 선정해 업로드 데이터에 실재하는 명칭으로 매칭했다 — 성수(성수역, 임대료는 뚝섬)·가로수길(신사역)·연남(동교/연남)·홍대(홍대입구역)·명동·이태원·압구정로데오·청담(청담사거리). 즉 ‘통념’의 근거는 일반 인지도이며, 검증은 업로드된 163곳·한국부동산원 데이터로 했다.</p>
+    <h3>데이터 출처</h3>
+    <p>한국부동산원 상업용부동산 임대동향조사(중대형·소규모 상가 공실률·임대가격지수, 2023Q4–2026Q1) · 서울시 상권분석서비스(발달상권 매출·점포·배후인구, 2024–2025) · 썸트렌드 소셜 빅데이터(SNS 언급량·긍부정, 2024–2025)</p>
+    <h3>방법론</h3>
+    <p>서울 발달상권 163곳(품질 정제 후) 중 2024→2025에 면적당 인구·매출·점포 수·점포당 매출이 모두 증가한 상권을 추출(5곳). 핫플 및 통과 상권의 공실·임대료는 한국부동산원 ‘지역(상권)’ 단위 시계열로, 역세권 상권은 인접 대표상권(건대입구·잠실/송파·천호 등)으로 근사 매칭했다. 임대가격지수는 2024년 2분기=100 기준.</p>
+    <h3>유의</h3>
+    <p>분석은 2024→2025 단년 변화 기준으로, 신규 입주·재개발 등 일회성 효과가 포함될 수 있다. 매출·임대 수치는 카드·표본 기반 추정치이며 실제와 차이가 있을 수 있다. 역세권↔부동산원 상권의 경계는 완전히 일치하지 않는다. 매칭 강건성 점검 결과 어린이대공원역(건대입구·군자·구의역 모두 공실 상승 일치)·둔촌역(천호)은 안정적이나, 몽촌토성역은 후보 상권 간 방향이 엇갈려(잠실/송파 +3.2%p vs 잠실새내역 −8.5%p) 해석에 보수적 주의가 필요하다. 건강성 지수는 4개 지표의 단년 로그변화율을 z-표준화·평균한 백분위 값이다.</p>
+    <h3>제작</h3>
+    <p>서울 발달상권 데이터 스토리 · 2026</p>
+  </div>
+</footer>
+
+<script>
+const prog=document.getElementById('prog');
+addEventListener('scroll',()=>{const h=document.documentElement;const sc=h.scrollTop/(h.scrollHeight-h.clientHeight);prog.style.width=(sc*100)+'%'},{passive:true});
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

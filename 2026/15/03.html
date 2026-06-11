@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>책은 이대로 사라질까 — 전자책 산업 리포트</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4ede0;--paper-2:#efe6d5;
+    --ink:#1c1813;--ink-soft:#463f34;--muted:#8c8472;--line:#e3d9c6;--line-soft:#ede4d3;
+    --hot:#e0512f;--hot-soft:#f5b9a6;--cool:#1f5b57;--cool-soft:#9cc2bd;--gold:#bb8e34;
+    --serif:'Nanum Myeongjo',serif;--sans:'IBM Plex Sans KR',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.8;font-weight:300;overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  ::selection{background:var(--hot);color:#fff}
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--hot);z-index:200}
+  nav.dots{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:150;display:flex;flex-direction:column;gap:15px}
+  nav.dots a{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--ink-soft);opacity:.4;transition:.3s;display:block;position:relative}
+  nav.dots a::after{content:attr(data-label);position:absolute;right:20px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:.66rem;letter-spacing:.12em;color:var(--ink-soft);opacity:0;transition:.25s;pointer-events:none;font-weight:500}
+  nav.dots a:hover::after{opacity:.85}
+  nav.dots a.active{opacity:1;background:var(--hot);border-color:var(--hot);transform:scale(1.35)}
+  @media(max-width:860px){nav.dots{display:none}}
+  section{padding:130px 24px;position:relative}
+  .wrap{max-width:920px;margin:0 auto}
+  .kicker{font-weight:600;letter-spacing:.26em;text-transform:uppercase;font-size:.74rem;color:var(--hot);margin-bottom:24px;display:inline-flex;align-items:center;gap:10px}
+  .kicker::before{content:"";width:26px;height:1.5px;background:var(--hot);display:inline-block}
+  .kicker.cool{color:var(--cool)}
+  .kicker.cool::before{background:var(--cool)}
+  h2.act{font-family:var(--serif);font-weight:800;font-size:clamp(2.05rem,5vw,3.5rem);line-height:1.2;letter-spacing:-.015em;margin-bottom:28px}
+  h2.act .stamp{color:var(--hot);font-style:normal}
+  .lead{font-size:clamp(1.08rem,2vw,1.32rem);color:var(--ink-soft);font-weight:300;max-width:700px;margin-bottom:14px;line-height:1.7}
+  .lead b{font-weight:600;color:var(--ink)}
+  p.body{font-size:1.06rem;color:var(--ink-soft);margin:18px 0;max-width:700px}
+  p.body b{font-weight:600;color:var(--ink)}
+  .hl{background:linear-gradient(transparent 58%, var(--hot-soft) 58%);padding:0 2px;font-weight:500;color:var(--ink)}
+  .reveal{opacity:0;transform:translateY(34px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+  /* ---------- HERO ---------- */
+  #hero{min-height:100vh;display:flex;align-items:center;background:radial-gradient(120% 90% at 78% 12%,rgba(224,81,47,.16),transparent 55%),radial-gradient(90% 80% at 10% 95%,rgba(31,91,87,.16),transparent 55%),#18140f;color:var(--paper);padding:90px 24px;overflow:hidden}
+  #hero .wrap{position:relative;z-index:2}
+  .hero-kicker{font-weight:600;letter-spacing:.3em;text-transform:uppercase;font-size:.74rem;color:var(--hot-soft);margin-bottom:32px}
+  #hero h1{font-family:var(--serif);font-weight:800;font-size:clamp(2.3rem,6.4vw,4.9rem);line-height:1.12;letter-spacing:-.02em;max-width:19ch}
+  #hero h1 .q{color:var(--hot)}
+  .hero-sub{margin-top:34px;font-size:clamp(1.05rem,2.1vw,1.3rem);color:#dcd2c1;font-weight:300;max-width:62ch;line-height:1.72}
+  .hero-sub b{color:#fff;font-weight:500}
+  .hero-thesis{margin-top:38px;padding:20px 24px;border-left:3px solid var(--hot);background:rgba(244,237,224,.04);border-radius:0 10px 10px 0;font-size:1.04rem;color:#d7ccb9;max-width:60ch;line-height:1.7}
+  .hero-thesis b{color:#fff;font-weight:600}
+  .scrollcue{margin-top:54px;display:flex;align-items:center;gap:12px;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:#9d9588}
+  .scrollcue .bar{width:46px;height:1px;background:#5b5347;position:relative;overflow:hidden}
+  .scrollcue .bar::after{content:"";position:absolute;left:-46px;top:0;width:46px;height:1px;background:var(--hot);animation:slide 2s infinite}
+  @keyframes slide{to{left:46px}}
+  .floatbooks{position:absolute;inset:0;z-index:1;pointer-events:none}
+  .floatbooks span{position:absolute;font-family:var(--serif);color:rgba(244,237,224,.05);font-weight:800;font-size:clamp(4rem,16vw,13rem);user-select:none}
+
+  /* ---------- FIGURE / CHART (white) ---------- */
+  figure{margin:48px 0;background:var(--paper-2);border:1px solid var(--line);border-radius:16px;padding:34px 30px 26px;box-shadow:0 24px 56px -34px rgba(28,24,19,.5)}
+  figcaption{font-family:var(--serif);font-weight:700;font-size:1.12rem;color:var(--ink);margin-bottom:7px;line-height:1.4}
+  figcaption .no{color:var(--hot);margin-right:8px}
+  .figsub{font-size:.84rem;color:var(--muted);margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line-soft)}
+  svg{display:block;width:100%;height:auto;overflow:visible}
+  .src-tag{display:block;font-size:.74rem;color:var(--muted);margin-top:16px}
+  .axis{font-size:11px;fill:var(--muted);font-weight:400}
+  .flourish-embed-iframe{width:100%;border:0;background:var(--paper);border-radius:8px;display:block}
+
+  /* ---------- STAT CARDS (white) ---------- */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:18px;margin:44px 0}
+  .stat{background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:24px;box-shadow:0 16px 40px -34px rgba(28,24,19,.5)}
+  .stat .num{font-family:var(--serif);font-weight:800;font-size:2.5rem;line-height:1;color:var(--hot)}
+  .stat.cool .num{color:var(--cool)}
+  .stat .lbl{font-size:.84rem;color:var(--ink-soft);margin-top:12px;line-height:1.5}
+
+  /* ---------- PULL QUOTE ---------- */
+  .pull{font-family:var(--serif);font-size:clamp(1.5rem,3.4vw,2.2rem);font-weight:700;line-height:1.45;margin:66px auto;max-width:780px;text-align:center;position:relative;padding-top:34px}
+  .pull::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:48px;height:3px;background:var(--hot);border-radius:2px}
+  .pull .accent{color:var(--hot)}
+  .pull.cool .accent{color:var(--cool)}
+  .pull.cool::before{background:var(--cool)}
+
+  /* ---------- END ---------- */
+  #end{background:#18140f;color:var(--paper)}
+  #end .kicker{color:var(--hot-soft)}
+  #end .kicker::before{background:var(--hot-soft)}
+  #end h2.act{color:#fff}
+  .keys{display:grid;gap:0;margin:48px 0}
+  .key{padding:32px 0;border-top:1px solid #332c20;display:grid;grid-template-columns:64px 1fr;gap:20px;align-items:start}
+  .key:last-child{border-bottom:1px solid #332c20}
+  .key .kn{font-family:var(--serif);font-weight:800;font-size:1.9rem;color:var(--hot)}
+  .key p{font-size:clamp(1.06rem,2.1vw,1.4rem);font-family:var(--serif);line-height:1.55;color:#ece3d2}
+  .key p b{color:#fff}
+
+  footer{background:#120f0b;color:#9a917f;padding:66px 24px;font-size:.86rem}
+  footer .wrap{max-width:920px}
+  footer h3{color:var(--paper);font-size:1rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:22px}
+  footer ul{list-style:none;display:grid;gap:11px}
+  footer li{padding-left:18px;position:relative;line-height:1.65}
+  footer li::before{content:"—";position:absolute;left:0;color:var(--hot)}
+  footer li b{color:#cdc2b0}
+  footer .note{margin-top:28px;padding-top:24px;border-top:1px solid #2a2419;color:#7a7264;font-size:.82rem;line-height:1.75}
+  footer .note b{color:#9a917f}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<nav class="dots">
+  <a href="#hero" data-s data-label="여는 글"></a>
+  <a href="#young" data-s data-label="起 · 2030"></a>
+  <a href="#fall" data-s data-label="承 · 4050"></a>
+  <a href="#turn" data-s data-label="轉 · 시간"></a>
+  <a href="#future" data-s data-label="結 · 미래"></a>
+  <a href="#end" data-s data-label="결론"></a>
+</nav>
+
+<!-- ============ HOOKING ============ -->
+<section id="hero">
+  <div class="floatbooks"><span style="top:8%;left:62%">冊</span><span style="top:55%;left:4%">e</span><span style="top:70%;left:70%">읽</span></div>
+  <div class="wrap">
+    <div class="hero-kicker">전자출판 시대를 위한 독서 데이터 리포트</div>
+    <h1>성인 10명 중 <span class="q">7명</span>은 책을<br>한 권도 읽지 않는 사회,<br>책은 이대로 <span class="q">사라질까?</span></h1>
+    <p class="hero-sub">2025년 국민독서실태조사 기준 성인 종합독서율은 <b>38.5%</b>, 종이책만 보면 <b>28.8%</b>다.
+      열 명 중 일곱 명이 1년간 종이책을 단 한 권도 펴지 않았다. 심각성을 느낀 정부는 ‘독서 국가 선포식’을 열고,
+      AI 시대 국가 경쟁력의 핵심 역량으로 독서를 공식화했다.</p>
+    <div class="hero-thesis">그러나 숫자를 가까이 들여다보면 이야기는 달라진다. 책은 사라지는 것이 아니라 <b>읽히는 자리를 옮기고</b> 있다.
+      출판의 미래도, 독서율 회복의 실마리도 결국 <b>전자책 산업의 확장</b>에서 찾을 수 있다.</div>
+    <div class="scrollcue"><span class="bar"></span> 스크롤하여 데이터 읽기</div>
+  </div>
+</section>
+
+<!-- ============ 起 : 2030은 여전히 읽는다 ============ -->
+<section id="young">
+  <div class="wrap">
+    <div class="kicker reveal">起 · 2030은 여전히 읽는다</div>
+    <h2 class="act reveal">그러나 2030은 <span class="stamp">여전히</span> 책을 읽는다<br>— 다만, 화면으로 읽는다</h2>
+    <p class="lead reveal">전 세대의 독서율이 흔들리는 와중에도 20대는 70%대, 30대도 60%대 중반의 독서율을 지켜왔다.
+      비결은 종이책 너머의 <b>전자책</b>이다. 이들은 이미 종이에서 화면으로 이어지는 <b>독서 매체의 전환기</b>를 통과하는 중이다.</p>
+
+    <div class="stats reveal">
+      <div class="stat"><div class="num">75.3%</div><div class="lbl">2025 20대 종합독서율<br>2019년부터 70%대 유지</div></div>
+      <div class="stat cool"><div class="num">59.4%</div><div class="lbl">2025 20대 전자책 독서율<br>종이책(45.1%)을 추월</div></div>
+      <div class="stat"><div class="num">66.4%</div><div class="lbl">2025 30대 종합독서율<br>20대에 이어 두 번째로 높은 수준</div></div>
+    </div>
+
+    <figure class="reveal">
+      <figcaption><span class="no">차트 1</span>연령대별 독서율 추이 — 흔들리지 않는 2030</figcaption>
+      <div class="figsub">단위 %, 문화체육관광부 「국민독서실태조사」 · 격년 조사</div>
+      <iframe src="https://flo.uri.sh/visualisation/29311275/embed" title="연령대별 독서율 추이 2030" class="flourish-embed-iframe" scrolling="no" style="height:600px;" sandbox="allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"></iframe>
+      <span class="src-tag">출처: 문화체육관광부 「국민독서실태조사」</span>
+    </figure>
+
+    <figure class="reveal">
+      <figcaption><span class="no">차트 2</span>20대 종이책 vs 전자책 — 전자책이 종이책을 넘어서다</figcaption>
+      <div class="figsub">단위 %, 20대 매체별 독서율 · 2023년 전자책이 종이책 추월 (2025년 59.4% vs 45.1%)</div>
+      <iframe src="https://flo.uri.sh/visualisation/29312416/embed" title="20대 종이책 전자책 독서율 비교" class="flourish-embed-iframe" scrolling="no" style="height:600px;" sandbox="allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"></iframe>
+      <span class="src-tag">출처: 문화체육관광부 「국민독서실태조사」</span>
+    </figure>
+
+    <p class="body reveal">꾸준히 높아져 온 전자책 독서율은 <b>2023년 종이책을 앞지른 뒤, 2025년에는 그 격차를 더 벌렸다.</b>
+      20대에게 독서는 더 이상 종이를 넘기는 행위에 머물지 않는다. 출퇴근길 스마트폰, 태블릿, 전자책 단말기 위에서 텍스트를 읽는 일 모두가 ‘독서’가 되었다.
+      이들은 지금 독서 <span class="hl">매체 전환기</span>의 한가운데에 서 있다.</p>
+
+    <div class="pull reveal">2030에게 독서는 종이가 아니라 <span class="accent">화면 위에서 이어지는 일상</span>이 되었다.</div>
+  </div>
+</section>
+
+<!-- ============ 承 : 국민독서실태조사가 말하는 진실 ============ -->
+<section id="fall">
+  <div class="wrap">
+    <div class="kicker reveal">承 · 국민독서실태조사가 말하는 진실</div>
+    <h2 class="act reveal">무너지는 성인 독서율,<br>그 진원은 <span class="stamp">40·50대</span>에 있었다</h2>
+    <p class="lead reveal">성인 전체 독서율이 내려앉은 것은 분명한 사실이다. 2025년 종이책 기준 독서율은 <b>28.8%</b>까지 주저앉았다.
+      그러나 이 하락을 이끈 것은 2030이 아니라, 사회의 허리를 떠받치는 <b>40·50대</b>였다.</p>
+
+    <figure class="reveal">
+      <figcaption><span class="no">차트 3</span>성인 종합독서율 장기 추이 — 확연한 하락세</figcaption>
+      <div class="figsub">단위 %, 문화체육관광부 「국민독서실태조사」 · 2025년 종이책 기준 28.8%</div>
+      <iframe src="https://flo.uri.sh/visualisation/29249819/embed" title="성인 종합독서율 장기 추이" class="flourish-embed-iframe" scrolling="no" style="height:560px;" sandbox="allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"></iframe>
+      <span class="src-tag">출처: 문화체육관광부 「국민독서실태조사」</span>
+    </figure>
+
+    <figure class="reveal">
+      <figcaption><span class="no">차트 4</span>연령대별 독서율 추이 — 40·50대의 가파른 하락</figcaption>
+      <div class="figsub">단위 %, 연령별 종합독서율 2017→2025 · 40대 41.0%, 50대 26.9%</div>
+      <iframe src="https://flo.uri.sh/visualisation/29312568/embed" title="연령대별 독서율 추이 4050" class="flourish-embed-iframe" scrolling="no" style="height:600px;" sandbox="allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"></iframe>
+      <span class="src-tag">출처: 문화체육관광부 「국민독서실태조사」</span>
+    </figure>
+
+    <figure class="reveal">
+      <figcaption><span class="no">차트 5</span>성인 독서 장애요인 — 1위는 ‘시간 부족’</figcaption>
+      <div class="figsub">단위 %, 2025 국민독서실태조사 (성인 1순위 응답)</div>
+      <iframe src="https://flo.uri.sh/visualisation/29252027/embed" title="독서 장애요인 분석" class="flourish-embed-iframe" scrolling="no" style="height:600px;" sandbox="allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"></iframe>
+      <span class="src-tag">출처: 문화체육관광부 「국민독서실태조사」</span>
+    </figure>
+
+    <p class="body reveal">40대는 41.0%, 50대는 26.9%까지 떨어졌다. 그런데 성인들이 책을 멀리하게 된 이유는 ‘책이 싫어서’가 아니었다.
+      가장 많은 응답은 ‘일·공부 때문에 시간이 없어서(<b>25.7%</b>)’, 그리고 ‘책 대신 다른 매체·콘텐츠를 이용해서(<b>24.3%</b>)’였다.
+      시간에 쫓기는 40·50대 역시 책을 등진 비독자가 아니라, <b>독서를 잠시 미뤄둔 잠재적 독자</b>에 가깝다.</p>
+  </div>
+</section>
+
+<!-- ============ 轉 : 통계가 말하지 않는 진실 ============ -->
+<section id="turn">
+  <div class="wrap">
+    <div class="kicker reveal">轉 · 국민독서실태조사가 말하지 않는 진실</div>
+    <h2 class="act reveal">책은 미움받은 게 아니라,<br><span class="stamp">시간</span>을 빼앗겼다</h2>
+    <p class="lead reveal">국민독서실태조사가 미처 담지 못한 사실이 있다. 사람들은 여전히 읽는다 —
+      다만 읽고 들여다보던 시간의 상당 부분을 <b>스마트폰</b>과 새로운 여가가 가져갔을 뿐이다. 그리고 이 변화는 출판에 위기인 동시에 기회다.</p>
+
+    <figure class="reveal">
+      <figcaption><span class="no">차트 6</span>국내 성인 평균 스마트폰 사용시간 추이 — 10년간의 급증</figcaption>
+      <div class="figsub">단위 분/일 · 방송미디어통신위원회 「방송매체 이용행태조사」 (2015→2025)</div>
+      <svg id="c_phone" viewBox="0 0 760 390" role="img" aria-label="국내 평균 스마트폰 사용시간 추이"></svg>
+      <span class="src-tag">출처: 방송미디어통신위원회 「방송매체 이용행태조사」</span>
+    </figure>
+
+    <p class="body reveal">하루 평균 스마트폰 이용시간은 2015년 <b>99.6분</b>에서 2025년 <b>131분</b>으로, 10년 사이 약 <b>1.3배</b> 늘었다.
+      2021년 이후로는 줄곧 하루 <b>두 시간</b>을 넘어선다. 짧고 즉각적인 자극을 주는 매체들이, 집중과 시간을 들여야 하는 독서를 여가의 뒷순위로 밀어낸 셈이다.
+      독서율 하락은 책을 향한 외면이라기보다 <span class="hl">시간을 어디에 쓰느냐의 문제</span>에 가깝다.</p>
+
+    <p class="body reveal">관점을 뒤집어 보면 이야기는 달라진다. 사람들은 이미 매일 두 시간 넘게 화면을 응시한다.
+      바로 그 화면 안으로 책을 들여놓을 수 있다면, 스마트폰 시간의 증가는 독서를 빼앗는 위협이 아니라 <b>전자출판이 파고들 여백</b>이 된다.</p>
+
+    <figure class="reveal">
+      <figcaption><span class="no">차트 7</span>서울국제도서전 방문객 추이 — 책에 대한 관심은 여전하다</figcaption>
+      <div class="figsub">단위 만 명 · ‘텍스트힙’ 열풍의 단면</div>
+      <iframe src="https://flo.uri.sh/visualisation/29260457/embed" title="서울국제도서전 방문객 추이" class="flourish-embed-iframe" scrolling="no" style="height:600px;" sandbox="allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"></iframe>
+      <span class="src-tag">출처: 서울국제도서전 / 대한출판문화협회 발표</span>
+    </figure>
+
+    <p class="body reveal">독서율 수치와는 별개로, 서울국제도서전은 해마다 적지 않은 발길을 모은다.
+      한때 줄었던 방문객은 최근 다시 회복세를 보였고, ‘읽는 사람’을 하나의 멋으로 여기는 이른바 <b>텍스트힙</b> 흐름까지 더해졌다.
+      책은 여전히 사람들이 곁에 두고 싶어 하는 <b>문화적 경험</b>으로 남아 있다. 책을 향한 관심은 사라지지 않았다. 다만 그 관심이 닿는 경로가 달라졌을 뿐이다.</p>
+
+    <div class="pull reveal">40·50대는 책을 버린 사람들이 아니다. <span class="accent">시간만 허락된다면 언제든 돌아올 독자</span>다.</div>
+  </div>
+</section>
+
+<!-- ============ 結 : 디지털 네이티브에게 전자책은 당연하다 ============ -->
+<section id="future">
+  <div class="wrap">
+    <div class="kicker cool reveal">結 · 해답은 매체의 변화</div>
+    <h2 class="act reveal">디지털 네이티브에게 전자책은<br>이미 <span class="stamp">당연한 책</span>이다</h2>
+    <p class="lead reveal">전자책은 시간에 쫓기는 30~50대에게는 자투리 시간마다 책을 펼 수 있는 여유를,
+      곧 성인이 될 디지털 네이티브에게는 ‘대안’이 아닌 <b>기본값</b>을 의미한다. 시장은 이미 그 방향으로 움직이고 있다.</p>
+
+    <figure class="reveal">
+      <figcaption><span class="no">차트 8</span>학생의 독서 범위 인식 조사 — 화면으로 읽어도 ‘독서’다</figcaption>
+      <div class="figsub">단위 %, 2025 국민독서실태조사 (학생 vs 성인 비교)</div>
+      <iframe src="https://flo.uri.sh/visualisation/29311718/embed" title="학생들의 디지털 인식 조사" class="flourish-embed-iframe" scrolling="no" style="height:600px;" sandbox="allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"></iframe>
+      <span class="src-tag">출처: 문화체육관광부 「2025 국민독서실태조사」</span>
+    </figure>
+
+    <p class="body reveal">전자책을 ‘독서’로 받아들이는 학생은 <b>74.2%</b>, 웹소설을 독서로 여기는 학생도 <b>51.4%</b>에 이른다.
+      이 세대에게 전자책은 종이책과 다르지 않은 ‘책’이다. 이들이 주요 독자층이 될수록 전자책 수요도 <span class="hl">함께 커질</span> 것이다.</p>
+
+    <div class="stats reveal">
+      <div class="stat cool"><div class="num">74.2%</div><div class="lbl">전자책을 ‘독서’로<br>인식하는 학생 비율</div></div>
+      <div class="stat cool"><div class="num">51.4%</div><div class="lbl">웹소설을 ‘독서’로<br>인식하는 학생 비율</div></div>
+      <div class="stat"><div class="num">32.1%</div><div class="lbl">오디오북을 ‘독서’로<br>인식하는 학생 비율</div></div>
+    </div>
+
+    <div class="pull cool reveal">디지털 네이티브에게 전자책은 <span class="accent">처음부터 당연한 책</span>이다.</div>
+  </div>
+</section>
+
+<!-- ============ 결론 ============ -->
+<section id="end">
+  <div class="wrap">
+    <div class="kicker reveal">CONCLUSION · 핵심 정리</div>
+    <h2 class="act reveal">책은 사라지지 않는다.<br>읽는 ‘방식’이 바뀔 뿐이다</h2>
+    <div class="keys reveal">
+      <div class="key"><div class="kn">01</div><p>성인 독서율이 내려앉은 것은 사실이지만, 그 진원은 <b>40·50대</b>에 있다. 2030은 오히려 꾸준한 독서율을 지켜내고 있다.</p></div>
+      <div class="key"><div class="kn">02</div><p>이 변화의 본질은 매체의 전환이다. 종이에서 화면으로 — 20대는 이미 <b>전자책을 독서의 기본 형식</b>으로 받아들였다.</p></div>
+      <div class="key"><div class="kn">03</div><p>전자책은 시간에 쫓기는 40·50대에게 독서의 문턱을 낮추고, 디지털 네이티브에게는 이미 익숙한 형식이다. <b>전자출판에 대한 과감한 투자</b>가 출판 산업의 다음 성장 동력이 될 수 있다.</p></div>
+    </div>
+    <p class="body reveal" style="color:#cdc2b0;max-width:760px">출판이 종이의 쇠퇴를 곧 ‘독서의 종말’로 읽는다면, 정작 독자가 어디로 옮겨갔는지를 놓치게 된다.
+      독자는 사라진 것이 아니라 화면으로 자리를 옮겼을 뿐이다. 그 자리를 채우는 전자책 산업의 확장이야말로, 출판이 써 내려갈 <b style="color:#f0916f">다음 장(章)</b>이다.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <h3>데이터 출처 &amp; 주석</h3>
+    <ul>
+      <li><b>문화체육관광부 「국민독서실태조사」</b> — 연령·매체별 독서율, 독서 장애요인, 학생 디지털 인식 (KOSIS·문화셈터)</li>
+      <li><b>방송미디어통신위원회 「방송매체 이용행태조사」</b> — 하루 평균 스마트폰 이용시간 추이 (직접 시각화)</li>
+      <li><b>서울국제도서전 / 대한출판문화협회</b> — 도서전 방문객 추이 보도자료</li>
+    </ul>
+    <div class="note"><b>주석.</b> 성인 종합독서율(38.5%·종이책 28.8%), 연령·매체별 독서율, 학생 전자책 인식 수치는 2025 국민독서실태조사 확정치다.
+      스마트폰 평균 이용시간은 방송매체 이용행태조사의 연도별 확정치(2015년 99.6분 → 2025년 131분)를 직접 시각화했다.</div>
+  </div>
+</footer>
+
+<script>
+const C={hot:'#e0512f',cool:'#1f5b57',gold:'#bb8e34',ink:'#1c1813',muted:'#8c8472',line:'#d8ccb6',paper:'#efe6d5'};
+const NS='http://www.w3.org/2000/svg';
+function el(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function txt(x,y,s,cls,extra){const e=el('text',Object.assign({x,y,class:cls||'axis'},extra||{}));e.textContent=s;return e;}
+
+/* ===== 스마트폰 사용시간 추이 차트 (직접 제작) ===== */
+(function(){
+  const svg=document.getElementById('c_phone');if(!svg)return;
+  const W=760,H=390,P={l:62,r:54,t:58,b:60};
+  const TXT='#3a342a';          // 라벨용 진한 텍스트(가독성)
+  const d=[[2015,99.6],[2016,99],[2017,92.8],[2018,96.3],[2019,108.8],[2020,115.1],
+           [2021,122.9],[2022,120.2],[2023,126.4],[2024,132.6],[2025,131]];
+  const min=80,max=140;
+  const x=i=>P.l+i*((W-P.l-P.r)/(d.length-1));
+  const y=v=>P.t+(max-v)/(max-min)*(H-P.t-P.b);
+
+  // 그라데이션 정의
+  const defs=el('defs',{});
+  const grad=el('linearGradient',{id:'phoneGrad',x1:0,y1:0,x2:0,y2:1});
+  grad.appendChild(el('stop',{offset:'0%','stop-color':C.hot,'stop-opacity':0.28}));
+  grad.appendChild(el('stop',{offset:'100%','stop-color':C.hot,'stop-opacity':0.02}));
+  defs.appendChild(grad);svg.appendChild(defs);
+
+  // 축 제목
+  svg.appendChild(txt(P.l,P.t-24,'하루 평균 스마트폰 이용시간 (분)',null,{'font-size':13.5,fill:TXT,'font-weight':600}));
+
+  // 가로 그리드 + Y축 라벨(진하고 크게)
+  [80,100,120,140].forEach(g=>{
+    svg.appendChild(el('line',{x1:P.l,y1:y(g),x2:W-P.r,y2:y(g),stroke:C.line,'stroke-width':1}));
+    svg.appendChild(txt(P.l-12,y(g)+5,g,null,{'text-anchor':'end','font-size':13,fill:TXT,'font-weight':500}));
+  });
+
+  // '하루 2시간(120분)' 기준선 강조
+  svg.appendChild(el('line',{x1:P.l,y1:y(120),x2:W-P.r,y2:y(120),stroke:C.hot,'stroke-width':1.6,'stroke-dasharray':'6 5','opacity':0.7}));
+  svg.appendChild(txt(W-P.r,y(120)-9,'하루 2시간 선',null,{'text-anchor':'end',fill:C.hot,'font-size':13,'font-weight':700}));
+
+  // 면적 + 라인
+  let path='';d.forEach((p,i)=>path+=(i?'L':'M')+x(i)+' '+y(p[1])+' ');
+  svg.appendChild(el('path',{d:path+`L${x(d.length-1)} ${y(min)} L${x(0)} ${y(min)} Z`,fill:'url(#phoneGrad)'}));
+  svg.appendChild(el('path',{d:path,fill:'none',stroke:C.hot,'stroke-width':3.6,'stroke-linejoin':'round','stroke-linecap':'round'}));
+
+  // 점 + X축 연도 라벨(격년, 진하고 크게)
+  d.forEach((p,i)=>{
+    const edge=(i===0||i===d.length-1);
+    svg.appendChild(el('circle',{cx:x(i),cy:y(p[1]),r:edge?6.5:4,fill:edge?C.hot:C.paper,stroke:C.hot,'stroke-width':2.6}));
+    if(p[0]%2===1||edge) svg.appendChild(txt(x(i),H-26,p[0],null,{'text-anchor':'middle','font-size':13,fill:TXT,'font-weight':500}));
+  });
+
+  // 시작·끝 값 강조(크게)
+  svg.appendChild(txt(x(0),y(99.6)-18,'99.6분',null,{'text-anchor':'middle',fill:TXT,'font-weight':700,'font-size':14}));
+  svg.appendChild(txt(x(d.length-1),y(131)-18,'131분',null,{'text-anchor':'middle',fill:C.hot,'font-weight':800,'font-size':17}));
+
+  // 성장률 배지(키움)
+  const bw=148,bh=34,bx=x(7)-bw/2,by=y(140)+2;
+  svg.appendChild(el('rect',{x:bx,y:by,width:bw,height:bh,rx:17,fill:C.hot,'opacity':0.12}));
+  svg.appendChild(txt(bx+bw/2,by+22,'10년간 약 +32%',null,{'text-anchor':'middle',fill:C.hot,'font-weight':800,'font-size':14.5}));
+})();
+
+/* reveal + progress + dots */
+(function(){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(n=>io.observe(n));
+  const prog=document.getElementById('progress');
+  const secs=[...document.querySelectorAll('section[id]')];
+  const dots=[...document.querySelectorAll('nav.dots a')];
+  addEventListener('scroll',()=>{
+    const h=document.documentElement;
+    prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+    let cur=0;secs.forEach((s,i)=>{if(s.getBoundingClientRect().top<=innerHeight*.4)cur=i;});
+    dots.forEach((d,i)=>d.classList.toggle('active',i===cur));
+  },{passive:true});
+})();
+</script>
+</body>
+</html>

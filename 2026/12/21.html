@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사망보험금 유동화 정책 참여 저조 요인 분석 데이터 에세이</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Gowun Batang', serif;
+            font-size: 17px;
+            line-height: 1.95;
+            color: #1a1a1a;
+            background-color: #f5f3ef;
+            word-break: keep-all;
+        }
+
+        /* ── 히어로 ──────────────────────────────── */
+        .hero-section {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 80px 24px 72px;
+            text-align: center;
+        }
+
+        .hero-issue {
+            font-family: 'IBM Plex Sans KR', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .hero-issue::before,
+        .hero-issue::after {
+            content: '';
+            display: inline-block;
+            width: 32px;
+            height: 1px;
+            background: #444;
+        }
+
+        .hero-section h1 {
+            font-family: 'IBM Plex Sans KR', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: -0.03em;
+            color: #ffffff;
+            max-width: 560px;
+            margin: 0 auto 20px;
+        }
+
+        .hero-section h1 em {
+            font-style: normal;
+            color: #2563eb;
+        }
+
+        .hero-sub {
+            font-family: 'IBM Plex Sans KR', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 300;
+            color: #888;
+            margin-bottom: 52px;
+        }
+
+        .scroll-indicator {
+            font-family: 'IBM Plex Sans KR', sans-serif;
+            font-size: 0.68rem;
+            letter-spacing: 0.16em;
+            color: #444;
+            animation: bounce 2.4s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50%       { transform: translateY(-6px); }
+        }
+
+        /* ── 뉴스레터 본문 래퍼 ──────────────────── */
+        .nl-wrap {
+            max-width: 580px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ── 섹션 ────────────────────────────────── */
+        .nl-section {
+            padding: 64px 0 0;
+            border-top: 1px solid #dbd8d2;
+            margin-top: 64px;
+        }
+
+        .nl-section:first-child {
+            border-top: none;
+            margin-top: 0;
+            padding-top: 72px;
+        }
+
+        /* ── 섹션 번호 + 제목 ────────────────────── */
+        .nl-section-meta {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .nl-num {
+            font-family: 'IBM Plex Sans KR', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #2563eb;
+            line-height: 1;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        .nl-section-meta h2 {
+            font-family: 'IBM Plex Sans KR', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            line-height: 1.4;
+            letter-spacing: -0.02em;
+        }
+
+        .nl-intro-head {
+            font-family: 'IBM Plex Sans KR', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #999;
+            margin-bottom: 12px;
+        }
+
+        .nl-intro-title {
+            font-family: 'IBM Plex Sans KR', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            line-height: 1.4;
+            letter-spacing: -0.02em;
+            margin-bottom: 28px;
+        }
+
+        /* ── 본문 ────────────────────────────────── */
+        p {
+            color: #2e2e2e;
+            margin-bottom: 22px;
+            text-align: justify;
+        }
+
+        strong { color: #1a1a1a; }
+
+        .highlight {
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        /* ── 풀쿼트 ──────────────────────────────── */
+        .nl-pullquote {
+            font-family: 'IBM Plex Sans KR', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: #1a1a1a;
+            line-height: 1.6;
+            border-left: 3px solid #2563eb;
+            padding: 12px 20px;
+            margin: 32px 0;
+            background: #edeae4;
+        }
+
+        /* ── 일반 차트 (단일, 전폭) ──────────────── */
+        .chart-wrap {
+            margin: 36px -24px;
+            border-top: 1px solid #dbd8d2;
+            border-bottom: 1px solid #dbd8d2;
+            background: #edeae4;
+        }
+
+        .chart-wrap iframe { display: block; }
+
+        /* ── 도입부 차트 2개 가로 (컨테이너 내) ──── */
+        .chart-row-intro {
+            display: flex;
+            gap: 0;
+            margin: 36px -24px;
+            border-top: 1px solid #dbd8d2;
+            border-bottom: 1px solid #dbd8d2;
+        }
+
+        .chart-row-intro .chart-col {
+            flex: 1;
+            background: #edeae4;
+        }
+
+        .chart-row-intro .chart-col + .chart-col {
+            border-left: 1px solid #dbd8d2;
+        }
+
+        .chart-row-intro iframe { display: block; }
+
+        /* ── 분석3 차트 2개 가로 (뷰포트 전체 너비) */
+        .chart-row-fullwidth {
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100vw;
+            display: flex;
+            gap: 0;
+            margin: 36px 0;
+            border-top: 1px solid #dbd8d2;
+            border-bottom: 1px solid #dbd8d2;
+        }
+
+        .chart-row-fullwidth .chart-col {
+            flex: 1;
+            background: #edeae4;
+        }
+
+        .chart-row-fullwidth .chart-col + .chart-col {
+            border-left: 1px solid #dbd8d2;
+        }
+
+        .chart-row-fullwidth iframe { display: block; }
+
+        @media (max-width: 620px) {
+            .chart-row-intro,
+            .chart-row-fullwidth {
+                flex-direction: column;
+                width: 100%;
+                left: 0;
+                transform: none;
+            }
+
+            .chart-row-intro .chart-col + .chart-col,
+            .chart-row-fullwidth .chart-col + .chart-col {
+                border-left: none;
+                border-top: 1px solid #dbd8d2;
+            }
+        }
+
+        /* ── 분석3 차트 2개: 본문보다 약간 넓게, 중앙 정렬 ── */
+        .chart-row-wide-a3 {
+            display: flex;
+            gap: 0;
+            max-width: 780px;   /* 580px 본문 + 양쪽 100px */
+            margin: 36px auto 72px;
+            border-top: 1px solid #dbd8d2;
+            border-bottom: 1px solid #dbd8d2;
+        }
+
+        .chart-col-a3 {
+            flex: 1;
+            background: #edeae4;
+        }
+
+        @media (max-width: 900px) {
+            .chart-row-wide-a3 {
+                flex-direction: column;
+                max-width: 100%;
+                margin: 36px 0 72px;
+            }
+
+            .chart-col-a3 + .chart-col-a3 {
+                border-left: none !important;
+                border-top: 1px solid #dbd8d2;
+            }
+        }
+
+        /* ── 유동화 테이블 ───────────────────────── */
+        .liqd-table-wrap {
+            margin: 36px -24px;
+            border-top: 1px solid #dbd8d2;
+            border-bottom: 1px solid #dbd8d2;
+            font-family: 'IBM Plex Sans KR', sans-serif;
+            overflow-x: auto;
+        }
+
+        .liqd-header {
+            background: #edeae4;
+            border-bottom: 1px solid #dbd8d2;
+            padding: 14px 24px;
+            font-size: 0.82rem;
+            line-height: 1.75;
+            color: #2e2e2e;
+        }
+
+        .liqd-header strong { color: #b8860b; }
+
+        .liqd-meta {
+            display: flex;
+            font-size: 0.75rem;
+            border-bottom: 1px solid #dbd8d2;
+            background: #e8e4de;
+        }
+
+        .liqd-meta div {
+            flex: 1;
+            text-align: center;
+            padding: 9px 4px;
+            border-right: 1px solid #dbd8d2;
+        }
+
+        .liqd-meta div:last-child { border-right: none; }
+
+        .liqd-meta .meta-label {
+            font-size: 0.68rem;
+            color: #999;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .liqd-meta .meta-value {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .liqd-unit {
+            text-align: right;
+            font-size: 0.68rem;
+            color: #aaa;
+            padding: 3px 24px;
+            background: #e8e4de;
+            border-bottom: 1px solid #dbd8d2;
+        }
+
+        .liqd-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.77rem;
+            background: #f0ede8;
+        }
+
+        .liqd-table th {
+            background: #e4e0da;
+            color: #1a1a1a;
+            font-weight: 600;
+            padding: 8px 7px;
+            text-align: center;
+            border-bottom: 1px solid #dbd8d2;
+            border-right: 1px solid #dbd8d2;
+        }
+
+        .liqd-table th:last-child { border-right: none; }
+        .liqd-table th.group-header { background: #dedad4; }
+        .liqd-table th.group-header-blue { background: #dde8f0; color: #2c5f8a; }
+
+        .liqd-table td {
+            padding: 7px 9px;
+            text-align: right;
+            border-bottom: 1px solid #e4e0da;
+            border-right: 1px solid #e4e0da;
+            color: #2e2e2e;
+        }
+
+        .liqd-table td:last-child { border-right: none; }
+
+        .liqd-table td:first-child {
+            text-align: center;
+            font-weight: 600;
+            color: #999;
+            background: #e4e0da;
+        }
+
+        .liqd-table td.ellipsis { text-align: center; color: #ccc; }
+        .liqd-table tr:last-child td { border-bottom: none; }
+        .liqd-table tr:hover td { background: #e8e4de; }
+        .liqd-table .highlight-cell { color: #b8860b; font-weight: 700; }
+
+        .liqd-caption {
+            font-size: 0.7rem;
+            color: #aaa;
+            padding: 8px 24px;
+            background: #e8e4de;
+            border-top: 1px solid #dbd8d2;
+            line-height: 1.5;
+        }
+
+        /* ── 결론 ────────────────────────────────── */
+        .nl-conclusion {
+            background: #1a1a1a;
+            color: #ccc;
+            padding: 72px 24px 64px;
+            margin-top: 72px;
+        }
+
+        .nl-conclusion .nl-wrap { padding: 0; }
+        .nl-conclusion .nl-intro-head { color: #666; }
+        .nl-conclusion .nl-intro-title { color: #f0f0f0; margin-bottom: 24px; }
+        .nl-conclusion p { color: #aaa; }
+
+        /* ── 출처 ────────────────────────────────── */
+        .source-section {
+            font-family: 'IBM Plex Sans KR', sans-serif;
+            font-size: 0.75rem;
+            color: #555;
+            line-height: 1.9;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid #333;
+        }
+
+        .source-section strong { color: #888; }
+    </style>
+</head>
+<body>
+
+    <div class="hero-section">
+        <div class="hero-issue">Data Essay &nbsp;·&nbsp; KLoSA 10th Wave 2024</div>
+        <h1>외면받는<br>사망보험금 유동화 정책,<br><em>데이터는 무엇을 말하는가</em></h1>
+        <div class="hero-sub">고령화연구패널(KLoSA) 데이터를 통해 바라본 고령층 선호의 미스매치</div>
+        <div class="scroll-indicator">▼ &nbsp; scroll</div>
+    </div>
+
+    <div class="nl-wrap">
+
+        <!-- 도입 -->
+        <div class="nl-section" style="border-top:none; margin-top:0;">
+            <div class="nl-intro-head">Introduction</div>
+            <div class="nl-intro-title">노후 소득 보장의 새로운 대안,<br>그러나 차가운 시장 반응</div>
+
+            <p>정부는 고령화 사회의 은퇴자 자산 유동화를 돕기 위해, 가입자가 사망했을 때 나오는 사망보험금을 연금 형태로 미리 당겨 쓸 수 있도록 하는 <strong>'사망보험금 유동화 제도'</strong>를 추진해 왔습니다. 부동산에 치우친 고령층 자산을 금융 자산으로 전환해 빈곤을 해소하겠다는 취지였습니다.</p>
+            <p>이 제도는 2025년 10월 삼성·한화·교보·신한·흥국 등 5대 생명보험사를 한정해 상품을 개시했으며, 2026년 1월 2일부터는 19개 전체 생명보험사로 확대되었습니다.</p>
+            <p>그러나 제도 시행 이후 실제 시장 참여율은 미미한 수준에 머물고 있습니다.</p>
+
+            <div class="chart-row-intro">
+                <div class="chart-col">
+                    <iframe src='https://flo.uri.sh/visualisation/29262328/embed' title='Interactive or visual content' class='flourish-embed-iframe' frameborder='0' scrolling='no' style='width:100%;height:480px;' sandbox='allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation'></iframe>
+                </div>
+                <div class="chart-col">
+                    <iframe src='https://flo.uri.sh/visualisation/29265021/embed' title='Interactive or visual content' class='flourish-embed-iframe' frameborder='0' scrolling='no' style='width:100%;height:480px;' sandbox='allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation'></iframe>
+                </div>
+            </div>
+            <p>본 에세이에서는 고령화연구패널 데이터를 바탕으로, 왜 이 정책이 실제 타깃층에게 매력적인 대안이 되지 못했는지 세 가지 결정적인 요인을 분석합니다.</p>
+        </div>
+
+        <!-- 분석 1 -->
+        <div class="nl-section">
+            <div class="nl-section-meta">
+                <div class="nl-num">01</div>
+                <h2>정책 대상과 실제 빈곤층의 미스매치</h2>
+            </div>
+
+            <p>첫 번째 문제는 정책이 타깃으로 삼는 '사망보험금(종신보험) 보유자'와 '실제 소득 지원이 시급한 빈곤층'이 일치하지 않는다는 점입니다. 데이터 분석 결과, 사망보험금을 유지하고 있는 고령층 가구는 대체로 <span class="highlight">소득분위가 높은 상위 계층</span>에 집중되어 있었습니다.</p>
+
+            <div class="chart-wrap">
+                <iframe src='https://flo.uri.sh/visualisation/29261315/embed' title='Interactive or visual content' class='flourish-embed-iframe' frameborder='0' scrolling='no' style='width:100%;height:580px;' sandbox='allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation'></iframe>
+            </div>
+            <div class="nl-pullquote">
+                정작 혜택이 필요한 하위 소득분위 계층은 종신보험 자체를 보유하지 못했거나 이미 해지했을 확률이 높습니다.
+            </div>
+            <p>결국, 제도에 참여할 수 있는 여력이 있는 사람들은 이미 자산이 풍족해 굳이 보험금을 깰 이유가 없는 반대의 상황이 발생한 것입니다.</p>
+        </div>
+
+        <!-- 분석 2 -->
+        <div class="nl-section">
+            <div class="nl-section-meta">
+                <div class="nl-num">02</div>
+                <h2>가족을 위한 선물: 심리적 회계와 상속 동기</h2>
+            </div>
+
+            <p>행동경제학에는 돈에 이름표를 붙여 구별하는 '심리적 회계(Psychological Accounting)'라는 개념이 있습니다. 고령층에게 사망보험금은 내가 살아생전 쓸 수 있는 '노후 자금'이 아니라, <span class="highlight">내가 떠난 후 남겨진 가족을 위한 마지막 선물이나 책임</span>으로 인식됩니다.</p>
+            <p>고령화연구패널 데이터를 분석한 결과, 종신보험 가입자들은 미가입자에 비해 자녀와의 유대감과 유산상속 의향이 모두 높게 나타났습니다.</p>
+
+            <div class="chart-wrap">
+                <iframe src='https://flo.uri.sh/visualisation/29261707/embed' title='Interactive or visual content' class='flourish-embed-iframe' frameborder='0' scrolling='no' style='width:100%;height:580px;' sandbox='allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation'></iframe>
+            </div>
+            <p>나아가 선행연구에 따르면, 자녀와의 관계만족의 매개효과를 고려한 상태에서 정서적 지지가 커질수록 자산이 유산상속의향에 미치는 영향력은 더욱 크게 나타났습니다(노재현 외, 2017).</p>
+            <div class="nl-pullquote">
+                자녀와의 정서적 유대가 깊을수록, 사망보험금을 연금으로 전환해 본인이 소비하는 것에 대한 심리적 저항감이 커집니다.
+            </div>
+        </div>
+
+        <!-- 분석 3 -->
+        <div class="nl-section">
+            <div class="nl-section-meta">
+                <div class="nl-num">03</div>
+                <h2>낮은 수익성과 노후 대비 실효성 부족</h2>
+            </div>
+
+            <p>마지막으로, 공급자(금융사) 측면에서 설계된 현재 유동화 구조의 <span class="highlight">낮은 실효성</span>입니다. 사망보험금 유동화는 가입 당시의 사망보험금이 아닌, <strong>유동화 신청 당시의 해약환급금</strong>을 재원으로 합니다. 해약환급금은 사망보험금보다 낮은 것이 일반적이므로, 유동화를 통해 수령하는 연금액과 잔여 사망보험금을 모두 합산하더라도 기존에 받을 수 있었던 사망보험금 원금보다 적어질 수 있습니다.</p>
+
+            <div class="liqd-table-wrap">
+                <div class="liqd-header">
+                    <strong>신청자</strong> &nbsp; 여자 40세, 가입금액 1억원, 10년납 완납이후 65세에 사망보험금 유동화 신청 시<br>
+                    총 주계약 기납입보험료 : 18,720,000원(월보험료 156,000원) &nbsp;/&nbsp; 총 유동화 수령액 : <strong>45,437,040원</strong>
+                </div>
+                <div class="liqd-meta">
+                    <div><span class="meta-label">개시일자</span><span class="meta-value">2025.10.30</span></div>
+                    <div><span class="meta-label">유동화 신청기간</span><span class="meta-value">20년</span></div>
+                    <div><span class="meta-label">유동화 신청비율</span><span class="meta-value">90%</span></div>
+                    <div><span class="meta-label">비고</span><span class="meta-value">–</span></div>
+                </div>
+                <div class="liqd-unit">단위 : 원</div>
+                <table class="liqd-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">구분</th>
+                            <th colspan="2" class="group-header">유동화 미신청시</th>
+                            <th colspan="3" class="group-header-blue">유동화 신청시</th>
+                        </tr>
+                        <tr>
+                            <th class="group-header">사망보험금</th>
+                            <th class="group-header">해약환급금</th>
+                            <th class="group-header-blue">유동화 수령액(매년)</th>
+                            <th class="group-header-blue">사망보험금</th>
+                            <th class="group-header-blue">해약환급금</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>100,000,000</td><td>34,163,000</td><td>1,537,335</td><td>95,500,000</td><td>32,625,665</td></tr>
+                        <tr><td>2</td><td>100,000,000</td><td>35,729,000</td><td>1,607,805</td><td>91,000,000</td><td>32,513,390</td></tr>
+                        <tr><td>3</td><td>100,000,000</td><td>37,332,000</td><td>1,679,940</td><td>86,500,000</td><td>32,292,180</td></tr>
+                        <tr><td class="ellipsis">⋯</td><td class="ellipsis">⋯</td><td class="ellipsis">⋯</td><td class="ellipsis">⋯</td><td class="ellipsis">⋯</td><td class="ellipsis">⋯</td></tr>
+                        <tr><td>19</td><td>100,000,000</td><td>65,636,000</td><td>2,953,620</td><td>14,500,000</td><td>9,517,220</td></tr>
+                        <tr><td>20</td><td>100,000,000</td><td class="highlight-cell">67,363,000</td><td>3,031,335</td><td class="highlight-cell">10,000,000</td><td>6,736,300</td></tr>
+                    </tbody>
+                </table>
+                <div class="liqd-caption">출처: 금융위원회 (2025), 「10월 30일부터, 사망보험금을 생전 활용 가능한 자산으로 유동화 시작」, 보도자료(10월 30일 배포), 금융위원회·금융감독원·생명보험협회 공동.</div>
+            </div>
+
+            <p>그렇다면 그 대가로 받는 월 수령액은 충분히 클까요? 고령화연구패널 데이터를 분석한 결과, 유동화 월 수령액은 국민연금 및 개인연금 평균 수령액에도 미치지 못하며, 국민연금공단이 제시한 최소 노후 생활비(개인 기준 월 139.2만 원)에는 한참 못 미치는 수준이었습니다.</p>
+
+        </div>
+    </div><!-- /nl-wrap -->
+
+    <!-- 분석3 마지막 차트 2개: 컨테이너 양쪽 160px 돌출 (~900px 총폭) -->
+    <div class="chart-row-wide-a3">
+        <div class="chart-col-a3">
+            <iframe src='https://flo.uri.sh/visualisation/29261784/embed' title='Interactive or visual content' class='flourish-embed-iframe' frameborder='0' scrolling='no' style='width:100%;height:560px; display:block;' sandbox='allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation'></iframe>
+        </div>
+        <div class="chart-col-a3" style="border-left:1px solid #dbd8d2;">
+            <iframe src='https://flo.uri.sh/visualisation/29265764/embed' title='Interactive or visual content' class='flourish-embed-iframe' frameborder='0' scrolling='no' style='width:100%;height:560px; display:block;' sandbox='allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation'></iframe>
+        </div>
+    </div>
+    <div class="nl-wrap">
+        <div class="nl-pullquote" style="margin: 40px 0 0;">
+            유동화 참여자는 원래의 사망보험금보다 적은 총액을 받으면서, 그마저도 생활비로 체감하기 어려운 소액으로 나눠 받는 구조입니다. 정책 참여율이 저조한 것은 합리적인 선택의 결과입니다.
+        </div>
+    </div>
+
+    <!-- 결론 -->
+    <div class="nl-conclusion">
+        <div class="nl-wrap">
+            <div class="nl-intro-head">Conclusion</div>
+            <div class="nl-intro-title">고령층의 현실과 심리를 반영한<br>정책 재설계 필요</div>
+
+            <p>결론적으로 사망보험금 유동화 정책의 실패는 고령층의 경제적 현실(소득분위 미스매치), 심리적 특성(강한 상속 동기), 그리고 상품의 경제적 실효성 부족이라는 세 가지 요인이 맞물린 결과입니다.</p>
+            <p>단순히 금융 상품의 공급을 늘리는 방식으로는 고령층의 지갑을 열 수 없습니다. 진정으로 노후 빈곤을 해결하기 위해서는 고령층이 체감할 수 있는 수준의 수익률 보장이나, 상속을 원치 않는 1인 가구 고령층 집중 타겟팅 등 정교한 정책적 보완이 선행되어야 할 것입니다.</p>
+
+            <div class="source-section">
+                <strong>데이터 출처 및 참고 문헌</strong><br>
+                * 고령화연구패널조사(KLoSA) 제10차(2024) 기본조사 데이터<br>
+                * 금융위원회 (2025), 「10월 30일부터, 사망보험금을 생전 활용 가능한 자산으로 유동화 시작」, 보도자료(10월 30일 배포), 금융위원회·금융감독원·생명보험협회 공동.<br>
+                * 노재현·신용석·원도연 (2017), 「한국 노인들의 유산상속 동기는 무엇인가: 자산이 유산상속의향에 미치는 영향에서 관계만족도, 정서적 지지의 조건부과정분석」, 『보건사회연구』 제37권 제3호, pp.36-72.
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

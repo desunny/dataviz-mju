@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>경제 이슈 레이더 — 기준금리 EVENT 2025-05-28</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --bg:#020b14;--bg2:#04111d;--panel:#061622;--panel2:#081d2c;
+  --border:#0f2030;--border2:#172e42;--border3:#1e3a52;
+  --text:#c8d8e8;--text2:#6888a0;--text3:#3a5468;
+  --orange:#ff9f00;--orange-dim:rgba(255,159,0,.1);
+  --green:#00d084;--green-dim:rgba(0,208,132,.1);
+  --red:#ff3d5a;--red-dim:rgba(255,61,90,.1);
+  --blue:#2196f3;--blue2:#00b4d8;--purple:#9c6fe4;--white:#e8f4ff;
+  --mono:'IBM Plex Mono',monospace;
+}
+body{font-family:'IBM Plex Sans KR',sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.55}
+.ticker{height:26px;background:#020a12;border-bottom:1px solid var(--border);display:flex;align-items:center;overflow:hidden}
+.ticker-inner{display:flex;white-space:nowrap;animation:ts 50s linear infinite}
+@keyframes ts{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ti{display:inline-flex;align-items:center;gap:6px;padding:0 18px;border-right:1px solid var(--border);font-size:10px;font-family:var(--mono)}
+.tl{color:var(--text3);letter-spacing:.06em}.tv{font-weight:600}
+.tu{color:var(--green)}.td-t{color:var(--red)}.tn-t{color:var(--text2)}
+.topbar{position:sticky;top:0;z-index:100;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:stretch;height:44px}
+.brand{display:flex;align-items:center;gap:10px;padding:0 16px;border-right:1px solid var(--border);flex-shrink:0;min-width:200px}
+.brand-icon{width:24px;height:24px;background:var(--orange);border-radius:1px;display:flex;align-items:center;justify-content:center;font:700 10px var(--mono);color:#000;flex-shrink:0}
+.brand-name{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--white);text-transform:uppercase}
+.brand-sub{font-size:9px;color:var(--text3);font-family:var(--mono);letter-spacing:.05em;margin-top:1px}
+.nav{display:flex;flex:1;overflow-x:auto}
+.nav button{border:0;background:transparent;color:var(--text2);padding:0 14px;font:700 10px/44px 'IBM Plex Sans KR',sans-serif;letter-spacing:.12em;cursor:pointer;border-right:1px solid var(--border);white-space:nowrap;height:44px;transition:.1s;text-transform:uppercase}
+.nav button:hover{background:rgba(255,159,0,.06);color:var(--white)}
+.nav button.active{color:#000;background:var(--orange)}
+.status-bar{display:flex;align-items:center;gap:12px;padding:0 14px;border-left:1px solid var(--border);font-size:9px;font-family:var(--mono);color:var(--text3);flex-shrink:0}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--green);margin-right:3px;display:inline-block;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.shell{max-width:1480px;margin:0 auto;padding:0 14px 40px}
+.tab{display:none}.tab.active{display:block}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.g65{display:grid;grid-template-columns:1.55fr 1fr;gap:12px}
+@media(max-width:960px){.g2,.g3,.g65{grid-template-columns:1fr}.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.g4{grid-template-columns:1fr 1fr}}
+.hero{padding:18px 0 12px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.hero-eye{font-size:9px;font-family:var(--mono);color:var(--orange);letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}
+.hero-h{font-size:clamp(20px,2.8vw,32px);font-weight:700;color:var(--white);letter-spacing:-.02em;line-height:1.15;margin-bottom:7px}
+.hero-h em{font-style:normal;color:var(--orange)}
+.hero-sub{font-size:12px;color:var(--text2);margin-bottom:12px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding-bottom:12px}
+.chip{font-size:9px;font-family:var(--mono);padding:2px 7px;border:1px solid var(--border3);color:var(--text2);letter-spacing:.04em}
+.chip.o{border-color:var(--orange);color:var(--orange);background:var(--orange-dim)}
+.chip.g{border-color:var(--green);color:var(--green);background:var(--green-dim)}
+.chip.r{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+.insight{background:rgba(255,159,0,.05);border:1px solid rgba(255,159,0,.18);border-left:3px solid var(--orange);padding:12px 14px;margin-bottom:16px}
+.insight-lbl{font-size:9px;font-family:var(--mono);color:var(--orange);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.insight-txt{font-size:12.5px;color:var(--text);line-height:1.7}
+.insight-txt strong{color:var(--white)}
+.sec-lbl{font-size:9px;font-family:var(--mono);color:var(--text3);letter-spacing:.1em;text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.sec-lbl::before{content:'';display:inline-block;width:2px;height:12px;background:var(--orange)}
+.kpi{background:var(--panel);border:1px solid var(--border);padding:12px;position:relative}
+.kpi-lbl{font-size:9px;font-family:var(--mono);color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px}
+.kpi-val{font-size:clamp(20px,2.2vw,28px);font-weight:700;font-family:var(--mono);color:var(--white);line-height:1;margin-bottom:3px}
+.kpi-sub{font-size:10px;color:var(--text2)}
+.badge{position:absolute;top:10px;right:10px;font-size:10px;font-family:var(--mono);font-weight:600;padding:2px 6px}
+.b-r{background:var(--red-dim);color:var(--red);border:1px solid var(--red)}
+.b-g{background:var(--green-dim);color:var(--green);border:1px solid var(--green)}
+.b-o{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange)}
+.card{background:var(--panel);border:1px solid var(--border)}
+.card-hd{display:flex;align-items:center;justify-content:space-between;padding:9px 12px 7px;border-bottom:1px solid var(--border);min-height:34px}
+.card-ttl{font-size:9px;font-weight:700;font-family:var(--mono);color:var(--text3);letter-spacing:.1em;text-transform:uppercase}
+.card-bd{padding:12px}
+.stat-note{font-size:10px;color:var(--text3);font-family:var(--mono);padding:6px 10px;background:rgba(2,10,18,.5);border-top:1px solid var(--border);line-height:1.6}
+.stat-note .sig{color:var(--orange)}
+.sec{margin-bottom:16px}
+.ch-wrap{position:relative;width:100%}
+.news-list{list-style:none}
+.news-item{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-bottom:1px solid var(--border);transition:background .1s}
+.news-item:hover{background:var(--panel2)}
+.news-num{font-family:var(--mono);font-size:10px;color:var(--text3);width:22px;flex-shrink:0;padding-top:2px}
+.news-body{flex:1;min-width:0}
+.news-title{font-size:12px;color:var(--white);line-height:1.45;margin-bottom:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.news-meta{font-size:10px;color:var(--text3);font-family:var(--mono);display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.ntag{font-size:9px;padding:1px 5px;border:1px solid;font-family:var(--mono)}
+.nt-r{border-color:var(--blue);color:var(--blue)}
+.nt-d{border-color:var(--orange);color:var(--orange)}
+.nt-l{border-color:var(--purple);color:var(--purple)}
+.nt-news{border-color:var(--blue2);color:var(--blue2)}
+.nt-econ{border-color:var(--text3);color:var(--text3)}
+.nt-af{border-color:var(--green);color:var(--green)}
+.nt-bf{border-color:var(--text3);color:var(--text3)}
+.news-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;min-width:80px}
+.news-views{font-family:var(--mono);font-size:11px;color:var(--text)}
+.news-link{font-size:9px;color:var(--orange);font-family:var(--mono);border:1px solid rgba(255,159,0,.3);padding:2px 6px;text-decoration:none;white-space:nowrap}
+.news-link:hover{background:var(--orange-dim)}
+.fbar{display:flex;gap:5px;flex-wrap:wrap;padding:8px 12px;border-bottom:1px solid var(--border);align-items:center}
+.fbar-lbl{font-size:9px;font-family:var(--mono);color:var(--text3);letter-spacing:.06em;white-space:nowrap}
+.fbtn{border:1px solid var(--border3);background:transparent;color:var(--text2);font:600 10px 'IBM Plex Sans KR',sans-serif;padding:3px 9px;cursor:pointer;transition:.1s}
+.fbtn:hover{border-color:var(--orange);color:var(--orange)}
+.fbtn.active{background:var(--orange);color:#000;border-color:var(--orange)}
+.dtable{width:100%;border-collapse:collapse;font-size:11px}
+.dtable th{font-family:var(--mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);padding:6px 10px;text-align:left;border-bottom:1px solid var(--border);background:var(--bg2)}
+.dtable td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text);font-family:var(--mono)}
+.dtable tr:hover td{background:var(--panel2)}
+.tr{text-align:right}.ts{color:var(--orange)}.ti{color:var(--text3)}.tp{color:var(--green)}.tn{color:var(--red)}
+.crow{padding:7px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.clbl{width:160px;font-size:11px;color:var(--text);flex-shrink:0}
+.ctrack{flex:1;position:relative;height:22px}
+.czero{position:absolute;top:0;bottom:0;width:1px;background:var(--border3)}
+.cci{position:absolute;top:50%;height:4px;transform:translateY(-50%);border-radius:2px}
+.cdot{position:absolute;top:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;border:2px solid var(--panel2)}
+.cpv{width:72px;font-family:var(--mono);font-size:10px;text-align:right;flex-shrink:0}
+.cest{width:65px;font-family:var(--mono);font-size:10px;text-align:right;flex-shrink:0;color:var(--text2)}
+.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.method-grid{grid-template-columns:1fr}}
+.mcrd{background:var(--panel);border:1px solid var(--border);padding:14px}
+.mcrd h4{font-size:10px;font-family:var(--mono);color:var(--orange);letter-spacing:.1em;margin-bottom:8px;text-transform:uppercase}
+.mcrd li,.mcrd p{font-size:11.5px;color:var(--text2);line-height:1.7}
+.mcrd ul{padding-left:14px}
+.mcrd code{font-family:var(--mono);background:var(--bg2);padding:1px 4px;font-size:10px;color:var(--blue2);border:1px solid var(--border)}
+.port-table-wrap{overflow-x:auto}
+.ptable{width:100%;border-collapse:collapse;min-width:520px}
+.ptable th{font-family:var(--mono);font-size:9px;letter-spacing:.07em;color:var(--text3);text-transform:uppercase;padding:6px 8px;text-align:left;background:var(--bg2);border-bottom:1px solid var(--border)}
+.ptable td{border-bottom:1px solid var(--border);padding:3px 5px}
+.ptable input,.ptable select{background:var(--bg2);border:1px solid var(--border3);color:var(--text);padding:5px 7px;font:12px 'IBM Plex Sans KR',sans-serif;width:100%;outline:none}
+.ptable input:focus,.ptable select:focus{border-color:var(--orange)}
+.del-btn{background:transparent;border:1px solid var(--border3);color:var(--red);cursor:pointer;padding:4px 7px;font-size:11px;transition:.1s}
+.del-btn:hover{background:var(--red-dim);border-color:var(--red)}
+.pact{display:flex;gap:7px;padding:10px 0}
+.btn{border:1px solid var(--border3);background:transparent;color:var(--text2);padding:6px 13px;font:600 10px 'IBM Plex Sans KR',sans-serif;cursor:pointer;transition:.1s;letter-spacing:.05em}
+.btn:hover{border-color:var(--orange);color:var(--orange)}
+.btn-p{background:var(--orange);color:#000;border-color:var(--orange)}
+.btn-p:hover{background:#e08c00}
+.pres{background:var(--panel);border:1px solid var(--border);padding:14px;margin-top:10px}
+.pres h4{font-size:10px;font-family:var(--mono);color:var(--orange);letter-spacing:.1em;margin-bottom:12px;text-transform:uppercase}
+.psum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+@media(max-width:600px){.psum{grid-template-columns:1fr 1fr}}
+.pkpi{padding:9px;background:var(--bg2);border:1px solid var(--border)}
+.pkpi-lbl{font-size:9px;font-family:var(--mono);color:var(--text3);letter-spacing:.06em;margin-bottom:3px}
+.pkpi-val{font-size:19px;font-family:var(--mono);font-weight:700;color:var(--white)}
+.pfin{list-style:none}
+.pfin li{padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text);display:flex;gap:7px;align-items:flex-start}
+.pfin li::before{content:'▸';color:var(--orange);flex-shrink:0;font-size:9px;margin-top:3px}
+.pdis{font-size:9px;color:var(--text3);font-family:var(--mono);padding:8px;background:var(--bg2);border:1px solid var(--border);margin-top:10px;line-height:1.6}
+#tip{position:fixed;background:var(--panel2);border:1px solid var(--border3);border-left:2px solid var(--orange);padding:8px 10px;font-size:10px;font-family:var(--mono);color:var(--text);pointer-events:none;z-index:9999;display:none;max-width:240px;line-height:1.6}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border3)}
+</style>
+</head>
+<body>
+<div id="tip"></div>
+
+<div class="ticker">
+<div class="ticker-inner" id="tickerInner"></div>
+</div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-icon">EIR</div>
+    <div>
+      <div class="brand-name">경제 이슈 레이더</div>
+      <div class="brand-sub">YOUTUBE ATTENTION MONITOR</div>
+    </div>
+  </div>
+  <nav class="nav">
+    <button class="active" data-tab="monitor">MONITOR</button>
+    <button data-tab="event">EVENT</button>
+    <button data-tab="news">NEWS FEED</button>
+    <button data-tab="portfolio">PORTFOLIO</button>
+    <button data-tab="method">METHOD</button>
+  </nav>
+  <div class="status-bar">
+    <span><span class="sdot"></span>DATA VERIFIED</span>
+    <span>n=202</span>
+    <span>2025.05.21~06.03</span>
+  </div>
+</header>
+<div class="shell">
+
+<!-- MONITOR -->
+<div id="monitor" class="tab active">
+  <div class="hero">
+    <div class="hero-eye">YOUTUBE ECONOMIC ATTENTION MONITOR · 한국은행 기준금리 동결 2025-05-28</div>
+    <h1 class="hero-h">기준금리 동결 발표 후,<br>관심은 <em>대출 부담</em>으로 이동했다</h1>
+    <p class="hero-sub">2025년 5월 28일 한국은행 기준금리 동결 발표 전후 7일 — 유튜브 금융 콘텐츠 202개 반응 패턴 분석</p>
+    <div class="chips">
+      <span class="chip o">기준금리 동결 2025-05-28</span>
+      <span class="chip">분석 영상 202개</span>
+      <span class="chip">발표 전 n=64 / 발표 후 n=138</span>
+      <span class="chip r">전체 평균 조회수 −19.4%</span>
+      <span class="chip g">대출금리 콘텐츠 +78.0%</span>
+    </div>
+  </div>
+  <div class="insight">
+    <div class="insight-lbl">▸ CORE FINDING</div>
+    <div class="insight-txt">기준금리 발표 이후 전체 관심이 일괄 증가한 것은 아니었다.
+      <strong>예금금리(−84.3%)</strong>·<strong>기준금리(−29.8%)</strong> 콘텐츠 조회수는 감소했지만,
+      <strong>대출금리 콘텐츠는 +78.0% 증가</strong>했다.
+      관심이 정책 발표 자체보다 개인이 체감하는 대출 부담으로 이동했을 가능성을 시사한다.
+      <span style="color:var(--text3)">— t-test 10% 경계적 결과, 확정적 인과관계로 해석 불가.</span>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-lbl">주요 지표</div>
+    <div class="g4">
+      <div class="kpi"><div class="kpi-lbl">발표 전 평균 조회수</div><div class="kpi-val" id="kpi-b">—</div><div class="kpi-sub">n=64개 영상</div></div>
+      <div class="kpi"><div class="kpi-lbl">발표 후 평균 조회수</div><div class="kpi-val" id="kpi-a">—</div><div class="kpi-sub">n=138개 영상</div><span class="badge b-r" id="kpi-p">—</span></div>
+      <div class="kpi"><div class="kpi-lbl">대출금리 콘텐츠</div><div class="kpi-val" style="color:var(--green)">+78.0%</div><div class="kpi-sub">10,632 → 18,927회</div><span class="badge b-g">↑ 상승</span></div>
+      <div class="kpi"><div class="kpi-lbl">예금금리 콘텐츠</div><div class="kpi-val" style="color:var(--red)">−84.3%</div><div class="kpi-sub">44,103 → 6,930회</div><span class="badge b-r">↓ 하락</span></div>
+    </div>
+  </div>
+  <div class="sec g65">
+    <div class="card">
+      <div class="card-hd"><span class="card-ttl">주제별 평균 조회수 — 발표 전 → 후</span><span class="chip" style="font-size:8px">슬로프 차트</span></div>
+      <div class="card-bd"><div class="ch-wrap" style="height:280px"><canvas id="cSlope"></canvas></div></div>
+      <div class="stat-note">기준금리 −29.8% · 예금금리 −84.3% <span style="color:var(--text3)">(n=5 소규모 주의)</span> · 대출금리 <span class="sig">+78.0%</span></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-ttl">전체 발표 전후 — 평균 vs 중앙값</span></div>
+      <div class="card-bd"><div class="ch-wrap" style="height:280px"><canvas id="cDumbbell"></canvas></div></div>
+      <div class="stat-note">원 조회수 t: p=0.588 유의하지 않음 · 로그 조회수 t: p=<span class="sig">0.070</span> 경계적</div>
+    </div>
+  </div>
+  <div class="sec g2">
+    <div class="card">
+      <div class="card-hd"><span class="card-ttl">채널 유형별 발표 전후 평균 조회수</span></div>
+      <div class="card-bd"><div class="ch-wrap" style="height:260px"><canvas id="cGroup"></canvas></div></div>
+      <div class="stat-note">뉴스형 전반적 우위 · 채널 유형 회귀계수 p=<span class="sig">0.011</span> (유의)</div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-ttl">날짜별 영상 업로드 수 (주제별)</span></div>
+      <div class="card-bd"><div class="ch-wrap" style="height:260px"><canvas id="cDaily"></canvas></div></div>
+      <div class="stat-note">5/28 발표일 기준선 · 5/29 기준금리 56개 최고치</div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="card">
+      <div class="card-hd"><span class="card-ttl">log(조회수+1) 분포 — 발표 전/후 × 주제별 박스플롯</span><span class="chip" style="font-size:8px">극단값 완화 위해 로그 변환</span></div>
+      <div class="card-bd"><div class="ch-wrap" style="height:320px"><canvas id="cBox"></canvas></div></div>
+      <div class="stat-note">박스: Q1~Q3 / 중앙선: 중앙값 / 수염: 1.5×IQR / 점: 이상치 · log(views+1) 사용 — 원 조회수 대체 아님</div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT -->
+<div id="event" class="tab">
+  <div class="hero" style="margin-bottom:16px">
+    <div class="hero-eye">EVENT ANALYSIS / 기준금리 동결 2025-05-28</div>
+    <h1 class="hero-h" style="font-size:clamp(17px,2.2vw,24px)">발표 전후 상세 분석</h1>
+  </div>
+  <div class="sec">
+    <div class="sec-lbl">주제별 상세</div>
+    <div class="g3" id="topicCards"></div>
+  </div>
+  <div class="sec g2">
+    <div class="card">
+      <div class="card-hd"><span class="card-ttl">채널 유형별 상세</span></div>
+      <div class="card-bd"><div class="ch-wrap" style="height:240px"><canvas id="cGroupDet"></canvas></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-ttl">t-test 결과</span></div>
+      <div class="card-bd" style="padding:0"><table class="dtable" id="ttestTbl"></table></div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-lbl">회귀분석 계수 — 조건부 연관성 (인과관계 아님)</div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-hd"><span class="card-ttl">모델 1 — 주효과 (종속변수: log 조회수)</span></div>
+        <div class="card-bd" id="coef1" style="padding:10px 12px"></div>
+        <div class="stat-note">기준: 발표 전 · 예금금리 · 경제·시사형 채널</div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><span class="card-ttl">모델 2 — 상호작용 포함</span></div>
+        <div class="card-bd" id="coef2" style="padding:10px 12px"></div>
+        <div class="stat-note">발표후×기준금리 β=−2.27, p=<span class="sig">0.043</span> (유의)</div>
+      </div>
+    </div>
+    <div class="insight" style="margin-top:12px">
+      <div class="insight-lbl">▸ 해석 주의</div>
+      <div class="insight-txt">회귀계수는 <strong>조건부 연관성</strong>이며 인과관계가 아닙니다. 표본 불균형(전 64, 후 138)과 관찰 연구 한계를 고려하십시오.</div>
+    </div>
+  </div>
+</div>
+
+<!-- NEWS FEED -->
+<div id="news" class="tab">
+  <div class="hero" style="margin-bottom:0">
+    <div class="hero-eye">NEWS FEED / 분석 대상 유튜브 콘텐츠</div>
+    <h1 class="hero-h" style="font-size:clamp(17px,2.2vw,24px)">조회수 상위 영상 — 필터 및 유튜브 링크</h1>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div class="fbar" id="newsFilter">
+      <span class="fbar-lbl">주제</span>
+      <button class="fbtn active" data-ft="topic" data-fv="all">전체</button>
+      <button class="fbtn" data-ft="topic" data-fv="rate">기준금리</button>
+      <button class="fbtn" data-ft="topic" data-fv="deposit">예금금리</button>
+      <button class="fbtn" data-ft="topic" data-fv="loan">대출금리</button>
+      <span class="fbar-lbl" style="margin-left:8px">채널</span>
+      <button class="fbtn active" data-ft="group" data-fv="all">전체</button>
+      <button class="fbtn" data-ft="group" data-fv="news">뉴스형</button>
+      <button class="fbtn" data-ft="group" data-fv="econ">경제·시사형</button>
+      <span class="fbar-lbl" style="margin-left:8px">시점</span>
+      <button class="fbtn active" data-ft="post" data-fv="all">전체</button>
+      <button class="fbtn" data-ft="post" data-fv="0">발표 전</button>
+      <button class="fbtn" data-ft="post" data-fv="1">발표 후</button>
+    </div>
+    <div style="padding:6px 12px;font-size:9px;color:var(--text3);font-family:var(--mono);border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+      <span><span id="newsCount">—</span>개 영상 표시 (조회수 순)</span>
+      <span>유튜브 링크 → 새 탭 이동</span>
+    </div>
+    <ul class="news-list" id="newsList"></ul>
+  </div>
+</div>
+
+<!-- PORTFOLIO -->
+<div id="portfolio" class="tab">
+  <div class="hero" style="margin-bottom:16px">
+    <div class="hero-eye">PORTFOLIO INSIGHT / 교육용 금리 이벤트 점검</div>
+    <h1 class="hero-h" style="font-size:clamp(17px,2.2vw,24px)">포트폴리오 금리 민감도 점검</h1>
+    <p class="hero-sub">교육 목적의 규칙 기반 점검 도구 — 개인 맞춤형 투자자문 아님 · 매수·매도 지시 없음</p>
+  </div>
+  <div class="card sec">
+    <div class="card-hd"><span class="card-ttl">자산 입력</span></div>
+    <div class="card-bd">
+      <div class="port-table-wrap">
+        <table class="ptable">
+          <thead><tr><th style="width:34%">자산명</th><th style="width:30%">자산 유형</th><th style="width:16%">비중(%)</th><th style="width:10%">삭제</th></tr></thead>
+          <tbody id="portBody"></tbody>
+        </table>
+      </div>
+      <div class="pact">
+        <button class="btn" onclick="addPortRow()">+ 자산 추가</button>
+        <button class="btn btn-p" onclick="runPortCheck()">점검 실행</button>
+        <button class="btn" onclick="resetPort()">초기화</button>
+      </div>
+    </div>
+  </div>
+  <div id="portRes" class="pres" style="display:none">
+    <h4>▸ 점검 결과</h4>
+    <div class="psum" id="portSum"></div>
+    <ul class="pfin" id="portFin"></ul>
+    <div class="pdis">⚠ 교육 목적 규칙 기반 분석 · 투자자문업 전문가 자문 대체 불가 · 기대수익률 예측 없음 · 매수·매도 권고 없음 · 입력 데이터 브라우저 외부 미전송</div>
+  </div>
+</div>
+
+<!-- METHOD -->
+<div id="method" class="tab">
+  <div class="hero" style="margin-bottom:16px">
+    <div class="hero-eye">METHODOLOGY / 재현 가능한 분석 구조</div>
+    <h1 class="hero-h" style="font-size:clamp(17px,2.2vw,24px)">데이터 수집·처리·분석 방법론</h1>
+  </div>
+  <div class="method-grid sec">
+    <div class="mcrd"><h4>데이터 수집</h4><ul><li>YouTube Data API v3 키워드별 영상 검색</li><li>키워드: 기준금리 / 예금금리 / 대출금리</li><li>수집 기간: 2025-05-21 ~ 06-03 (14일)</li><li>변수: 제목·채널명·날짜·조회수·좋아요·댓글</li><li>채널 유형: 뉴스형 / 경제·시사형 수동 태깅</li></ul></div>
+    <div class="mcrd"><h4>중복 제거</h4><ul><li>동일 영상이 여러 키워드에서 중복 수집 가능</li><li><code>video_id</code> 기준 중복 제거 후 <strong>202개</strong></li><li>주제: 첫 번째 매칭 키워드 우선 적용</li><li>발표 전: 5/21~5/27 (n=64) / 발표 후: 5/28~6/3 (n=138)</li></ul></div>
+    <div class="mcrd"><h4>t-test (독립표본)</h4><ul><li>원 조회수: t=0.544, p=0.588 → <strong>유의하지 않음</strong></li><li>로그 조회수: t=1.831, p=0.070 → <strong>경계적</strong></li><li>극도의 왜도 — 로그 변환이 더 적절한 검정 기준</li><li>정규성 가정 위반 가능성 — 비모수 보완 고려</li></ul></div>
+    <div class="mcrd"><h4>로그 변환</h4><ul><li>변환식: <code>log_views = log(views + 1)</code></li><li>슈카월드 571,889회 등 극단값 영향 완화</li><li>평균 log: 발표 전 8.350 → 발표 후 7.807</li><li>원 조회수 대체 아님 — 분포 구조 파악용</li></ul></div>
+    <div class="mcrd"><h4>회귀분석</h4><ul><li>종속변수: <code>log(조회수+1)</code></li><li>모델 1: 발표 후 더미 + 주제 더미 + 채널 유형</li><li>모델 2: 모델 1 + 발표 후×주제 교호작용</li><li>기준: 발표 전 · 예금금리 · 경제·시사형</li><li>표본 불균형(전 64 / 후 138) 주의</li></ul></div>
+    <div class="mcrd"><h4>분석 한계</h4><ul><li>단기 관찰 연구 — 인과관계 추론 불가</li><li>발표 후 영상 시간적 불리 (조회수 누적 차이)</li><li>예금금리 발표 후 n=5 극소 — 해석 주의</li><li>채널 유형 수동 태깅 — 분류 오류 가능</li><li>알고리즘·썸네일 등 외부 변수 미통제</li></ul></div>
+  </div>
+</div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+
+const STATS={n_total:202,n_before:64,n_after:138,mean_before:23101,mean_after:18626,med_before:2272,med_after:1506,pct_change:-19.4};
+const TOPIC={
+  rate:{label:"기준금리",nb:28,na:116,mb:27178,ma:19086,medb:9033,meda:1530,pct:-29.8},
+  deposit:{label:"예금금리",nb:10,na:5,mb:44103,ma:6930,medb:1110,meda:3878,pct:-84.3},
+  loan:{label:"대출금리",nb:26,na:17,mb:10632,ma:18927,medb:2936,meda:1087,pct:78.0}
+};
+const GROUP={
+  news:{label:"뉴스형",nb:40,na:75,mb:25740,ma:20858,medb:5306,meda:2352},
+  econ:{label:"경제·시사형",nb:24,na:63,mb:18702,ma:15969,medb:1496,meda:1292}
+};
+const DATES=["2025-05-21","2025-05-22","2025-05-23","2025-05-24","2025-05-25","2025-05-26","2025-05-27","2025-05-28","2025-05-29","2025-05-30","2025-05-31","2025-06-01","2025-06-02","2025-06-03"];
+const DATE_COUNTS={"2025-05-21":{rate:4,loan:11,deposit:2},"2025-05-22":{loan:2,deposit:1,rate:2},"2025-05-23":{loan:5,rate:2},"2025-05-24":{rate:3,loan:2,deposit:1},"2025-05-25":{rate:4,loan:1,deposit:2},"2025-05-26":{rate:3,deposit:1,loan:1},"2025-05-27":{loan:4,rate:10,deposit:3},"2025-05-28":{rate:13,deposit:3,loan:1},"2025-05-29":{deposit:1,rate:56,loan:6},"2025-05-30":{rate:22,loan:2},"2025-05-31":{rate:2,loan:1},"2025-06-01":{rate:7,loan:5},"2025-06-02":{rate:13,loan:2},"2025-06-03":{rate:3,deposit:1}};
+const ALLDATA = [{"id":"-HkzhgTM2HE","t":"\"거동도 못 하는데...\" 은행 가서 예금 인출? #shorts / KBS","ch":"KBS News","g":"news","d":"2025-05-29","v":21388,"l":252,"c":11,"tp":"deposit","p":1,"u":"https://www.youtube.com/watch?v=-HkzhgTM2HE"},{"id":"-VPMntBqsjo","t":"'경기 침체'에 금리 또 인하‥가계대출 우려도 (2025.05.30/뉴스투데이/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-29","v":10773,"l":110,"c":101,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=-VPMntBqsjo"},{"id":"-WUlS7UK1tc","t":"[박병주의 주력상품] (25.5.30)#코스피3000#외국인#기관#기준금리#트럼프#관세#한양증권#밸류업#미래에셋증권#지주사#HS효성#한국금융지주#크라운해태홀딩스#상법개정안","ch":"매일경제TV","g":"econ","d":"2025-05-30","v":1320,"l":17,"c":0,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=-WUlS7UK1tc"},{"id":"04UlDdyFyJE","t":"[더중앙플러스] 금리내려도 다들 왜이리 힘들지? 소비심리 회복 언제?","ch":"중앙일보","g":"news","d":"2025-05-28","v":1785,"l":48,"c":11,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=04UlDdyFyJE"},{"id":"07JqcJSmFpA","t":"예금금리 하락 전망, 지금 가입하는 게 유리할까? 금리 꺾이기 전 막차 타라는 게 맞나요?","ch":"뉴스픽","g":"econ","d":"2025-05-26","v":2088,"l":28,"c":5,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=07JqcJSmFpA"},{"id":"0HJcCIzD4I4","t":"가계대출 다시 불어난다… 은행들, 금리 올린다 (2025.05.30/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-30","v":21893,"l":328,"c":188,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=0HJcCIzD4I4"},{"id":"0LYKqXR6a8E","t":"\"막차 타자\" 매일 오픈런하자…은행들 '금리 역주행'/ SBS 8뉴스","ch":"SBS News","g":"news","d":"2025-06-02","v":93081,"l":667,"c":321,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=0LYKqXR6a8E"},{"id":"0ZQHD6lJaxw","t":"서울 아파트 담보대출 다시 오른다…오늘부터 0.2%p 인상 (2025.05.30/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-30","v":21078,"l":356,"c":264,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=0ZQHD6lJaxw"},{"id":"17yBBqpbqTA","t":"국내주식, 어닝시즌과 기준금리의 영향 / 박찬엽의 흑자재테크 / 박찬엽","ch":"한국경제TV","g":"econ","d":"2025-05-28","v":1086,"l":14,"c":0,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=17yBBqpbqTA"},{"id":"1_7FVxBKFc4","t":"[5/28(수)오전] 마감시황: 코스피 2,619.44(▲10.41) / 기준금리 동결에 코스피 상승 마감 / 시장에서 바라본 금리 전망은?","ch":"유진투자증권","g":"econ","d":"2025-05-28","v":2271,"l":25,"c":3,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=1_7FVxBKFc4"},{"id":"2FpVioHcBdw","t":"예금 금리 하락에 어디에 돈 넣어야 할까 [MBC 930뉴스] 2025년 5월 25일","ch":"MBCNEWS","g":"news","d":"2025-05-25","v":3878,"l":51,"c":7,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=2FpVioHcBdw"},{"id":"2yXpBrWrP_k","t":"[마감 시황] 기준금리 동결+미 증시 상승에도‥코스피 하락 마감 (2025.05.28/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":3219,"l":46,"c":20,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=2yXpBrWrP_k"},{"id":"3hKyS5dvMWA","t":"은행 눈치 싸움 시작... 금리 올릴까, 내릴까? / SBS / 친절한 경제","ch":"SBS News","g":"news","d":"2025-06-02","v":45249,"l":368,"c":162,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=3hKyS5dvMWA"},{"id":"3l5Px9TnOqk","t":"\"예금금리 더 내릴수도\"...은행, 수신금리 잇따라 인하","ch":"SBS Biz","g":"news","d":"2025-05-23","v":2025,"l":10,"c":7,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=3l5Px9TnOqk"},{"id":"3MSFL-1Iw8A","t":"[25.05.29 오전 방송 전체보기] 기준금리 인하? 동결? 논란의 금통위 결과는?/ 6월 연준 동결 가능성 높아, 미국 경기 방어 전략은?","ch":"삼프로TV","g":"econ","d":"2025-05-29","v":45870,"l":847,"c":12,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=3MSFL-1Iw8A"},{"id":"4GOiY_mWNNk","t":"대출 받기 더 어려워진다, 인터넷은행 대출 막힌다 / SBS / 친절한 경제","ch":"SBS News","g":"news","d":"2025-05-21","v":30484,"l":330,"c":143,"tp":"loan","p":0,"u":"https://www.youtube.com/watch?v=4GOiY_mWNNk"},{"id":"4JCLJhJeJFw","t":"기준금리 동결 '만장일치'…이창용 \"성장 어렵지만 불확실성에 대응\" (2025.05.28/뉴스투데이/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":3834,"l":72,"c":47,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=4JCLJhJeJFw"},{"id":"4oS2iI2n6N0","t":"기준금리 동결 이후 시장금리 흐름에 따라 예금·대출 금리 변화 전망은? (2025.05.28/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":6023,"l":67,"c":42,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=4oS2iI2n6N0"},{"id":"4Z-xfr3Kp6Y","t":"은행 대출금리 인상...은행 이자 장사 비판 다시 나오나","ch":"SBS Biz","g":"news","d":"2025-05-30","v":4234,"l":49,"c":14,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=4Z-xfr3Kp6Y"},{"id":"5_UXHB4OaEg","t":"[5/22(목)] 주식 개장전 투자전략 LIVE - 미국 신용등급 강등이 한국 시장에 미치는 영향은? / 기준금리 인하 가능성은? (feat. 양정윤 이사)","ch":"유진투자증권","g":"econ","d":"2025-05-22","v":1388,"l":10,"c":0,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=5_UXHB4OaEg"},{"id":"5T2gFiQAhsk","t":"서울 아파트 대출 금리 줄줄이 오른다... 금리 인하 이유가 뭐야 / SBS / 친절한 경제","ch":"SBS News","g":"news","d":"2025-06-01","v":52521,"l":386,"c":196,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=5T2gFiQAhsk"},{"id":"5thYTHRqZKg","t":"오늘 밤 월가에서 오는 메시지..트럼프&파월 이 행동에 주목하라 [25년 5월 22일]","ch":"삼프로TV","g":"econ","d":"2025-05-22","v":9033,"l":199,"c":1,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=5thYTHRqZKg"},{"id":"5YCJCEK_bxc","t":"[시사터치] '기준금리 동결' 결정 배경과 전망 (2025.5.28/ YTN 라디오)","ch":"YTN","g":"news","d":"2025-05-28","v":3073,"l":29,"c":8,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=5YCJCEK_bxc"},{"id":"6m5p1VYXLnc","t":"[속보] 한국은행, 기준금리 2.75% 동결 결정","ch":"YTN","g":"news","d":"2025-05-28","v":4628,"l":70,"c":27,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=6m5p1VYXLnc"},{"id":"6WKQE_yNLGI","t":"지금 예금하면 손해?…금리 하락에 '뭉칫돈' 이동","ch":"SBS Biz","g":"news","d":"2025-05-25","v":2232,"l":31,"c":7,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=6WKQE_yNLGI"},{"id":"7B5WEb-EqFU","t":"[5/27(화)오전] 주식개장전 투자전략 LIVE - 오늘 기준금리 발표, 시장 영향은? / 미국 관세 협상 상황은?","ch":"유진투자증권","g":"econ","d":"2025-05-27","v":3119,"l":18,"c":3,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=7B5WEb-EqFU"},{"id":"7s_4-Ep5oDM","t":"대출 조이고 집값 잡자는데...왜 대출 금리는 올리나 [EBS 뉴스]","ch":"EBS","g":"news","d":"2025-06-01","v":3284,"l":42,"c":19,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=7s_4-Ep5oDM"},{"id":"82hxzm7AAIU","t":"기준금리 동결 배경과 향후 전망 (이창용 한국은행 총재 기자회견)","ch":"한국경제TV","g":"econ","d":"2025-05-28","v":2193,"l":30,"c":12,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=82hxzm7AAIU"},{"id":"8k--N13LBHE","t":"[이슈] 월 7백 벌어도 중산층 아니다?…빚 갚고 학원비 내면 끝?/2025년 5월 30일(금)/KBS","ch":"KBS News","g":"news","d":"2025-05-30","v":133997,"l":574,"c":393,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=8k--N13LBHE"},{"id":"95OOZbSfRTU","t":"이번 주 금통위 금리 동결, 인하 전망? / 이주의 경제 / KBS 2025.05.26.","ch":"KBS News","g":"news","d":"2025-05-26","v":1906,"l":11,"c":10,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=95OOZbSfRTU"},{"id":"9hTxjuPpkk8","t":"[경제 인사이드] 기준금리 2.75% 동결…한국은행이 점친 우리 경제 전망은?","ch":"KBS News","g":"news","d":"2025-05-29","v":2527,"l":22,"c":14,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=9hTxjuPpkk8"},{"id":"9QGBLxXWuKA","t":"[25.05.30 오전 방송 전체보기] 기준금리 동결 이후...코스피·환율·채권 시장 어떻게 변했나?","ch":"삼프로TV","g":"econ","d":"2025-05-30","v":51742,"l":826,"c":9,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=9QGBLxXWuKA"},{"id":"9rmRJrgnK30","t":"기준금리 동결 최종 결정! 시장이 환호하는 이유 (2025.05.28)","ch":"박곰희TV","g":"econ","d":"2025-05-28","v":1780,"l":124,"c":13,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=9rmRJrgnK30"},{"id":"9TJLQ22RmCY","t":"한국 경제는 '금융위기' 수준...누가 당선되든 '30조대 추경' 나선다 [지금이뉴스] / YTN","ch":"YTN","g":"news","d":"2025-06-02","v":97122,"l":856,"c":1078,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=9TJLQ22RmCY"},{"id":"A5KjKhPZ4fY","t":"기준금리 동결에도 예금금리는 또 내린다?.. 이유가 뭐야?","ch":"뉴스픽","g":"econ","d":"2025-05-29","v":1566,"l":12,"c":8,"tp":"deposit","p":1,"u":"https://www.youtube.com/watch?v=A5KjKhPZ4fY"},{"id":"AkEOCo7gO0Y","t":"[25.05.27 오후 방송 전체보기] 결국 동결? 금통위 발표 전 마지막 체크! 비둘기? 매파? / 어느 후보가 당선돼도 추경, 이런 경우엔 주가 더 크게 오른다","ch":"삼프로TV","g":"econ","d":"2025-05-27","v":22427,"l":374,"c":4,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=AkEOCo7gO0Y"},{"id":"avqhzpJzF3E","t":"[5월 28일 오전 시황] 기준금리 동결될 것인가? 불확실성 가중","ch":"KB증권","g":"econ","d":"2025-05-28","v":2279,"l":25,"c":4,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=avqhzpJzF3E"},{"id":"B7CtVjJUYEE","t":"[대담] 기준금리 2.75% 동결 배경과 향후 전망은?","ch":"YTN","g":"news","d":"2025-05-28","v":5043,"l":39,"c":16,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=B7CtVjJUYEE"},{"id":"BFvr1hvxXTU","t":"[속보] 한국은행, 기준금리 2.75% 만장일치 동결 결정 (2025.05.28/뉴스특보/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":3584,"l":53,"c":42,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=BFvr1hvxXTU"},{"id":"bHrflq8-kKI","t":"대출 금리 인상에 영끌족 불안... 집 사려던 사람들은 어쩌나 / SBS / 친절한 경제","ch":"SBS News","g":"news","d":"2025-06-02","v":38440,"l":269,"c":135,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=bHrflq8-kKI"},{"id":"biQopQpJeIk","t":"[뉴스특보] 기준금리 2.75% 동결...'만장일치'...추가 인하 여부 주목 (2025.05.28/YTN)","ch":"YTN","g":"news","d":"2025-05-28","v":7167,"l":96,"c":59,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=biQopQpJeIk"},{"id":"BTvEBjOD2j0","t":"대출 금리 또 오른다…'집값 잡기' 나선 은행권 (2025.06.02/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-06-02","v":13022,"l":173,"c":124,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=BTvEBjOD2j0"},{"id":"btzHpSO_GJI","t":"[25.06.03 오전 방송 전체보기] '기준금리 인하' 시그널에 채권시장이 들썩이는 이유 / '트럼프 관세' 다음 관전포인트 '브렉시트'","ch":"삼프로TV","g":"econ","d":"2025-06-03","v":34124,"l":574,"c":11,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=btzHpSO_GJI"},{"id":"BUqiUlpSJlQ","t":"월급은 그대로인데 대출이자는 늘고... 2030 허리가 끊긴다 (2025.05.21/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-21","v":12088,"l":169,"c":96,"tp":"loan","p":0,"u":"https://www.youtube.com/watch?v=BUqiUlpSJlQ"},{"id":"C3I4L84mlmk","t":"대출금리 줄인상…\"부동산 거품 꺼뜨릴 수도\" / YTN","ch":"YTN","g":"news","d":"2025-06-01","v":13021,"l":166,"c":124,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=C3I4L84mlmk"},{"id":"Ca1dr2jJTj0","t":"[경제쏙] 정철진 \"美법원, 트럼프 관세 위법\"‥관세 정지? (2025.05.29/뉴스외전/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-29","v":106339,"l":886,"c":78,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=Ca1dr2jJTj0"},{"id":"cbEYU1Fa_lk","t":"기준금리 2.75% 동결, 결정 배경은?  (이창용 총재 기자회견 발췌)","ch":"매일경제TV","g":"econ","d":"2025-05-28","v":1272,"l":13,"c":3,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=cbEYU1Fa_lk"},{"id":"CcwWHAf27Lg","t":"고환율·무역전쟁에 발목 잡힌 기준금리 인하…한국 경제 어디로 / YTN","ch":"YTN","g":"news","d":"2025-05-27","v":7558,"l":68,"c":45,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=CcwWHAf27Lg"},{"id":"cm6jQCN7-OM","t":"[오늘의 부동산] 가계대출 조이는데 집값은 '들썩'…변동금리 대출자 '어쩌나'","ch":"한국경제TV","g":"econ","d":"2025-05-29","v":1432,"l":22,"c":3,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=cm6jQCN7-OM"},{"id":"crLpfFNGFHs","t":"지금 당장 넣어야 할 예금 TOP5 [5월 4주차]","ch":"뉴스픽","g":"econ","d":"2025-05-27","v":7041,"l":98,"c":12,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=crLpfFNGFHs"},{"id":"DjMX5jJHhWA","t":"대출 조일 때가 됐다? 은행 가산금리 인상 러시 (2025.06.02/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-06-02","v":21042,"l":361,"c":196,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=DjMX5jJHhWA"},{"id":"E2yQiM9JjcU","t":"10년 만에 은행 예금 이자 0%대?!  \"돈 넣어봤자 손해\"","ch":"뉴스픽","g":"econ","d":"2025-05-27","v":5003,"l":55,"c":12,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=E2yQiM9JjcU"},{"id":"E9mJ3Z6pDlY","t":"기준금리 동결에 하반기 추가 인하 가능?…전문가 진단 (2025.05.28/뉴스투데이/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":1609,"l":31,"c":10,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=E9mJ3Z6pDlY"},{"id":"EIm2Q0qGSN8","t":"[25.06.02 오전 방송 전체보기] 기준금리 빨리 내려야 할까? 지금 내리면 어떤 위험이 있나?","ch":"삼프로TV","g":"econ","d":"2025-06-02","v":47553,"l":867,"c":15,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=EIm2Q0qGSN8"},{"id":"f1eN7XE_rxw","t":"[25.05.28 오전 방송 전체보기] 기준금리 동결 확실? 인하?! 오늘 한은 금통위 / 미국 빅테크 최전선, 메타 'AI 스피커'는 어디까지?","ch":"삼프로TV","g":"econ","d":"2025-05-28","v":60459,"l":992,"c":9,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=f1eN7XE_rxw"},{"id":"fjXEiRqL_s0","t":"기준금리 2.75% 동결...하반기 인하 기대감은?","ch":"매일경제TV","g":"econ","d":"2025-05-28","v":2003,"l":22,"c":5,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=fjXEiRqL_s0"},{"id":"Fsy6SJSXDJA","t":"\"과거 실수 반복할 수도\"...'진퇴양난' 이창용의 걱정 / YTN","ch":"YTN","g":"news","d":"2025-05-30","v":178217,"l":1037,"c":1078,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=GpPWafuzD5M"},{"id":"GpPWafuzD5M","t":"[자막뉴스] \"과거 실수 반복할 수도\"...'진퇴양난' 이창용의 걱정 / YTN","ch":"YTN","g":"news","d":"2025-05-30","v":178217,"l":1037,"c":1078,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=GpPWafuzD5M"},{"id":"H3G8p7zJSLY","t":"'영끌' 대출 다시 늘까…아파트 담보대출 금리 또 오른다 / YTN","ch":"YTN","g":"news","d":"2025-05-30","v":29451,"l":258,"c":196,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=H3G8p7zJSLY"},{"id":"hBr5OJQFLJI","t":"기준금리 2.75% 동결...'만장일치' 결정 (2025.05.28/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":7393,"l":115,"c":71,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=hBr5OJQFLJI"},{"id":"HJXGcXz7r-k","t":"대출 금리 인상에 영끌족 '패닉'...집 구매 계획도 흔들","ch":"SBS Biz","g":"news","d":"2025-06-01","v":4281,"l":37,"c":18,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=HJXGcXz7r-k"},{"id":"HoRkrFVHbJI","t":"기준금리 동결 속 국고채 금리 올라 … 하반기 인하 불투명 (2025.05.29/뉴스투데이/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-29","v":1516,"l":27,"c":10,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=HoRkrFVHbJI"},{"id":"HPy8JX6Ci7I","t":"기준금리 두 번 내렸는데 왜 대출금리는 올라갔을까? 장단기 금리 역전 완화와 가산금리","ch":"박곰희TV","g":"econ","d":"2025-05-21","v":12266,"l":599,"c":50,"tp":"loan","p":0,"u":"https://www.youtube.com/watch?v=HPy8JX6Ci7I"},{"id":"Hzh8rVYQiXc","t":"급격히 오른 대출 금리…집값 상승 안정 될까","ch":"SBS Biz","g":"news","d":"2025-06-02","v":1671,"l":11,"c":6,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=Hzh8rVYQiXc"},{"id":"I1v9etfZQA4","t":"[부동산 이슈] 서울 아파트 담보대출 이자 또 오른다…주요 은행 일제히 금리 인상 (2025.05.30/뉴스투데이/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-30","v":4067,"l":62,"c":35,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=I1v9etfZQA4"},{"id":"i7Q7rVcW5Hs","t":"대출 한도 넘어 '영끌'? 혼인·출산 특례 대출 막힌다 / YTN","ch":"YTN","g":"news","d":"2025-05-21","v":18285,"l":236,"c":119,"tp":"loan","p":0,"u":"https://www.youtube.com/watch?v=i7Q7rVcW5Hs"},{"id":"iFxrS4-IhXY","t":"은행권, 예금금리 줄인하 예고..저금리 시대 다시 오나?","ch":"SBS Biz","g":"news","d":"2025-05-21","v":1380,"l":19,"c":5,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=iFxrS4-IhXY"},{"id":"iNHX9VlOPtc","t":"[25.05.21 오전 방송 전체보기] 지금 이 채권을 사야 하는 이유 / 달러 하락과 나스닥 강세 포인트 #삼프로TV","ch":"삼프로TV","g":"econ","d":"2025-05-21","v":35432,"l":586,"c":11,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=iNHX9VlOPtc"},{"id":"J8jopeBv1is","t":"[아침 경제 초대석] 한은 기준금리 동결...하반기 전망은?  (2025.05.28 KBS)","ch":"KBS News","g":"news","d":"2025-05-28","v":2424,"l":28,"c":11,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=J8jopeBv1is"},{"id":"jH9Xn4BRBfY","t":"대출 막더니 금리도 올린다? 은행 '영끌 차단' 나섰나","ch":"SBS Biz","g":"news","d":"2025-05-21","v":1477,"l":16,"c":9,"tp":"loan","p":0,"u":"https://www.youtube.com/watch?v=jH9Xn4BRBfY"},{"id":"Jp10cOXbhMM","t":"한국은행 기준금리 동결, 향후 금리 전망은?","ch":"신한투자증권","g":"econ","d":"2025-05-28","v":2408,"l":24,"c":6,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=Jp10cOXbhMM"},{"id":"jRBkqXPg7N8","t":"대출 조이는 은행, 가산금리 인상 러시...집값 잡힐까","ch":"SBS Biz","g":"news","d":"2025-06-02","v":1565,"l":19,"c":5,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=jRBkqXPg7N8"},{"id":"JUhvJoNZSoE","t":"팍팍한 삶에 '이것'부터 포기…진짜 0% 찍나? 암울한 미래 / SBS / 친절한 경제","ch":"SBS News","g":"news","d":"2025-05-29","v":154802,"l":928,"c":306,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=OfOz8u5m32I"},{"id":"KELY7zNuEnQ","t":"한국은행 \"경제가 굉장히 어려워진 것은 사실이다.\"","ch":"슈카월드","g":"econ","d":"2025-06-02","v":571889,"l":6152,"c":1061,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=KELY7zNuEnQ"},{"id":"kFJNi8YOYOI","t":"기준금리 2.75% 동결 결정 후 금융시장 반응은? (2025.05.28/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":1948,"l":23,"c":19,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=kFJNi8YOYOI"},{"id":"KIMI1J80uNo","t":"[전문가 시황] 기준금리 동결, 시장에 미치는 영향은? (2025.05.28)","ch":"미래에셋증권","g":"econ","d":"2025-05-28","v":2133,"l":29,"c":7,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=KIMI1J80uNo"},{"id":"kU_J-szk5W8","t":"\"한국 경제 살아있나\"...그나마 버텼던 이것도 흔들린다 / SBS / 친절한 경제","ch":"SBS News","g":"news","d":"2025-05-29","v":67543,"l":629,"c":327,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=kU_J-szk5W8"},{"id":"LaazFpNfnEI","t":"기준금리 동결에도 시중금리 오른다‥대출금리 더 오를수도 (2025.05.28/뉴스투데이/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":2248,"l":37,"c":16,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=LaazFpNfnEI"},{"id":"lCAIz6JJ-x8","t":"최저예금금리 재등장? 시중은행 예금금리 또 하락","ch":"SBS Biz","g":"news","d":"2025-05-22","v":1137,"l":11,"c":4,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=lCAIz6JJ-x8"},{"id":"lFVJLMCFHBc","t":"대출금리 '상승 전환'…왜?","ch":"SBS Biz","g":"news","d":"2025-05-21","v":1087,"l":9,"c":7,"tp":"loan","p":0,"u":"https://www.youtube.com/watch?v=lFVJLMCFHBc"},{"id":"lOVTdPbcQiE","t":"은행권 대출 금리 인상 초읽기…대출 계획 있다면? (2025.05.29/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-29","v":6561,"l":108,"c":102,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=lOVTdPbcQiE"},{"id":"LrfkN0nYolc","t":"[금리인하요정] \"지금 결정으로 내 노후가 바뀐다고?\" 예금금리 하락, 지금 어디 넣어야 할까","ch":"뉴스픽","g":"econ","d":"2025-05-25","v":2000,"l":47,"c":2,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=LrfkN0nYolc"},{"id":"M6nNujlGKPg","t":"대선 후 기준금리 인하? 유력 후보들 '복지 공약' 속 경제 향방은 (2025.05.23)","ch":"박곰희TV","g":"econ","d":"2025-05-23","v":2253,"l":109,"c":12,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=M6nNujlGKPg"},{"id":"MeJHgniDPSo","t":"은행 대출 금리, 한 달 만에 다시 오른다 (2025.05.30/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-30","v":31108,"l":424,"c":286,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=MeJHgniDPSo"},{"id":"mOQl7O_V6bA","t":"[5/28(수) 채권 시황] 기준금리 동결 후 국채시장 반응","ch":"유진투자증권","g":"econ","d":"2025-05-28","v":1006,"l":11,"c":0,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=mOQl7O_V6bA"},{"id":"n1i3JFTIpyA","t":"한국은행 기준금리 2.75% 동결, 앞으로의 방향은? (5/28)","ch":"KB증권","g":"econ","d":"2025-05-28","v":3303,"l":37,"c":3,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=n1i3JFTIpyA"},{"id":"n5n3yVZrHkw","t":"대출금리 상승에 금리민감 차주 우려 (2025.06.03/뉴스투데이/MBC)","ch":"MBCNEWS","g":"news","d":"2025-06-03","v":2020,"l":36,"c":23,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=n5n3yVZrHkw"},{"id":"NaJW4dYNHjA","t":"[25.05.22 오전 방송 전체보기] 국가 신용등급 하락 후 연준의 선택, 이것을 주목하라 / 미국 증시 이 때 더 강하게 오른다","ch":"삼프로TV","g":"econ","d":"2025-05-22","v":36042,"l":568,"c":11,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=NaJW4dYNHjA"},{"id":"nBfGCgHhMUI","t":"[25.05.26 오전 방송 전체보기] 금주 핵심 이벤트 '금통위', 동결 가능성은? / 지금 채권 투자, 현명한 선택일까? #삼프로TV","ch":"삼프로TV","g":"econ","d":"2025-05-26","v":37516,"l":604,"c":8,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=nBfGCgHhMUI"},{"id":"ngSSTjVeT5o","t":"대출 막더니...은행들 대출 가산금리 인상 예고 (2025.05.29/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-29","v":20020,"l":289,"c":196,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=ngSSTjVeT5o"},{"id":"nPXdIHUJ_WQ","t":"'영끌'에 칼 빼든 은행...이번엔 대출 금리도 올린다 / YTN","ch":"YTN","g":"news","d":"2025-05-29","v":25248,"l":259,"c":191,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=nPXdIHUJ_WQ"},{"id":"NVmBR2A3JK4","t":"[이주의 대담] 한국은행 기준금리 동결...향후 금리 전망은?","ch":"KBS News","g":"news","d":"2025-05-28","v":1524,"l":15,"c":5,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=NVmBR2A3JK4"},{"id":"o5oLpD5MRQY","t":"[25.05.24 오전 방송 전체보기] 밸류업 시즌2, 우리 증시가 달라지는 걸까? / 이 조건만 되면 기준금리 내린다","ch":"삼프로TV","g":"econ","d":"2025-05-24","v":42040,"l":688,"c":10,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=o5oLpD5MRQY"},{"id":"OFWWmJDf3ak","t":"기준금리는 동결되는데…시장금리·대출금리는 왜 오를까? / KBS 2025.05.28.","ch":"KBS News","g":"news","d":"2025-05-28","v":10024,"l":103,"c":62,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=OFWWmJDf3ak"},{"id":"OHiucwE-nLg","t":"[25.05.27 오전 방송 전체보기] 대선 전 마지막 변수는 금통위? 금리·성장률 깜짝 발표 전망은?","ch":"삼프로TV","g":"econ","d":"2025-05-27","v":140200,"l":2538,"c":4,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=OHiucwE-nLg"},{"id":"OJwYQxqeUzo","t":"덜 마시고, 덜 입고, 덜 배우고…모든 세대가 지갑 닫았다 / SBS / 뉴블더","ch":"SBS News","g":"news","d":"2025-06-02","v":239815,"l":1271,"c":604,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=OJwYQxqeUzo"},{"id":"OkHx1YJFjGo","t":"[25.05.23 오전 방송 전체보기] 잠시 반등? 아니면 진짜 전환점? 나스닥 랠리 진단 / 금리는 얼마나 더 내리나?","ch":"삼프로TV","g":"econ","d":"2025-05-23","v":39219,"l":600,"c":12,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=OkHx1YJFjGo"},{"id":"OfOz8u5m32I","t":"팍팍한 삶에 '이것'부터 포기…진짜 0% 찍나? 암울한 미래 / SBS / 친절한 경제","ch":"SBS News","g":"news","d":"2025-05-29","v":154802,"l":928,"c":306,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=OfOz8u5m32I"},{"id":"oIfLVr2JYx8","t":"은행 예금금리 또 내린다...갈 곳 잃은 자금 어디로","ch":"SBS Biz","g":"news","d":"2025-05-24","v":2025,"l":18,"c":6,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=oIfLVr2JYx8"},{"id":"ojtpBc03ABI","t":"[25.05.25 오전 방송 전체보기] 내 자산 지키는 방법, 지금 채권으로 갈아타라 / 주간 핵심 포인트는?","ch":"삼프로TV","g":"econ","d":"2025-05-25","v":35591,"l":567,"c":9,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=ojtpBc03ABI"},{"id":"oN8rqXaD9Y8","t":"한국 경제 이대로?...기준금리 동결에 갈림길 선 한은 [앵커리포트]","ch":"YTN","g":"news","d":"2025-05-29","v":6289,"l":57,"c":25,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=oN8rqXaD9Y8"},{"id":"oNL4p0lI9js","t":"은행 예금금리 다시 하락...1년짜리 2%대 가능?","ch":"SBS Biz","g":"news","d":"2025-05-22","v":1278,"l":11,"c":5,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=oNL4p0lI9js"},{"id":"p1OmvX_Caqk","t":"\"저금리 시대 또 올까\"..이 상품에 투자하세요","ch":"SBS Biz","g":"news","d":"2025-05-25","v":1524,"l":12,"c":4,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=p1OmvX_Caqk"},{"id":"P4-ioJiOlrM","t":"[25.06.01 오전 방송 전체보기] 기준금리 인하, 경기는 좋아질까? / 미-EU 무역갈등, 어디로 향하나?","ch":"삼프로TV","g":"econ","d":"2025-06-01","v":43266,"l":707,"c":13,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=P4-ioJiOlrM"},{"id":"PjJHbT4qnSY","t":"기준금리 동결 이후...채권, 주식 시장 어떻게 됩니까? [기준금리 발표 이후 투자 전략]","ch":"박곰희TV","g":"econ","d":"2025-05-28","v":5327,"l":193,"c":26,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=PjJHbT4qnSY"},{"id":"poaDy9nIHdI","t":"한국은행 기준금리 동결...이창용 \"대외 불확실성 여전\"","ch":"YTN","g":"news","d":"2025-05-28","v":4021,"l":44,"c":28,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=poaDy9nIHdI"},{"id":"pS-7dBBl3LY","t":"요즘 예금, 언제 가입하는 게 좋을까?","ch":"뉴스픽","g":"econ","d":"2025-05-24","v":1110,"l":26,"c":1,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=pS-7dBBl3LY"},{"id":"PXlJNdWS3gI","t":"금리 내리면 예금 해지해야 할까? 예금 갱신 전략 총정리","ch":"뉴스픽","g":"econ","d":"2025-05-21","v":5427,"l":118,"c":6,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=PXlJNdWS3gI"},{"id":"QgGF01CgPUg","t":"대출 조이더니... 이젠 금리도 올려? 가계대출 죈다는 은행 속내는","ch":"SBS Biz","g":"news","d":"2025-06-02","v":1503,"l":16,"c":9,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=QgGF01CgPUg"},{"id":"qKb6z2C0fCc","t":"대출은 올리고 예금은 내리고...은행은 어떻게 돈을 버나","ch":"SBS Biz","g":"news","d":"2025-05-31","v":2045,"l":18,"c":7,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=qKb6z2C0fCc"},{"id":"QoMnhzm3pQg","t":"'포기하면 편해'...영끌족들의 선택이 집값 흔든다 (2025.05.21/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-21","v":13416,"l":219,"c":136,"tp":"loan","p":0,"u":"https://www.youtube.com/watch?v=QoMnhzm3pQg"},{"id":"qOVHF_Q0bW8","t":"[25.05.29 오후 방송 전체보기] 기준금리 동결 이후 채권 투자 기회 점검","ch":"삼프로TV","g":"econ","d":"2025-05-29","v":35892,"l":621,"c":8,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=qOVHF_Q0bW8"},{"id":"QpOJF_qIhHg","t":"'정책 금리' 묶어뒀더니 '대출 금리' 튀어나왔다 / YTN","ch":"YTN","g":"news","d":"2025-05-29","v":13978,"l":128,"c":103,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=QpOJF_qIhHg"},{"id":"r0WN0pkLd38","t":"한국은행 기준금리 2.75% 동결 결정","ch":"연합뉴스TV","g":"news","d":"2025-05-28","v":3186,"l":24,"c":10,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=r0WN0pkLd38"},{"id":"RGMqd1nV2u4","t":"[25.05.28 오후 방송 전체보기] 기준금리 동결 이후 시장 반응과 전략","ch":"삼프로TV","g":"econ","d":"2025-05-28","v":35048,"l":632,"c":7,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=RGMqd1nV2u4"},{"id":"rkUqefXkFSM","t":"기준금리 동결...'양적 완화' 없으면 경기 살릴 수 있을까? [앵커리포트] / YTN","ch":"YTN","g":"news","d":"2025-05-29","v":4148,"l":44,"c":24,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=rkUqefXkFSM"},{"id":"s4sRx-pOKOQ","t":"'금리 동결' 상황에서 어디에 투자할까?","ch":"뉴스픽","g":"econ","d":"2025-05-29","v":1459,"l":13,"c":2,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=s4sRx-pOKOQ"},{"id":"SQHYP78y3Hs","t":"기준금리 동결 속 가계부채 딜레마...대출 금리 인상 신호 (2025.05.28/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":7155,"l":107,"c":66,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=SQHYP78y3Hs"},{"id":"sTpY3v0u_PY","t":"대출금리 조일수록 버는 은행, 실수요자는 '울상'","ch":"SBS Biz","g":"news","d":"2025-06-02","v":1500,"l":11,"c":8,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=sTpY3v0u_PY"},{"id":"TBSGdFmVYHg","t":"기준금리 동결, 현재 상황 짚어보기 [앵커리포트] / YTN","ch":"YTN","g":"news","d":"2025-05-28","v":3065,"l":24,"c":10,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=TBSGdFmVYHg"},{"id":"TCepjpGiOsc","t":"[시사진단] 기준금리 2.75% 동결, 원인과 향후 전망 (이창용 총재 기자회견 이후)","ch":"매일경제TV","g":"econ","d":"2025-05-28","v":1476,"l":13,"c":2,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=TCepjpGiOsc"},{"id":"TfJHVYp_UDQ","t":"\"집값 잡으려다 서민 잡는다\"...대출금리 인상 갈등 심화","ch":"SBS Biz","g":"news","d":"2025-06-02","v":2105,"l":26,"c":14,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=TfJHVYp_UDQ"},{"id":"thEkv4dP9v4","t":"은행들, 금리 내려도 예금 이자 줄인다...이유는? / SBS / 친절한 경제","ch":"SBS News","g":"news","d":"2025-05-29","v":23688,"l":155,"c":52,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=thEkv4dP9v4"},{"id":"Ti7fcqTt2Yg","t":"급등하는 대출 금리에 자금 이동 시작? 주목받는 안전 자산은 / YTN","ch":"YTN","g":"news","d":"2025-06-01","v":12499,"l":124,"c":84,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=Ti7fcqTt2Yg"},{"id":"TIupCHxiXwM","t":"'비상계엄'에 신용도 올린 무디스…이번엔 반도체·AI 수혜로 상향 / YTN","ch":"YTN","g":"news","d":"2025-05-27","v":15100,"l":148,"c":120,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=TIupCHxiXwM"},{"id":"TpFGkfaLrEQ","t":"대출 늘고 금리까지 오른다…주택 시장 '냉각' 오나 (2025.06.01/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-06-01","v":5764,"l":96,"c":64,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=TpFGkfaLrEQ"},{"id":"TTlVV5S5LzY","t":"대선 전날 기준금리 동결…경기침체 우려와 성장 사이 딜레마 (2025.05.28/뉴스투데이/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":3295,"l":45,"c":27,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=TTlVV5S5LzY"},{"id":"TuEVGVW9Z1E","t":"[자막뉴스] 예금·대출 금리 다르더라니...은행들 '곳간' 터졌다 / YTN","ch":"YTN","g":"news","d":"2025-05-24","v":370437,"l":1276,"c":435,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=xA51dt36pWs"},{"id":"uuZXdqjr4bM","t":"기준금리 동결 결정, 향후 전망은? / KBS 2025.05.28.","ch":"KBS News","g":"news","d":"2025-05-28","v":2065,"l":22,"c":15,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=uuZXdqjr4bM"},{"id":"v3vj2iL-6lc","t":"[현장영상] 이창용 총재 \"기준금리 동결\" 발표 / YTN","ch":"YTN","g":"news","d":"2025-05-28","v":4437,"l":55,"c":23,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=v3vj2iL-6lc"},{"id":"V5mwrjdBqYA","t":"[25.05.21 오후 방송 전체보기] 지금 당장 2가지를 바꿔야 하는 이유 / 달러 추락의 끝은?","ch":"삼프로TV","g":"econ","d":"2025-05-21","v":33046,"l":551,"c":7,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=V5mwrjdBqYA"},{"id":"Vcg8MSlYuQ4","t":"내 집 마련 '고비'... 금리 상승에 집값도 출렁 / SBS / 친절한 경제","ch":"SBS News","g":"news","d":"2025-06-01","v":74033,"l":623,"c":303,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=Vcg8MSlYuQ4"},{"id":"vKXPlTjE8uw","t":"대출금리 오른다...변동금리 차주 직격탄?","ch":"SBS Biz","g":"news","d":"2025-05-29","v":2202,"l":16,"c":9,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=vKXPlTjE8uw"},{"id":"Vp3sMvbrmzM","t":"기준금리 동결에도 주담대 금리 오른 이유는? / YTN","ch":"YTN","g":"news","d":"2025-05-29","v":9313,"l":114,"c":62,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=Vp3sMvbrmzM"},{"id":"VQVYBlz4Vgk","t":"기준금리 묶었는데 주택담보대출 금리는 왜 오르나? (2025.05.28/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":5505,"l":82,"c":66,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=VQVYBlz4Vgk"},{"id":"w7HBSNobW3Y","t":"대출 금리 왜 오르나...금통위에 물어봤다","ch":"SBS Biz","g":"news","d":"2025-05-28","v":3265,"l":27,"c":16,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=w7HBSNobW3Y"},{"id":"WC8m3s_BQFQ","t":"대출 막자마자 금리도 올린다?... 은행 대출 금리 인상 움직임","ch":"SBS Biz","g":"news","d":"2025-05-29","v":1416,"l":14,"c":7,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=WC8m3s_BQFQ"},{"id":"WcmEflMKcuI","t":"[25.06.02 오후 방송 전체보기] 가계대출 급증, 주담대 금리 인상 러시‥집값 전망은?","ch":"삼프로TV","g":"econ","d":"2025-06-02","v":37117,"l":664,"c":10,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=WcmEflMKcuI"},{"id":"wGfm0-j0Rds","t":"기준금리 2.75% 동결에 경기침체 우려 여전 (2025.05.28/뉴스투데이/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":1499,"l":19,"c":6,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=wGfm0-j0Rds"},{"id":"wHANxPamJi8","t":"[최진기의 지금 이 경제] 기준금리 동결의 배경은?","ch":"오마이TV","g":"econ","d":"2025-05-29","v":7313,"l":98,"c":32,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=wHANxPamJi8"},{"id":"WRuSP7bPwkY","t":"여기서 예금하면 추가 이자 챙겨간다! 저축은행 금리 비교","ch":"뉴스픽","g":"econ","d":"2025-05-21","v":1380,"l":22,"c":3,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=WRuSP7bPwkY"},{"id":"wUKjS2fcYhk","t":"기준금리 2.75% 동결...하반기 인하 기대감은? / YTN","ch":"YTN","g":"news","d":"2025-05-28","v":9048,"l":79,"c":32,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=wUKjS2fcYhk"},{"id":"X3y5CUdJuFU","t":"대출 금리 올라간다...고정금리 vs 변동금리, 지금 뭐가 유리?","ch":"뉴스픽","g":"econ","d":"2025-05-21","v":4168,"l":73,"c":6,"tp":"loan","p":0,"u":"https://www.youtube.com/watch?v=X3y5CUdJuFU"},{"id":"xA51dt36pWs","t":"[자막뉴스] 예금·대출 금리 다르더라니...은행들 '곳간' 터졌다 / YTN","ch":"YTN","g":"news","d":"2025-05-24","v":370437,"l":1276,"c":435,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=xA51dt36pWs"},{"id":"XfhGxXW_ZH8","t":"가계대출 다시 폭증…서울 집값 잡히나 (2025.05.21/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-21","v":14028,"l":188,"c":113,"tp":"loan","p":0,"u":"https://www.youtube.com/watch?v=XfhGxXW_ZH8"},{"id":"xJSjAHj6Vss","t":"\"주담대 금리 7%까지 오른다?\" 대출 금리 상승 전망","ch":"뉴스픽","g":"econ","d":"2025-05-21","v":3074,"l":43,"c":7,"tp":"loan","p":0,"u":"https://www.youtube.com/watch?v=xJSjAHj6Vss"},{"id":"xlhJFnETpkg","t":"한국 경제성장률 예측 또 하향...기준금리 추가 인하 기대 커지나?","ch":"SBS Biz","g":"news","d":"2025-05-27","v":1524,"l":20,"c":8,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=xlhJFnETpkg"},{"id":"XQbIFf3cQVE","t":"[마감 시황] 기준금리 동결에도 증시 상승…하반기 금리 인하 전망? (2025.05.28/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":1895,"l":21,"c":15,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=XQbIFf3cQVE"},{"id":"xS0kNqlHVPk","t":"은행 예금 금리 낮춘다...수신금리 인하로 대출금리도 내려가나","ch":"SBS Biz","g":"news","d":"2025-05-26","v":1290,"l":9,"c":4,"tp":"deposit","p":0,"u":"https://www.youtube.com/watch?v=xS0kNqlHVPk"},{"id":"Y_E3gFNhIAs","t":"대출은 늘고 금리도 높아진다…가계 이자 부담 '우려'","ch":"SBS Biz","g":"news","d":"2025-06-01","v":2207,"l":17,"c":8,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=Y_E3gFNhIAs"},{"id":"YAWvHrBx4Z8","t":"[25.05.28 오후 시황] 기준금리 동결 이후 투자 전략","ch":"KB증권","g":"econ","d":"2025-05-28","v":1499,"l":14,"c":0,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=YAWvHrBx4Z8"},{"id":"yeqzgBdnqiE","t":"[이번주 경제이슈] 이번주 한국은행 기준금리 결정...동결? 인하? (25년 5월 23일)","ch":"박곰희TV","g":"econ","d":"2025-05-23","v":2765,"l":133,"c":6,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=yeqzgBdnqiE"},{"id":"ygX7sBJMU6o","t":"기준금리 2.75% 동결…경기 침체 우려에 선제 인하 vs 물가·가계부채로 동결 (2025.05.28/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":3068,"l":35,"c":23,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=ygX7sBJMU6o"},{"id":"YhMr0mfPkQQ","t":"기준금리 동결‥\"하반기 인하 기대하는 건 성급\" (2025.05.28/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":1527,"l":18,"c":10,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=YhMr0mfPkQQ"},{"id":"Ylj5fMQ-JnQ","t":"기준금리 동결 배경과 향후 통화정책 방향 / 이준형 한국은행 부총재보","ch":"한국경제TV","g":"econ","d":"2025-05-29","v":1224,"l":15,"c":5,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=Ylj5fMQ-JnQ"},{"id":"yTwZbCLT_WY","t":"[금통위 특집] 기준금리 동결? 인하? 오늘 결정의 의미는","ch":"한국경제TV","g":"econ","d":"2025-05-28","v":2136,"l":21,"c":6,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=yTwZbCLT_WY"},{"id":"YvAO1-pgFH4","t":"기준금리 동결! 내 대출·예금은 어떻게 바뀌나","ch":"뉴스픽","g":"econ","d":"2025-05-28","v":1695,"l":17,"c":3,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=YvAO1-pgFH4"},{"id":"Z0R-kixNe4g","t":"기준금리 2.75% 동결...하반기 인하 가능성은?","ch":"SBS Biz","g":"news","d":"2025-05-28","v":5253,"l":50,"c":25,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=Z0R-kixNe4g"},{"id":"z3kcJfkqQ44","t":"기준금리 동결 후 대출·예금 어떻게 될까? (2025.05.28/뉴스데스크/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-28","v":2386,"l":27,"c":24,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=z3kcJfkqQ44"},{"id":"Zdnz00D2IPs","t":"[마감 시황] 기준금리 동결, 코스피는 반등…그러나 '이것' 이 고민 (2025.05.28)","ch":"미래에셋증권","g":"econ","d":"2025-05-28","v":3016,"l":29,"c":3,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=Zdnz00D2IPs"},{"id":"ZfSc1r6FVrA","t":"[25.06.03 오후 방송 전체보기] 기준금리 인하 신호...자산 배분 전략은?","ch":"삼프로TV","g":"econ","d":"2025-06-03","v":38163,"l":650,"c":12,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=ZfSc1r6FVrA"},{"id":"Zh-a5q7eoAA","t":"은행 대출 금리 또 오른다…주택 시장 직격탄 / YTN","ch":"YTN","g":"news","d":"2025-05-30","v":26093,"l":231,"c":191,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=Zh-a5q7eoAA"},{"id":"zJmOK01hcPg","t":"기준금리 동결 결정 이후 채권 시장은? 이 영상 꼭 보세요","ch":"박곰희TV","g":"econ","d":"2025-05-29","v":3547,"l":143,"c":18,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=zJmOK01hcPg"},{"id":"ZOVo4qgf5Wc","t":"[오전 시황] 기준금리 동결 가능성 높은데...왜 채권 금리는 오르나?","ch":"한국경제TV","g":"econ","d":"2025-05-27","v":1290,"l":21,"c":2,"tp":"rate","p":0,"u":"https://www.youtube.com/watch?v=ZOVo4qgf5Wc"},{"id":"zRAkFJ2t5i8","t":"대출 금리 더 오른다...변동금리 가구 직격탄","ch":"SBS Biz","g":"news","d":"2025-05-21","v":1478,"l":18,"c":7,"tp":"loan","p":0,"u":"https://www.youtube.com/watch?v=zRAkFJ2t5i8"},{"id":"ZVQ7MvV6xdo","t":"기준금리 동결 배경, 향후 전망은?","ch":"MBN","g":"news","d":"2025-05-29","v":2094,"l":17,"c":6,"tp":"rate","p":1,"u":"https://www.youtube.com/watch?v=ZVQ7MvV6xdo"},{"id":"zWLMCsHzuOY","t":"가계대출 조이기 위해 은행들 우대금리 축소 예고 (2025.05.29/뉴스투데이/MBC)","ch":"MBCNEWS","g":"news","d":"2025-05-29","v":6193,"l":96,"c":57,"tp":"loan","p":1,"u":"https://www.youtube.com/watch?v=zWLMCsHzuOY"}];
+
+const fmt=n=>n>=10000?(n/10000).toFixed(1)+'만':n.toLocaleString();
+const fmtFull=n=>n.toLocaleString();
+const TOPIC_LBL={rate:'기준금리',deposit:'예금금리',loan:'대출금리'};
+const GROUP_LBL={news:'뉴스형',econ:'경제·시사형'};
+
+// Tooltip
+const tipEl=document.getElementById('tip');
+function showTip(e,html){tipEl.innerHTML=html;tipEl.style.display='block';const x=e.clientX+12,y=e.clientY-8;tipEl.style.left=Math.min(x,window.innerWidth-250)+'px';tipEl.style.top=Math.max(y,4)+'px';}
+function hideTip(){tipEl.style.display='none';}
+
+// Bloomberg-style Chart.js defaults
+Chart.defaults.color='#3a5468';
+Chart.defaults.font.family="'IBM Plex Mono', 'IBM Plex Sans KR', monospace";
+Chart.defaults.font.size=10;
+const GRID={color:'rgba(15,32,48,.8)',lineWidth:1};
+const C_RATE='#2196f3',C_DEP='#ff9f00',C_LOAN='#9c6fe4',C_BEFORE='#3a5468',C_AFTER='#ff9f00',C_NEWS='#00b4d8',C_ECON='#536878';
+const charts={};
+function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+
+// TICKER
+function buildTicker(){
+  const items=[
+    {lbl:'기준금리',val:'2.75%',cls:'tn-t',arrow:'◆ HOLD'},
+    {lbl:'발표 전 평균 조회수',val:'23,101',cls:'tn-t',arrow:''},
+    {lbl:'발표 후 평균 조회수',val:'18,626',cls:'td-t',arrow:'▼ −19.4%'},
+    {lbl:'대출금리 콘텐츠',val:'+78.0%',cls:'tu',arrow:'▲'},
+    {lbl:'예금금리 콘텐츠',val:'−84.3%',cls:'td-t',arrow:'▼'},
+    {lbl:'분석 영상',val:'202개',cls:'tn-t',arrow:''},
+    {lbl:'뉴스형 발표전 평균',val:'25,740',cls:'tn-t',arrow:''},
+    {lbl:'뉴스형 발표후 평균',val:'20,858',cls:'td-t',arrow:'▼'},
+    {lbl:'경제·시사형 발표전',val:'18,702',cls:'tn-t',arrow:''},
+    {lbl:'경제·시사형 발표후',val:'15,969',cls:'td-t',arrow:'▼'},
+    {lbl:'로그 t-test p값',val:'0.070',cls:'tu',arrow:'⚠ 경계적'},
+    {lbl:'슈카월드 최고조회수',val:'571,889',cls:'tu',arrow:'▲'},
+  ];
+  const inner=document.getElementById('tickerInner');
+  const html=items.map(i=>`<span class="ti"><span class="tl">${i.lbl}</span><span class="tv ${i.cls}">${i.val}</span>${i.arrow?`<span class="${i.cls}" style="font-size:9px">${i.arrow}</span>`:''}</span>`).join('');
+  inner.innerHTML=html+html;
+}
+
+// TAB
+document.querySelectorAll('.nav button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    btn.classList.add('active');
+    const id=btn.dataset.tab;
+    document.getElementById(id).classList.add('active');
+    if(id==='monitor')renderMonitor();
+    if(id==='event')renderEventTab();
+    if(id==='news')renderNews();
+  });
+});
+
+// ── SLOPE CHART (Chart.js scatter with manual lines) ──
+function renderSlopeChart(){
+  destroyChart('slope');
+  const ctx=document.getElementById('cSlope').getContext('2d');
+  const topics=['rate','deposit','loan'];
+  const upCols={rate:'#ef4444',deposit:'#ef4444',loan:'#00d084'};
+  const dotCols={rate:C_RATE,deposit:C_DEP,loan:C_LOAN};
+
+  // line 타입으로 발표전/후 두 포인트 연결
+  const datasets=topics.map(tp=>{
+    const d=TOPIC[tp];
+    const col=upCols[tp];
+    return {
+      label:d.label,
+      data:[d.mb, d.ma],
+      borderColor:col,
+      backgroundColor:col,
+      borderWidth:2.5,
+      pointRadius:[7,7],
+      pointHoverRadius:9,
+      pointBackgroundColor:[dotCols[tp],col],
+      pointBorderColor:'#020b14',
+      pointBorderWidth:2,
+      tension:0,
+      fill:false
+    };
+  });
+
+  charts.slope=new Chart(ctx,{
+    type:'line',
+    data:{labels:['발표 전','발표 후'], datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      animation:{duration:600},
+      layout:{padding:{left:90,right:90,top:10,bottom:10}},
+      scales:{
+        x:{
+          grid:{color:'rgba(15,32,48,.8)',lineWidth:1},
+          ticks:{color:'#6888a0',font:{size:12,weight:'bold'}},
+          border:{color:'#0f2030'}
+        },
+        y:{
+          grid:{color:'rgba(15,32,48,.8)',lineWidth:1},
+          ticks:{callback:v=>fmt(v),maxTicksLimit:6,color:'#3a5468',font:{size:10}},
+          border:{color:'#0f2030'}
+        }
+      },
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#081d2c',borderColor:'#1e3a52',borderWidth:1,
+          titleColor:'#e8f4ff',bodyColor:'#c8d8e8',padding:10,cornerRadius:1,
+          callbacks:{
+            label:ctx=>{
+              const tp=topics[ctx.datasetIndex];
+              const d=TOPIC[tp];
+              const isAfter=ctx.dataIndex===1;
+              const v=isAfter?d.ma:d.mb;
+              return `${d.label}: ${fmtFull(v)}${isAfter?' ('+(d.pct>0?'+':'')+d.pct+'%)':''}`;
+            }
+          }
+        }
+      }
+    },
+    plugins:[{
+      id:'slopeLabels',
+      afterDraw(chart){
+        const {ctx:c,scales:{x,y},chartArea}=chart;
+        const MIN_GAP=32;
+        // 발표 전(x=0) 레이블
+        let leftPts=topics.map(tp=>({tp,rawY:y.getPixelForValue(TOPIC[tp].mb)}));
+        leftPts.sort((a,b)=>a.rawY-b.rawY);
+        for(let i=1;i<leftPts.length;i++){if(leftPts[i].rawY-leftPts[i-1].rawY<MIN_GAP)leftPts[i].rawY=leftPts[i-1].rawY+MIN_GAP;}
+        // 발표 후(x=1) 레이블
+        let rightPts=topics.map(tp=>({tp,rawY:y.getPixelForValue(TOPIC[tp].ma)}));
+        rightPts.sort((a,b)=>a.rawY-b.rawY);
+        for(let i=1;i<rightPts.length;i++){if(rightPts[i].rawY-rightPts[i-1].rawY<MIN_GAP)rightPts[i].rawY=rightPts[i-1].rawY+MIN_GAP;}
+        const leftMap=Object.fromEntries(leftPts.map(p=>[p.tp,p.rawY]));
+        const rightMap=Object.fromEntries(rightPts.map(p=>[p.tp,p.rawY]));
+        const x0=x.getPixelForValue(0), x1=x.getPixelForValue(1);
+        topics.forEach(tp=>{
+          const d=TOPIC[tp];
+          const col=upCols[tp];
+          const dotCol=dotCols[tp];
+          const lY=leftMap[tp], rY=rightMap[tp];
+          c.save();
+          // 왼쪽 레이블
+          c.font='bold 11px "IBM Plex Sans KR"';
+          c.fillStyle=dotCol;
+          c.textAlign='right';
+          c.fillText(d.label, x0-16, lY+4);
+          c.font='9px "IBM Plex Mono"';
+          c.fillStyle='#6888a0';
+          c.fillText(fmt(d.mb), x0-16, lY+16);
+          // 오른쪽 레이블
+          c.font='bold 11px "IBM Plex Mono"';
+          c.fillStyle=col;
+          c.textAlign='left';
+          const pct=(d.pct>0?'+':'')+d.pct+'%';
+          c.fillText(pct, x1+16, rY+4);
+          c.font='9px "IBM Plex Mono"';
+          c.fillStyle='#6888a0';
+          c.fillText(fmt(d.ma), x1+16, rY+16);
+          c.restore();
+        });
+      }
+    }]
+  });
+}
+// ── DUMBBELL CHART ──
+function renderDumbbellChart(){
+  destroyChart('dumbbell');
+  const ctx=document.getElementById('cDumbbell').getContext('2d');
+  const rows=[
+    {lbl:'평균 조회수',b:STATS.mean_before,a:STATS.mean_after},
+    {lbl:'중앙값',b:STATS.med_before,a:STATS.med_after}
+  ];
+  // horizontal bar approach: grouped horizontal bar
+  charts.dumbbell=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:rows.map(r=>r.lbl),
+      datasets:[
+        {label:'발표 전',data:rows.map(r=>r.b),backgroundColor:'rgba(58,84,104,.7)',borderColor:'#536878',borderWidth:1,borderRadius:0,barPercentage:.45,categoryPercentage:.8},
+        {label:'발표 후',data:rows.map(r=>r.a),backgroundColor:'rgba(255,159,0,.75)',borderColor:C_AFTER,borderWidth:1,borderRadius:0,barPercentage:.45,categoryPercentage:.8}
+      ]
+    },
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      animation:{duration:600},
+      scales:{
+        x:{grid:{...GRID},ticks:{callback:v=>fmt(v),maxTicksLimit:5,color:'#3a5468'},border:{color:'#0f2030'}},
+        y:{grid:{color:'transparent'},ticks:{color:'#6888a0',font:{size:11}},border:{color:'#0f2030'}}
+      },
+      plugins:{
+        legend:{display:true,position:'top',labels:{color:'#6888a0',boxWidth:10,boxHeight:10,padding:16,font:{size:10}}},
+        tooltip:{
+          backgroundColor:'#081d2c',borderColor:'#1e3a52',borderWidth:1,
+          titleColor:'#e8f4ff',bodyColor:'#c8d8e8',padding:10,cornerRadius:1,
+          callbacks:{label:ctx=>`${ctx.dataset.label}: ${fmtFull(ctx.raw)}`}
+        }
+      }
+    },
+    plugins:[{
+      id:'changeLabel',
+      afterDraw(chart){
+        const {ctx:c,scales:{x,y}}=chart;
+        rows.forEach((r,i)=>{
+          const cy=y.getPixelForValue(i);
+          const pct=(((r.a-r.b)/r.b)*100).toFixed(1);
+          const col=r.a>r.b?'#00d084':'#ff3d5a';
+          c.save();
+          c.font='bold 11px "IBM Plex Mono"';
+          c.fillStyle=col;
+          c.textAlign='left';
+          const xEnd=Math.max(x.getPixelForValue(r.b),x.getPixelForValue(r.a))+10;
+          c.fillText((r.a>r.b?'+':'')+pct+'%',xEnd,cy+5);
+          c.restore();
+        });
+      }
+    }]
+  });
+}
+
+// ── GROUP CHART ──
+function renderGroupChart(canvasId='cGroup'){
+  destroyChart(canvasId);
+  const ctx=document.getElementById(canvasId).getContext('2d');
+  charts[canvasId]=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:['뉴스형','경제·시사형'],
+      datasets:[
+        {label:'발표 전',data:[GROUP.news.mb,GROUP.econ.mb],backgroundColor:'rgba(58,84,104,.75)',borderColor:'#536878',borderWidth:1,borderRadius:0,barPercentage:.4,categoryPercentage:.8},
+        {label:'발표 후',data:[GROUP.news.ma,GROUP.econ.ma],backgroundColor:'rgba(255,159,0,.75)',borderColor:C_AFTER,borderWidth:1,borderRadius:0,barPercentage:.4,categoryPercentage:.8}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,animation:{duration:600},
+      scales:{
+        x:{grid:{color:'transparent'},ticks:{color:'#6888a0',font:{size:11}},border:{color:'#0f2030'}},
+        y:{grid:{...GRID},ticks:{callback:v=>fmt(v),maxTicksLimit:5,color:'#3a5468'},border:{color:'#0f2030'}}
+      },
+      plugins:{
+        legend:{display:true,position:'top',labels:{color:'#6888a0',boxWidth:10,boxHeight:10,padding:16,font:{size:10}}},
+        tooltip:{
+          backgroundColor:'#081d2c',borderColor:'#1e3a52',borderWidth:1,
+          titleColor:'#e8f4ff',bodyColor:'#c8d8e8',padding:10,cornerRadius:1,
+          callbacks:{
+            afterLabel:ctx=>{
+              const g=ctx.dataIndex===0?GROUP.news:GROUP.econ;
+              const n=ctx.datasetIndex===0?g.nb:g.na;
+              return `n = ${n}`;
+            }
+          }
+        }
+      }
+    },
+    plugins:[{
+      id:'nLabels',
+      afterDraw(chart){
+        const {ctx:c,scales:{x,y}}=chart;
+        const pairs=[{g:GROUP.news,lbl:'뉴스형'},{g:GROUP.econ,lbl:'경제·시사형'}];
+        pairs.forEach((p,i)=>{
+          c.save();
+          c.font='9px "IBM Plex Mono"';
+          c.fillStyle='#3a5468';
+          c.textAlign='center';
+          const cx=x.getPixelForValue(i);
+          c.fillText(`전 n=${p.g.nb}`,cx-16,chart.chartArea.bottom+24);
+          c.fillText(`후 n=${p.g.na}`,cx+16,chart.chartArea.bottom+24);
+          c.restore();
+        });
+      }
+    }]
+  });
+}
+
+// ── DAILY LINE CHART ──
+function renderDailyChart(){
+  destroyChart('daily');
+  const ctx=document.getElementById('cDaily').getContext('2d');
+  const labels=DATES.map(d=>d.slice(5).replace('-','/'));
+  const mkData=tp=>DATES.map(d=>(DATE_COUNTS[d]||{})[tp]||0);
+  const evtIdx=7; // May 28
+
+  const dailyEvtPlugin={
+    id:'dailyEvt',
+    afterDraw(chart){
+      const {ctx:c,scales:{x,y},chartArea}=chart;
+      const evX=x.getPixelForValue(evtIdx);
+      c.save();
+      c.beginPath();c.strokeStyle='rgba(255,159,0,.55)';c.lineWidth=1.5;c.setLineDash([5,4]);
+      c.moveTo(evX,chartArea.top);c.lineTo(evX,chartArea.bottom);c.stroke();
+      c.setLineDash([]);
+      c.font='bold 9px "IBM Plex Mono"';
+      c.fillStyle='#ff9f00';c.textAlign='left';
+      c.fillText('▼ 5/28 발표',evX+4,chartArea.top+12);
+      c.restore();
+    }
+  };
+  charts.daily=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'기준금리',data:mkData('rate'),borderColor:C_RATE,backgroundColor:'rgba(33,150,243,.08)',fill:true,borderWidth:2.5,pointRadius:4,pointHoverRadius:6,pointBackgroundColor:C_RATE,tension:.3},
+        {label:'대출금리',data:mkData('loan'),borderColor:C_LOAN,backgroundColor:'rgba(156,111,228,.06)',fill:true,borderWidth:2,pointRadius:3.5,pointHoverRadius:5,pointBackgroundColor:C_LOAN,tension:.3},
+        {label:'예금금리',data:mkData('deposit'),borderColor:C_DEP,backgroundColor:'rgba(255,159,0,.06)',fill:true,borderWidth:2,pointRadius:3.5,pointHoverRadius:5,pointBackgroundColor:C_DEP,tension:.3}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,animation:{duration:600},
+      scales:{
+        x:{
+          grid:{...GRID},
+          ticks:{color:'#3a5468',font:{size:10},autoSkip:false,maxRotation:0,
+            callback:(v,i)=>{if(i===evtIdx)return '★5/28';return labels[i];}
+          },
+          border:{color:'#0f2030'}
+        },
+        y:{grid:{...GRID},ticks:{color:'#3a5468',stepSize:5,font:{size:10}},border:{color:'#0f2030'},title:{display:true,text:'영상 수',color:'#3a5468',font:{size:10}}}
+      },
+      plugins:{
+        legend:{display:true,position:'top',labels:{color:'#6888a0',boxWidth:10,boxHeight:10,padding:16,font:{size:10},usePointStyle:true,pointStyle:'circle'}},
+        tooltip:{
+          backgroundColor:'#081d2c',borderColor:'#1e3a52',borderWidth:1,
+          titleColor:'#e8f4ff',bodyColor:'#c8d8e8',padding:10,cornerRadius:1,
+          mode:'index',intersect:false
+        },
+        annotation:{}
+      }
+    },
+    plugins:[dailyEvtPlugin]
+  });
+}
+
+// ── LOG BOXPLOT (custom SVG-on-canvas plugin) ──
+function renderBoxPlot(){
+  destroyChart('box');
+  const canvas=document.getElementById('cBox');
+  const ctx=canvas.getContext('2d');
+
+  function calcBoxStats(arr){
+    const s=[...arr].sort((a,b)=>a-b);
+    const n=s.length;
+    if(!n)return null;
+    const q1=s[Math.floor(n*.25)],med=s[Math.floor(n*.5)],q3=s[Math.floor(n*.75)];
+    const iqr=q3-q1;
+    const lo=Math.max(s[0],q1-1.5*iqr),hi=Math.min(s[n-1],q3+1.5*iqr);
+    return{q1,med,q3,lo,hi,outliers:s.filter(v=>v<lo||v>hi),n};
+  }
+
+  const groups=[
+    {lbl:'기준금리\n발표 전',col:C_RATE,data:ALLDATA.filter(r=>r.p===0&&r.tp==='rate').map(r=>Math.log(r.v+1))},
+    {lbl:'기준금리\n발표 후',col:C_RATE,data:ALLDATA.filter(r=>r.p===1&&r.tp==='rate').map(r=>Math.log(r.v+1))},
+    {lbl:'예금금리\n발표 전',col:C_DEP,data:ALLDATA.filter(r=>r.p===0&&r.tp==='deposit').map(r=>Math.log(r.v+1))},
+    {lbl:'예금금리\n발표 후',col:C_DEP,data:ALLDATA.filter(r=>r.p===1&&r.tp==='deposit').map(r=>Math.log(r.v+1))},
+    {lbl:'대출금리\n발표 전',col:C_LOAN,data:ALLDATA.filter(r=>r.p===0&&r.tp==='loan').map(r=>Math.log(r.v+1))},
+    {lbl:'대출금리\n발표 후',col:C_LOAN,data:ALLDATA.filter(r=>r.p===1&&r.tp==='loan').map(r=>Math.log(r.v+1))}
+  ];
+  const stats=groups.map(g=>({...g,...(calcBoxStats(g.data)||{})}));
+
+  // Dummy chart for axes
+  const allVals=stats.flatMap(s=>s.data||[]);
+  const minV=Math.min(...allVals)*.95, maxV=Math.max(...allVals)*1.04;
+
+  charts.box=new Chart(ctx,{
+    type:'scatter',
+    data:{datasets:[{data:[],label:'_hidden'}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,animation:{duration:0},layout:{padding:{bottom:52}},
+      scales:{
+        x:{type:'linear',min:-0.5,max:5.5,grid:{color:'transparent'},ticks:{display:false},border:{color:'#0f2030'}},
+        y:{min:minV,max:maxV,grid:{...GRID},ticks:{callback:v=>v.toFixed(1),maxTicksLimit:7,color:'#3a5468',font:{size:10}},border:{color:'#0f2030'},title:{display:true,text:'log(조회수+1)',color:'#3a5468',font:{size:10}}}
+      },
+      plugins:{legend:{display:false},tooltip:{enabled:false}}
+    },
+    plugins:[{
+      id:'boxPlotDraw',
+      afterDraw(chart){
+        const {ctx:c,scales:{x,y},chartArea:{top,bottom}}=chart;
+        const W=x.getPixelForValue(1)-x.getPixelForValue(0);
+        const bW=W*.4;
+
+        stats.forEach((s,i)=>{
+          if(!s.q1)return;
+          const cx=x.getPixelForValue(i);
+          const col=s.col;
+          const isAfter=(i%2===1);
+
+          // separator between topic groups
+          if(i===2||i===4){
+            c.save();c.beginPath();
+            c.strokeStyle='#1e3a52';c.setLineDash([3,3]);c.lineWidth=1;
+            const sepX=(x.getPixelForValue(i-1)+x.getPixelForValue(i))/2;
+            c.moveTo(sepX,top);c.lineTo(sepX,bottom);
+            c.stroke();c.restore();
+          }
+
+          // whisker vertical line
+          c.save();
+          c.beginPath();c.strokeStyle=col+'88';c.lineWidth=1.5;c.setLineDash([]);
+          c.moveTo(cx,y.getPixelForValue(s.hi));c.lineTo(cx,y.getPixelForValue(s.lo));
+          c.stroke();
+          // whisker caps
+          c.beginPath();c.strokeStyle=col+'88';c.lineWidth=1.5;
+          c.moveTo(cx-bW*.3,y.getPixelForValue(s.hi));c.lineTo(cx+bW*.3,y.getPixelForValue(s.hi));
+          c.moveTo(cx-bW*.3,y.getPixelForValue(s.lo));c.lineTo(cx+bW*.3,y.getPixelForValue(s.lo));
+          c.stroke();
+          // IQR box
+          const boxTop=y.getPixelForValue(s.q3),boxBot=y.getPixelForValue(s.q1);
+          c.globalAlpha=isAfter?.28:.18;
+          c.fillStyle=col;
+          c.fillRect(cx-bW/2,boxTop,bW,boxBot-boxTop);
+          c.globalAlpha=1;
+          c.strokeStyle=col;c.lineWidth=1.5;
+          c.strokeRect(cx-bW/2,boxTop,bW,boxBot-boxTop);
+          // median
+          c.beginPath();c.strokeStyle=col;c.lineWidth=2.5;
+          c.moveTo(cx-bW/2,y.getPixelForValue(s.med));c.lineTo(cx+bW/2,y.getPixelForValue(s.med));
+          c.stroke();
+          // outliers
+          s.outliers.forEach(ov=>{
+            c.beginPath();c.arc(cx,y.getPixelForValue(ov),2.5,0,Math.PI*2);
+            c.fillStyle=col+'90';c.fill();
+          });
+          // x-axis label - 충분한 간격으로 겹침 방지
+          const lblLines=s.lbl.split('\n');
+          c.font=`${isAfter?'bold ':' '}9.5px "IBM Plex Sans KR"`;
+          c.fillStyle=isAfter?col:'#3a5468';
+          c.textAlign='center';
+          lblLines.forEach((ln,li)=>{
+            c.fillText(ln,cx,bottom+15+li*13);
+          });
+          // n label
+          c.font='9px "IBM Plex Mono"';c.fillStyle='#3a5468';
+          c.fillText('n='+s.n,cx,bottom+42);
+          c.restore();
+        });
+      }
+    }]
+  });
+}
+
+// ── MONITOR render all ──
+function renderMonitor(){
+  document.getElementById('kpi-b').textContent=fmt(STATS.mean_before);
+  document.getElementById('kpi-a').textContent=fmt(STATS.mean_after);
+  document.getElementById('kpi-p').textContent=STATS.pct_change+'%';
+  requestAnimationFrame(()=>{
+    renderSlopeChart();
+    renderDumbbellChart();
+    renderGroupChart();
+    renderDailyChart();
+    renderBoxPlot();
+  });
+}
+
+// ── EVENT TAB ──
+function renderEventTab(){
+  renderTopicCards();
+  renderGroupChart('cGroupDet');
+  renderTtestTable();
+  renderCoefPlot('coef1',[
+    {lbl:'발표 후',est:-0.793,se:0.314,p:0.012},
+    {lbl:'대출금리',est:-0.331,se:0.573,p:0.564},
+    {lbl:'기준금리',est:0.534,se:0.534,p:0.318},
+    {lbl:'뉴스형 채널',est:0.723,se:0.280,p:0.011}
+  ]);
+  renderCoefPlot('coef2',[
+    {lbl:'발표 후',est:1.084,se:1.039,p:0.298},
+    {lbl:'대출금리',est:0.168,se:0.700,p:0.811},
+    {lbl:'기준금리',est:1.481,se:0.698,p:0.035},
+    {lbl:'뉴스형 채널',est:0.817,se:0.282,p:0.004},
+    {lbl:'발표후×대출금리',est:-1.629,se:1.192,p:0.173},
+    {lbl:'발표후×기준금리',est:-2.271,se:1.116,p:0.043}
+  ]);
+}
+
+function renderTopicCards(){
+  const el=document.getElementById('topicCards');
+  el.innerHTML='';
+  [['rate','기준금리',C_RATE,'주제별 t-test 검정 결과 집단 간 이질성으로 별도 산출'],
+   ['deposit','예금금리',C_DEP,'발표 후 n=5 극소 표본 — 해석 주의'],
+   ['loan','대출금리',C_LOAN,'발표 전 n=26 / 발표 후 n=17']].forEach(([tp,lbl,col,note])=>{
+    const d=TOPIC[tp];
+    const up=d.ma>d.mb;
+    const pctStr=(d.pct>0?'+':'')+d.pct+'%';
+    const maxV=Math.max(d.mb,d.ma);
+    el.insertAdjacentHTML('beforeend',`
+    <div class="card">
+      <div class="card-hd">
+        <span class="card-ttl" style="color:${col}">${lbl}</span>
+        <span class="badge ${up?'b-g':'b-r'}">${pctStr}</span>
+      </div>
+      <div class="card-bd">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <div>
+            <div class="kpi-lbl">발표 전 평균</div>
+            <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--white)">${fmtFull(d.mb)}</div>
+            <div style="font-size:9px;color:var(--text3);font-family:var(--mono)">n=${d.nb}</div>
+            <div style="height:3px;background:var(--border);margin-top:6px;border-radius:1px;overflow:hidden"><div style="height:100%;width:${(d.mb/maxV*100).toFixed(1)}%;background:#536878;border-radius:1px"></div></div>
+          </div>
+          <div>
+            <div class="kpi-lbl">발표 후 평균</div>
+            <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:${up?'var(--green)':'var(--red)'}">${fmtFull(d.ma)}</div>
+            <div style="font-size:9px;color:var(--text3);font-family:var(--mono)">n=${d.na}</div>
+            <div style="height:3px;background:var(--border);margin-top:6px;border-radius:1px;overflow:hidden"><div style="height:100%;width:${(d.ma/maxV*100).toFixed(1)}%;background:${col};border-radius:1px"></div></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div><div class="kpi-lbl">발표 전 중앙값</div><div style="font-family:var(--mono);font-size:13px;color:var(--text2)">${fmtFull(d.medb)}</div></div>
+          <div><div class="kpi-lbl">발표 후 중앙값</div><div style="font-family:var(--mono);font-size:13px;color:var(--text2)">${fmtFull(d.meda)}</div></div>
+        </div>
+        <div style="font-size:9px;color:var(--text3);font-family:var(--mono);border-top:1px solid var(--border);padding-top:7px">${note}</div>
+      </div>
+    </div>`);
+  });
+}
+
+function renderTtestTable(){
+  const tbl=document.getElementById('ttestTbl');
+  tbl.innerHTML=`<thead><tr><th>검정</th><th>t-통계량</th><th>p-value</th><th>해석</th></tr></thead>
+  <tbody>
+    <tr><td>원 조회수 t-test</td><td class="tr">0.544</td><td class="tr ti">0.588</td><td style="font-size:9px;color:var(--text3)">유의하지 않음 (α=0.05)</td></tr>
+    <tr><td>로그 조회수 t-test</td><td class="tr">1.831</td><td class="tr ts">0.070</td><td style="font-size:9px;color:var(--orange)">경계적 (α=0.10)</td></tr>
+  </tbody>`;
+}
+
+function renderCoefPlot(elId,coefs){
+  const el=document.getElementById(elId);
+  el.innerHTML='';
+  const minE=Math.min(...coefs.map(c=>c.est-1.96*c.se))-0.3;
+  const maxE=Math.max(...coefs.map(c=>c.est+1.96*c.se))+0.3;
+  const range=maxE-minE;
+  const pct=v=>((v-minE)/range*100).toFixed(2)+'%';
+  const zeroPct=((0-minE)/range*100).toFixed(2)+'%';
+  coefs.forEach(c=>{
+    const sig=c.p<0.05;
+    const col=sig?'var(--orange)':'#536878';
+    const loPct=pct(c.est-1.96*c.se),hiPct=pct(c.est+1.96*c.se),dotPct=pct(c.est);
+    el.insertAdjacentHTML('beforeend',`
+    <div class="crow">
+      <div class="clbl" style="color:${sig?'var(--text)':'var(--text2)'}">${c.lbl}</div>
+      <div class="ctrack">
+        <div class="czero" style="left:${zeroPct}"></div>
+        <div class="cci" style="left:${loPct};width:calc(${hiPct} - ${loPct});background:${col};opacity:.3"></div>
+        <div class="cdot" style="left:${dotPct};background:${col}"></div>
+      </div>
+      <div class="cest" style="color:${col}">${(c.est>0?'+':'')+c.est.toFixed(3)}</div>
+      <div class="cpv" style="color:${sig?'var(--orange)':'var(--text3)'}">p=${c.p.toFixed(3)}</div>
+    </div>`);
+  });
+}
+
+// ── NEWS FEED ──
+let newsFilters={topic:'all',group:'all',post:'all'};
+document.getElementById('newsFilter').querySelectorAll('.fbtn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const ft=btn.dataset.ft,fv=btn.dataset.fv;
+    newsFilters[ft]=fv;
+    document.querySelectorAll(`.fbtn[data-ft="${ft}"]`).forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderNews();
+  });
+});
+
+function renderNews(){
+  let data=[...ALLDATA];
+  if(newsFilters.topic!=='all')data=data.filter(r=>r.tp===newsFilters.topic);
+  if(newsFilters.group!=='all')data=data.filter(r=>r.g===newsFilters.group);
+  if(newsFilters.post!=='all')data=data.filter(r=>r.p===parseInt(newsFilters.post));
+  data.sort((a,b)=>b.v-a.v);
+  document.getElementById('newsCount').textContent=data.length;
+  const list=document.getElementById('newsList');
+  list.innerHTML='';
+  data.slice(0,60).forEach((r,i)=>{
+    const tpL=TOPIC_LBL[r.tp]||r.tp;
+    const grpL=GROUP_LBL[r.g]||r.g;
+    const postL=r.p===1?'발표 후':'발표 전';
+    const li=document.createElement('li');
+    li.className='news-item';
+    li.innerHTML=`
+      <span class="news-num">${i+1}</span>
+      <div class="news-body">
+        <div class="news-title">${r.t}</div>
+        <div class="news-meta">
+          <span>${r.ch}</span>
+          <span>${r.d}</span>
+          <span class="ntag nt-${r.tp}">${tpL}</span>
+          <span class="ntag nt-${r.g}">${grpL}</span>
+          <span class="ntag nt-${r.p===1?'af':'bf'}">${postL}</span>
+          <span>👍 ${r.l.toLocaleString()}</span>
+          <span>💬 ${r.c.toLocaleString()}</span>
+        </div>
+      </div>
+      <div class="news-right">
+        <span class="news-views">${fmtFull(r.v)}</span>
+        <a href="${r.u}" target="_blank" rel="noopener" class="news-link">▶ YouTube</a>
+      </div>`;
+    list.appendChild(li);
+  });
+}
+
+// ── PORTFOLIO ──
+const ASSET_TYPES=['현금성 자산','예금','채권','성장주','가치주','금융주','부동산·리츠','원자재·금','기타'];
+const RATE_SEN=['예금','채권','부동산·리츠','금융주'];
+const DEF_ASS=['현금성 자산','원자재·금','채권'];
+function addPortRow(){
+  const tb=document.getElementById('portBody');
+  const tr=document.createElement('tr');
+  const opts=ASSET_TYPES.map(t=>`<option value="${t}">${t}</option>`).join('');
+  tr.innerHTML=`<td><input type="text" placeholder="자산명"></td><td><select>${opts}</select></td><td><input type="number" min="0" max="100" step="0.1" placeholder="0"></td><td><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>`;
+  tb.appendChild(tr);
+}
+function resetPort(){document.getElementById('portBody').innerHTML='';document.getElementById('portRes').style.display='none';}
+function runPortCheck(){
+  const rows=document.querySelectorAll('#portBody tr');
+  const assets=[];
+  rows.forEach(tr=>{
+    const [nm,tp,wt]=tr.querySelectorAll('input,select');
+    const w=parseFloat(wt.value)||0;
+    if(nm.value.trim()||w)assets.push({name:nm.value.trim(),type:tp.value,wt:w});
+  });
+  if(!assets.length){alert('자산을 먼저 입력해주세요.');return;}
+  const total=assets.reduce((s,a)=>s+a.wt,0);
+  const rsWt=assets.filter(a=>RATE_SEN.includes(a.type)).reduce((s,a)=>s+a.wt,0);
+  const defWt=assets.filter(a=>DEF_ASS.includes(a.type)).reduce((s,a)=>s+a.wt,0);
+  const findings=[];
+  if(Math.abs(total-100)>0.1)findings.push(`비중 합계가 ${total.toFixed(1)}%입니다. 100%에 맞게 조정을 검토하세요.`);
+  if(rsWt>50)findings.push(`금리 민감 자산(예금·채권·금융주·부동산·리츠) 비중이 ${rsWt.toFixed(1)}%로 높습니다. 대출금리 상승 관심 증가 맥락에서 금리 위험 집중 노출 가능성이 있습니다.`);
+  if(defWt<10)findings.push(`방어 자산(현금·채권·원자재·금) 비중이 ${defWt.toFixed(1)}%로 낮습니다. 유동성 부족 가능성을 점검하세요.`);
+  const gWt=assets.filter(a=>a.type==='성장주').reduce((s,a)=>s+a.wt,0);
+  if(gWt>40)findings.push(`성장주 비중 ${gWt.toFixed(1)}% — 금리 상승 구간에서 할인율 상승 영향 받을 수 있습니다. (확정 예측 아님)`);
+  const tc={};assets.forEach(a=>{tc[a.type]=(tc[a.type]||0)+1;});
+  Object.entries(tc).forEach(([t,n])=>{if(n>=3)findings.push(`'${t}' 유형이 ${n}개 — 동일 위험요인 중복 노출 가능성이 있습니다.`);});
+  if(!findings.length)findings.push('이 도구의 규칙 기반 점검 항목에 해당하는 주의 사항이 발견되지 않았습니다.');
+  document.getElementById('portSum').innerHTML=`
+    <div class="pkpi"><div class="pkpi-lbl">비중 합계</div><div class="pkpi-val" style="color:${Math.abs(total-100)<0.1?'var(--green)':'var(--red)'}">${total.toFixed(1)}%</div></div>
+    <div class="pkpi"><div class="pkpi-lbl">금리 민감</div><div class="pkpi-val" style="color:${rsWt>50?'var(--red)':'var(--text)'}">${rsWt.toFixed(1)}%</div></div>
+    <div class="pkpi"><div class="pkpi-lbl">방어 자산</div><div class="pkpi-val" style="color:${defWt<10?'var(--red)':'var(--green)'}">${defWt.toFixed(1)}%</div></div>`;
+  document.getElementById('portFin').innerHTML=findings.map(f=>`<li>${f}</li>`).join('');
+  document.getElementById('portRes').style.display='block';
+}
+
+// ── INIT ──
+window.addEventListener('load',()=>{
+  buildTicker();
+  renderMonitor();
+  addPortRow();addPortRow();
+});
+let rTimer;
+window.addEventListener('resize',()=>{clearTimeout(rTimer);rTimer=setTimeout(()=>{const at=document.querySelector('.tab.active');if(at){if(at.id==='monitor')renderMonitor();if(at.id==='event')renderEventTab();}},250);});
+</script>
+</body>
+</html>

@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>당신의 전공으로도 아나운서가 될 수 있을까? | 데이터 저널리즘 스페셜</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Pretendard 대체로 Noto Sans KR과 결합 및 Pretendard CDN 연동 -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- D3.js v7 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
+
+  <style>
+    body {
+      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+      background-color: #ffffff;
+      color: #1a1a1a;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    
+    /* 파스텔톤 컬러 정의 및 유틸리티 */
+    .bg-pastel-yellow { background-color: #FFF5CC; }
+    .bg-pastel-pink { background-color: #FFDDEB; }
+    .bg-pastel-blue { background-color: #DDF2FF; }
+    .bg-pastel-purple { background-color: #EEE6FF; }
+    
+    .text-pastel-yellow-dark { color: #856404; }
+    .text-pastel-pink-dark { color: #721c24; }
+    .text-pastel-blue-dark { color: #004085; }
+    .text-pastel-purple-dark { color: #383d41; }
+
+    /* 그라데이션 */
+    .hero-gradient {
+      background: linear-gradient(135deg, #FFF5CC 0%, #FFDDEB 35%, #DDF2FF 70%, #EEE6FF 100%);
+    }
+
+    /* 카드 플립 애니메이션 */
+    .flip-container {
+      perspective: 1000px;
+    }
+    .flipper {
+      transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-style: preserve-3d;
+      position: relative;
+    }
+    .flipped {
+      transform: rotateY(180deg);
+    }
+    .front, .back {
+      backface-visibility: hidden;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .back {
+      transform: rotateY(180deg);
+    }
+
+    /* 회전 애니메이션 */
+    @keyframes orbit-rotation {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .orbit-container {
+      animation: orbit-rotation 30s linear infinite;
+    }
+    .orbit-item {
+      animation: orbit-rotation 30s linear infinite reverse;
+    }
+
+    /* 스크롤 리빌 효과 */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 1s cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 단독 브랜드 이니셜 장식 */
+    .broadcast-badge-k {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background-color: #DDF2FF;
+      color: #004085;
+      font-weight: 800;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 2px solid #bce1ff;
+    }
+    .broadcast-badge-m {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background-color: #FFDDEB;
+      color: #721c24;
+      font-weight: 800;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 2px solid #ffccd9;
+    }
+    .broadcast-badge-s {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background-color: #FFF5CC;
+      color: #856404;
+      font-weight: 800;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 2px solid #ffeeba;
+    }
+
+    /* 툴팁 스타일 */
+    .heatmap-cell:hover .heatmap-tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* 스크롤 잠금 섹션 대응 */
+    .scrolly-container {
+      position: relative;
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- 네비게이션 헤더 -->
+  <header class="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md z-40 border-b border-gray-100 transition-all duration-300 py-3 px-6 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <span class="font-extrabold text-lg tracking-wider text-gray-800 flex items-center gap-2">
+        <i class="fa-solid fa-chart-line text-blue-500"></i> DATA JOURNALISM
+      </span>
+    </div>
+    <div class="text-xs text-gray-400 font-medium hidden md:block">
+      융합데이터시각화 기말 해커톤 프로젝트
+    </div>
+  </header>
+
+  <!-- ==================== SECTION 1: HERO SECTION ==================== -->
+  <section class="min-h-screen hero-gradient flex flex-col justify-between items-center pt-24 pb-12 px-6 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-40 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+    
+    <div class="w-full max-w-4xl mx-auto text-center z-10 flex-grow flex flex-col justify-center items-center mt-10">
+      <p class="text-sm md:text-base font-semibold text-blue-600 bg-white/80 border border-blue-200 px-4 py-1.5 rounded-full mb-6 shadow-sm tracking-wide">
+        🎓 융합데이터시각화 기말 해커톤 프로젝트
+      </p>
+      
+      <h1 class="text-3xl md:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight md:leading-snug mb-6">
+        당신의 전공으로도<br>
+        <span class="relative inline-block">
+          <span class="relative z-10">아나운서가 될 수 있을까?</span>
+          <span class="absolute left-0 bottom-1 w-full h-4 bg-pastel-yellow -z-10"></span>
+        </span>
+      </h1>
+      
+      <p class="text-base md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed mb-12 font-light">
+        "아나운서는 신문방송학과 출신이어야 유리하다"는 흔한 편견을 깨다.<br>
+        <strong>2006~2025년 KBS·MBC·SBS 공채 본사 아나운서 108명</strong>의 데이터를 통해 전공과 진로의 감춰진 관계를 추적합니다.
+      </p>
+
+      <!-- 중앙 이모지 오빗 비주얼 -->
+      <div class="relative w-72 h-72 md:w-80 md:h-80 flex items-center justify-center mb-6">
+        <!-- 메인 마이크 -->
+        <div class="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white shadow-xl flex items-center justify-center text-5xl z-20 border-4 border-white">
+          🎙️
+        </div>
+        <!-- 궤도 서클 -->
+        <div class="absolute w-60 h-60 md:w-72 md:h-72 rounded-full border-2 border-dashed border-gray-400/50 orbit-container">
+          <!-- 경제 -->
+          <div class="absolute -top-3 left-1/2 -ml-6 w-12 h-12 bg-pastel-yellow rounded-full shadow-md flex items-center justify-center text-xl orbit-item" title="상경">📈</div>
+          <!-- 체육 -->
+          <div class="absolute top-10 right-0 w-12 h-12 bg-pastel-pink rounded-full shadow-md flex items-center justify-center text-xl orbit-item" title="체육">⚽</div>
+          <!-- 과학 -->
+          <div class="absolute bottom-10 right-0 w-12 h-12 bg-pastel-blue rounded-full shadow-md flex items-center justify-center text-xl orbit-item" title="과학">🔬</div>
+          <!-- 예술 -->
+          <div class="absolute -bottom-3 left-1/2 -ml-6 w-12 h-12 bg-pastel-purple rounded-full shadow-md flex items-center justify-center text-xl orbit-item" title="예술">🎨</div>
+          <!-- 공학 -->
+          <div class="absolute bottom-10 left-0 w-12 h-12 bg-pastel-yellow rounded-full shadow-md flex items-center justify-center text-xl orbit-item" title="공학">💻</div>
+          <!-- 교육 -->
+          <div class="absolute top-10 left-0 w-12 h-12 bg-pastel-pink rounded-full shadow-md flex items-center justify-center text-xl orbit-item" title="교육">📚</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 하단 스크롤 유도 -->
+    <div class="z-10 flex flex-col items-center gap-2">
+      <span class="text-sm text-gray-500 font-medium">스크롤하여 데이터 기사 읽기</span>
+      <div class="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center p-1">
+        <div class="w-1.5 h-3 bg-gray-500 rounded-full animate-bounce"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 첫 대형 메세지 가로막는 오프너 -->
+  <section class="bg-gray-900 text-white py-24 px-6 text-center relative">
+    <div class="max-w-4xl mx-auto">
+      <p class="text-gray-400 text-sm tracking-widest uppercase mb-4">THE FIRST INSIGHT</p>
+      <h2 class="text-2xl md:text-5xl font-bold leading-tight md:leading-snug">
+        "생각보다 많은 아나운서들은<br>
+        <span class="text-yellow-200">신문방송학과 출신이 아니었다.</span>"
+      </h2>
+    </div>
+  </section>
+
+
+  <!-- ==================== SECTION 2: 사용자 참여형 질문 (카드 플립 및 타이포그래피 정합성 적용) ==================== -->
+  <section class="py-24 px-6 bg-white reveal">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="text-xs font-bold tracking-widest uppercase text-pink-500 bg-pink-50 px-3 py-1 rounded-full">INTERACTIVE QUIZ</span>
+        <h2 class="text-3xl md:text-5xl font-black text-gray-900 mt-4 leading-tight">이 사람들의 실제 대학 전공은 무엇일까?</h2>
+        <p class="text-lg text-gray-500 mt-4">프로필 카드를 클릭해 보세요. 전공 데이터가 거대하게 공개됩니다.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- 전현무 카드 -->
+        <div class="flip-container h-[420px]" onclick="this.querySelector('.flipper').classList.toggle('flipped')">
+          <div class="flipper w-full h-full relative duration-500">
+            <!-- Front -->
+            <div class="front w-full h-full rounded-2xl border border-gray-100 shadow-lg bg-pastel-blue p-8 flex flex-col justify-between">
+              <div class="flex flex-col items-center justify-center flex-grow">
+                <div class="broadcast-badge-k mb-6">K</div>
+                <h3 class="text-4xl font-extrabold text-gray-900">전현무</h3>
+                <p class="text-xl text-gray-600 font-semibold mt-3">전 KBS 아나운서</p>
+              </div>
+              <div class="bg-white/60 rounded-xl py-3 px-4 text-center w-full">
+                <p class="text-xs text-gray-500 uppercase tracking-wider">클릭하여 전공 확인 👉</p>
+              </div>
+            </div>
+            <!-- Back -->
+            <div class="back w-full h-full rounded-2xl border border-blue-200 shadow-xl bg-white p-8 flex flex-col justify-between">
+              <div class="flex flex-col items-center justify-center flex-grow">
+                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full mb-4">정답 공개</span>
+                <p class="text-xl text-gray-400">주전공</p>
+                <h3 class="text-5xl font-black text-blue-600 mt-3 tracking-tight">영어영문학</h3>
+                <div class="mt-6 border-t border-dashed border-gray-200 pt-4 text-center w-full">
+                  <p class="text-xs text-gray-400">복수전공</p>
+                  <p class="text-lg font-bold text-gray-700 mt-1">사회학</p>
+                </div>
+              </div>
+              <p class="text-xs text-gray-400 leading-relaxed">언론학과 무관한 인문 주전공자로서 방송계를 점령했습니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 김대호 카드 -->
+        <div class="flip-container h-[420px]" onclick="this.querySelector('.flipper').classList.toggle('flipped')">
+          <div class="flipper w-full h-full relative duration-500">
+            <!-- Front -->
+            <div class="front w-full h-full rounded-2xl border border-gray-100 shadow-lg bg-pastel-pink p-8 flex flex-col justify-between">
+              <div class="flex flex-col items-center justify-center flex-grow">
+                <div class="broadcast-badge-m mb-6">M</div>
+                <h3 class="text-4xl font-extrabold text-gray-900">김대호</h3>
+                <p class="text-xl text-gray-600 font-semibold mt-3">전 MBC 아나운서</p>
+              </div>
+              <div class="bg-white/60 rounded-xl py-3 px-4 text-center w-full">
+                <p class="text-xs text-gray-500 uppercase tracking-wider">클릭하여 전공 확인 👉</p>
+              </div>
+            </div>
+            <!-- Back -->
+            <div class="back w-full h-full rounded-2xl border border-red-200 shadow-xl bg-white p-8 flex flex-col justify-between">
+              <div class="flex flex-col items-center justify-center flex-grow">
+                <span class="text-xs font-bold text-red-600 bg-red-50 px-3 py-1 rounded-full mb-4">정답 공개</span>
+                <p class="text-xl text-gray-400">주전공</p>
+                <h3 class="text-5xl font-black text-red-600 mt-3 tracking-tight">경영학</h3>
+                <div class="mt-6 border-t border-dashed border-gray-200 pt-4 text-center w-full">
+                  <p class="text-xs text-gray-400">특이사항</p>
+                  <p class="text-lg font-bold text-gray-700 mt-1">대표적 비언론 상경계열 출신</p>
+                </div>
+              </div>
+              <p class="text-xs text-gray-400 leading-relaxed">수도권 공채의 높은 벽을 전공 다양성을 무기로 정면 돌파했습니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 김가현 카드 -->
+        <div class="flip-container h-[420px]" onclick="this.querySelector('.flipper').classList.toggle('flipped')">
+          <div class="flipper w-full h-full relative duration-500">
+            <!-- Front -->
+            <div class="front w-full h-full rounded-2xl border border-gray-100 shadow-lg bg-pastel-yellow p-8 flex flex-col justify-between">
+              <div class="flex flex-col items-center justify-center flex-grow">
+                <div class="broadcast-badge-s mb-6">S</div>
+                <h3 class="text-4xl font-extrabold text-gray-900">김가현</h3>
+                <p class="text-xl text-gray-600 font-semibold mt-3">SBS 아나운서</p>
+              </div>
+              <div class="bg-white/60 rounded-xl py-3 px-4 text-center w-full">
+                <p class="text-xs text-gray-500 uppercase tracking-wider">클릭하여 전공 확인 👉</p>
+              </div>
+            </div>
+            <!-- Back -->
+            <div class="back w-full h-full rounded-2xl border border-yellow-200 shadow-xl bg-white p-8 flex flex-col justify-between">
+              <div class="flex flex-col items-center justify-center flex-grow">
+                <span class="text-xs font-bold text-yellow-600 bg-yellow-50 px-3 py-1 rounded-full mb-4">정답 공개</span>
+                <p class="text-xl text-gray-400">주전공</p>
+                <h3 class="text-5xl font-black text-yellow-500 mt-3 tracking-tight">교육공학</h3>
+                <div class="mt-6 border-t border-dashed border-gray-200 pt-4 text-center w-full">
+                  <p class="text-xs text-gray-400">핵심 경력</p>
+                  <p class="text-lg font-bold text-gray-700 mt-1">SBS 8 뉴스 최연소 메인 앵커</p>
+                </div>
+              </div>
+              <p class="text-xs text-gray-400 leading-relaxed">독창적인 교육공학 지식을 융합하여 뉴스 앵커석에 올랐습니다.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== SECTION 3: 도넛 차트 (전체 전공/비언론 분석) ==================== -->
+  <section class="py-24 px-6 bg-gray-50 reveal border-t border-b border-gray-100">
+    <div class="max-w-4xl mx-auto text-center">
+      <span class="text-xs font-bold tracking-widest uppercase text-blue-600 bg-blue-50 px-3 py-1 rounded-full">SECTION 3. MAJOR RATIO</span>
+      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-4 mb-4">우리가 생각한 것과는 달랐다</h2>
+      <p class="text-lg text-gray-600 font-medium max-w-2xl mx-auto mb-12">"전체 합격자의 대부분은 비언론·미디어 계열 출신이었다."</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <!-- 차트 영역 -->
+        <div class="relative flex justify-center items-center h-72">
+          <canvas id="donutChart"></canvas>
+          <div class="absolute flex flex-col items-center">
+            <span class="text-3xl md:text-5xl font-extrabold text-gray-800" id="donutPercent">75.0%</span>
+            <span class="text-xs text-gray-500 mt-1">비언론 비율</span>
+          </div>
+        </div>
+        <!-- 텍스트/데이터 요약 -->
+        <div class="text-left space-y-6">
+          <div class="border-l-4 border-pastel-pink pl-4">
+            <h4 class="text-sm font-semibold text-gray-500 uppercase">전체 합격자 분석 (총 108명) <span class="text-xs text-gray-400 font-normal block md:inline md:ml-2">(Unknown 3명을 제외한 105명을 기반으로 실질적 분석을 진행했습니다.)</span></h4>
+            <p class="text-3xl font-extrabold text-gray-800 mt-1">비언론 전공자 <span class="text-pink-500">81명</span></p>
+            <p class="text-sm text-gray-600 mt-1">언론/미디어는 단 24명(22.2%)에 불과하며, 무려 4명 중 3명은 비언론계열 출신이었습니다.</p>
+          </div>
+
+          <!-- 전체 8개 전공 계열 완벽히 표시 -->
+          <div class="grid grid-cols-2 gap-x-6 gap-y-3 pt-4 border-t border-gray-200 text-sm">
+            <div class="flex justify-between border-b border-gray-100 pb-1">
+              <span class="text-gray-500">인문/사회</span>
+              <span class="font-bold text-gray-800">35명</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 pb-1">
+              <span class="text-gray-500">언론/미디어</span>
+              <span class="font-bold text-gray-800">24명</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 pb-1">
+              <span class="text-gray-500">이공/자연과학</span>
+              <span class="font-bold text-gray-800">13명</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 pb-1">
+              <span class="text-gray-500">예체능</span>
+              <span class="font-bold text-gray-800">13명</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 pb-1">
+              <span class="text-gray-500">상경계열</span>
+              <span class="font-bold text-gray-800">10명</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 pb-1">
+              <span class="text-gray-500">사범계열</span>
+              <span class="font-bold text-gray-800">9명</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 pb-1">
+              <span class="text-gray-500">법학</span>
+              <span class="font-bold text-gray-800">1명</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 pb-1">
+              <span class="text-gray-500">알 수 없음 (Unknown)</span>
+              <span class="font-bold text-gray-800">3명</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== SECTION 4: 연도별 Stacked Bar Chart ==================== -->
+  <section class="py-24 px-6 bg-white reveal">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="text-xs font-bold tracking-widest uppercase text-purple-600 bg-purple-50 px-3 py-1 rounded-full">SECTION 4. ANNUAL TREND</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-4 mb-4">비언론 전공의 전통은 깊다</h2>
+        <p class="text-lg text-gray-600 font-medium max-w-2xl mx-auto">"비언론 전공자는 최근에 늘어난 것이 아니라 처음부터 존재했다."</p>
+      </div>
+
+      <div class="bg-gray-50 rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm">
+        <div class="h-96 w-full relative">
+          <canvas id="stackedBarChart"></canvas>
+        </div>
+        <div class="mt-6 flex flex-wrap gap-4 justify-center text-xs text-gray-500">
+          <div class="flex items-center gap-2">
+            <span class="w-3.5 h-3.5 rounded bg-[#FFDDEB]"></span> 비언론 전공자
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3.5 h-3.5 rounded bg-[#DDF2FF]"></span> 언론/미디어 전공자
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3.5 h-3.5 rounded bg-[#E2E8F0]"></span> 알 수 없음 (Unknown)
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== SECTION 5: 방송사 비교 카드 ==================== -->
+  <section class="py-24 px-6 bg-gray-50 reveal border-t border-b border-gray-100">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="text-xs font-bold tracking-widest uppercase text-yellow-600 bg-yellow-50 px-3 py-1 rounded-full">SECTION 5. BROADCASTERS</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-4 mb-4">방송사별 전공 지형도</h2>
+        <p class="text-gray-500">카드를 클릭하면 방송사별 상세 분석 모달이 활성화됩니다.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- KBS Card -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-md p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col justify-between" onclick="openBroadcasterModal('KBS')">
+          <div>
+            <div class="flex justify-between items-center mb-6">
+              <span class="broadcast-badge-k">K</span>
+              <span class="text-xs text-gray-400 font-semibold">총 52명 (분석대상: 49명)</span>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">KBS</h3>
+            <div class="space-y-4">
+              <div>
+                <span class="text-xs text-gray-400 block">비언론 비율 (Unknown 3명 제외)</span>
+                <span class="text-3xl font-extrabold text-blue-600 count-up" data-target="71.4">0</span><span class="text-blue-600 text-lg font-bold">%</span>
+              </div>
+              <div>
+                <span class="text-xs text-gray-400 block">언론 비율</span>
+                <span class="text-xl font-bold text-gray-700 count-up" data-target="28.6">0</span><span class="text-gray-700 text-sm font-bold">%</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-8 pt-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500 font-medium">
+            <span>상세 데이터 리포트 보기</span>
+            <i class="fa-solid fa-arrow-right text-blue-500"></i>
+          </div>
+        </div>
+
+        <!-- MBC Card -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-md p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col justify-between" onclick="openBroadcasterModal('MBC')">
+          <div>
+            <div class="flex justify-between items-center mb-6">
+              <span class="broadcast-badge-m">M</span>
+              <span class="text-xs text-gray-400 font-semibold">총 37명 (분석대상: 37명)</span>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">MBC</h3>
+            <div class="space-y-4">
+              <div>
+                <span class="text-xs text-gray-400 block">비언론 비율</span>
+                <span class="text-3xl font-extrabold text-red-600 count-up" data-target="81.1">0</span><span class="text-red-600 text-lg font-bold">%</span>
+              </div>
+              <div>
+                <span class="text-xs text-gray-400 block">언론 비율</span>
+                <span class="text-xl font-bold text-gray-700 count-up" data-target="18.9">0</span><span class="text-gray-700 text-sm font-bold">%</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-8 pt-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500 font-medium">
+            <span>상세 데이터 리포트 보기</span>
+            <i class="fa-solid fa-arrow-right text-red-500"></i>
+          </div>
+        </div>
+
+        <!-- SBS Card -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-md p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col justify-between" onclick="openBroadcasterModal('SBS')">
+          <div>
+            <div class="flex justify-between items-center mb-6">
+              <span class="broadcast-badge-s">S</span>
+              <span class="text-xs text-gray-400 font-semibold">총 19명 (분석대상: 19명)</span>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">SBS</h3>
+            <div class="space-y-4">
+              <div>
+                <span class="text-xs text-gray-400 block">비언론 비율</span>
+                <span class="text-3xl font-extrabold text-yellow-600 count-up" data-target="84.2">0</span><span class="text-yellow-600 text-lg font-bold">%</span>
+              </div>
+              <div>
+                <span class="text-xs text-gray-400 block">언론 비율</span>
+                <span class="text-xl font-bold text-gray-700 count-up" data-target="15.8">0</span><span class="text-gray-700 text-sm font-bold">%</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-8 pt-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500 font-medium">
+            <span>상세 데이터 리포트 보기</span>
+            <i class="fa-solid fa-arrow-right text-yellow-600"></i>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== SECTION 6: 다양성 지수 Line Chart ==================== -->
+  <section class="py-24 px-6 bg-white reveal">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="text-xs font-bold tracking-widest uppercase text-blue-600 bg-blue-50 px-3 py-1 rounded-full">SECTION 6. SHANNON DIVERSITY</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-4 mb-4">전공 다양성은 같은 방향으로 움직이지 않았다</h2>
+        <p class="text-lg text-gray-600 font-medium max-w-2xl mx-auto">"KBS는 다양성이 증가했지만, MBC와 SBS는 오히려 감소했다."</p>
+      </div>
+
+      <div class="bg-gray-50 rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm">
+        <div class="h-96 w-full relative">
+          <canvas id="diversityLineChart"></canvas>
+        </div>
+        <p class="text-xs text-gray-400 mt-4 leading-relaxed">
+          * Shannon Diversity Index(섀넌 다양성 지수)가 높을수록 해당 집단의 전공이 다양하고 고르게 분포되어 있음을 뜻합니다.
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== SECTION 7: 방송사별 전공 히트맵 (Unknown 배제 및 법학 독립) ==================== -->
+  <section class="py-24 px-6 bg-gray-50 reveal border-t border-b border-gray-100">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="text-xs font-bold tracking-widest uppercase text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">SECTION 7. PREFERRED MAJORS</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-4 mb-4">방송사마다 선호하는 전공은 달랐다</h2>
+        <p class="text-gray-500">인원수가 많을수록 부드럽고 짙은 색으로 표현됩니다. (불명확한 Unknown 전공 3명은 표기에서 영구 제외하였습니다.)</p>
+      </div>
+
+      <!-- 모던 히트맵 그리드 구현 -->
+      <div class="overflow-x-auto">
+        <div class="min-w-[768px] bg-white rounded-2xl p-6 border border-gray-100 shadow-md">
+          <!-- 열 머리글 -->
+          <div class="grid grid-cols-8 gap-2 text-center text-sm font-semibold text-gray-500 mb-4 border-b border-gray-100 pb-3">
+            <div>방송사</div>
+            <div>인문/사회</div>
+            <div>언론/미디어</div>
+            <div>예체능</div>
+            <div>이공/자연과학</div>
+            <div>상경</div>
+            <div>사범</div>
+            <div>법학</div>
+          </div>
+
+          <!-- KBS 열 -->
+          <div class="grid grid-cols-8 gap-2 items-center text-center py-2">
+            <div class="font-bold text-gray-800 flex items-center justify-center gap-1.5"><span class="broadcast-badge-k !w-7 !height-7 !text-xs">K</span> KBS</div>
+            <div class="bg-blue-200/90 text-blue-900 font-bold p-4 rounded-xl relative heatmap-cell">
+              17명
+              <span class="absolute hidden bg-gray-800 text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap z-30 heatmap-tooltip transition-all duration-300">KBS 합격자의 34.7% 차지</span>
+            </div>
+            <div class="bg-blue-200/70 text-blue-900 font-semibold p-4 rounded-xl relative heatmap-cell">
+              14명
+              <span class="absolute hidden bg-gray-800 text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap z-30 heatmap-tooltip">KBS 합격자의 28.6% 차지</span>
+            </div>
+            <div class="bg-blue-200/10 text-blue-900 p-4 rounded-xl">3명</div>
+            <div class="bg-blue-200/20 text-blue-900 p-4 rounded-xl">4명</div>
+            <div class="bg-blue-200/30 text-blue-900 p-4 rounded-xl">5명</div>
+            <div class="bg-blue-200/40 text-blue-900 p-4 rounded-xl">6명</div>
+            <div class="bg-gray-100 text-gray-300 p-4 rounded-xl">0명</div>
+          </div>
+
+          <!-- MBC 열 -->
+          <div class="grid grid-cols-8 gap-2 items-center text-center py-2">
+            <div class="font-bold text-gray-800 flex items-center justify-center gap-1.5"><span class="broadcast-badge-m !w-7 !height-7 !text-xs">M</span> MBC</div>
+            <div class="bg-red-200/80 text-red-900 font-bold p-4 rounded-xl relative heatmap-cell">
+              10명
+              <span class="absolute hidden bg-gray-800 text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap z-30 heatmap-tooltip">MBC 합격자의 27.0% 차지</span>
+            </div>
+            <div class="bg-red-200/60 text-red-900 font-semibold p-4 rounded-xl relative heatmap-cell">
+              7명
+              <span class="absolute hidden bg-gray-800 text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap z-30 heatmap-tooltip">MBC 합격자의 18.9% 차지</span>
+            </div>
+            <div class="bg-red-200/50 text-red-900 p-4 rounded-xl">6명</div>
+            <div class="bg-red-200/60 text-red-900 font-semibold p-4 rounded-xl">7명</div>
+            <div class="bg-red-200/35 text-red-900 p-4 rounded-xl">4명</div>
+            <div class="bg-red-200/20 text-red-900 p-4 rounded-xl">2명</div>
+            <div class="bg-red-200/10 text-red-900 p-4 rounded-xl">1명</div>
+          </div>
+
+          <!-- SBS 열 -->
+          <div class="grid grid-cols-8 gap-2 items-center text-center py-2">
+            <div class="font-bold text-gray-800 flex items-center justify-center gap-1.5"><span class="broadcast-badge-s !w-7 !height-7 !text-xs">S</span> SBS</div>
+            <div class="bg-yellow-200/70 text-yellow-900 font-bold p-4 rounded-xl relative heatmap-cell">
+              8명
+              <span class="absolute hidden bg-gray-800 text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap z-30 heatmap-tooltip">SBS 합격자의 42.1% 차지</span>
+            </div>
+            <div class="bg-yellow-200/30 text-yellow-900 p-4 rounded-xl">3명</div>
+            <div class="bg-yellow-200/40 text-yellow-900 p-4 rounded-xl">4명</div>
+            <div class="bg-yellow-200/20 text-yellow-900 p-4 rounded-xl">2명</div>
+            <div class="bg-yellow-200/10 text-yellow-900 p-4 rounded-xl">1명</div>
+            <div class="bg-yellow-200/10 text-yellow-900 p-4 rounded-xl">1명</div>
+            <div class="bg-gray-100 text-gray-300 p-4 rounded-xl">0명</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== SECTION 8: 복수전공 분석 D3 커스텀 흐름 시각화 (기타 복수전공 표기 개선) ==================== -->
+  <section class="py-24 px-6 bg-white reveal overflow-hidden">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="text-xs font-bold tracking-widest uppercase text-rose-600 bg-rose-50 px-3 py-1 rounded-full">SECTION 8. DOUBLE MAJORS</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-4 mb-4">복수전공의 비밀 : 보이지 않는 우회로</h2>
+        <p class="text-lg text-gray-600 font-medium max-w-2xl mx-auto mb-4">"주전공은 다양했지만, 복수전공은 미디어 계열에 집중되었다."</p>
+        <p class="text-sm text-rose-500 font-bold">
+          "MBC와 SBS의 복수전공자(총 9명) 중 77.8%인 7명은 언론·미디어를 복수전공으로 이수했다."
+        </p>
+      </div>
+
+      <!-- Sankey Diagram Container -->
+      <div class="bg-gray-50 rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm relative">
+        <h4 class="text-xs font-bold text-gray-400 mb-6 uppercase tracking-wider text-center">주전공에서 복수전공으로의 흐름 (Sankey Flow)</h4>
+        <div id="sankeyDiagram" class="w-full flex justify-center overflow-x-auto"></div>
+        <div class="mt-8 text-xs text-gray-500 leading-relaxed text-center max-w-2xl mx-auto">
+          복수전공 현상은 매우 명확하게 나뉩니다. MBC와 SBS의 공채 합격자 중 복수전공을 이수한 사례는 **모두 2006~2012년 입사자에게서만 발견됩니다.** 이 중 대다수인 7명이 언론·미디어를 복수 전공하며 준비 전략으로 삼았던 흔적이 뚜렷했습니다. 반면 **KBS 복수전공자 7명 중 언론·미디어 복수전공자는 단 한 명도 없었습니다.**
+          <br><br>
+          <span class="font-semibold text-gray-600 block mt-2 text-center text-sm">※ 기타 복수전공 분류 가이드: 해당 범주에는 인문/사회 및 상경계열 복수전공 데이터만 존재합니다.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== SECTION 9: 해석 섹션 (카드 뉴스 형태) ==================== -->
+  <section class="py-24 px-6 bg-gray-50 reveal border-t border-b border-gray-100">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="text-xs font-bold tracking-widest uppercase text-blue-600 bg-blue-50 px-3 py-1 rounded-full">SECTION 9. INTERPRETATION</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-4 mb-4">그렇다면 언론·미디어 전공은 여전히 중요했을까?</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-11 gap-6 items-center">
+        <!-- 주전공 분포 -->
+        <div class="md:col-span-4 bg-white p-6 rounded-2xl shadow-md border border-gray-100 text-center">
+          <div class="w-12 h-12 bg-pastel-blue rounded-full flex items-center justify-center text-xl mx-auto mb-4">🎓</div>
+          <h4 class="font-bold text-gray-800 text-lg">주전공 분포</h4>
+          <p class="text-sm text-gray-500 mt-2">비언론 75%의 극단적 다양성</p>
+          <div class="mt-4 p-3 bg-gray-50 rounded-xl text-xs font-semibold text-gray-700">
+            영어영문, 경영, 교육공학, 국어국문, 사회학, 체육학, 컴퓨터공학 등 무수한 갈래의 출발점
+          </div>
+        </div>
+
+        <!-- 중앙 화살표 -->
+        <div class="md:col-span-3 text-center flex flex-col items-center justify-center gap-2">
+          <div class="text-gray-300 text-4xl hidden md:block">
+            <i class="fa-solid fa-arrows-split-up-and-left rotate-90 scale-125"></i>
+          </div>
+          <span class="text-xs font-bold text-gray-400">우회적 선택과 전략</span>
+        </div>
+
+        <!-- 복수전공 분포 -->
+        <div class="md:col-span-4 bg-white p-6 rounded-2xl shadow-md border border-gray-100 text-center">
+          <div class="w-12 h-12 bg-pastel-pink rounded-full flex items-center justify-center text-xl mx-auto mb-4">🎯</div>
+          <h4 class="font-bold text-gray-800 text-lg">복수전공의 집중</h4>
+          <p class="text-sm text-rose-500 mt-2 font-bold">언론/미디어 집중 이수</p>
+          <div class="mt-4 p-3 bg-gray-50 rounded-xl text-xs font-semibold text-gray-700">
+            MBC·SBS 복수전공자 9명 중 7명(77.8%)이 언론학 전공 이수 후 입사 성공
+          </div>
+        </div>
+      </div>
+
+      <!-- 결론 카드 -->
+      <div class="mt-12 bg-pastel-yellow p-8 rounded-2xl text-center shadow-inner border border-yellow-200">
+        <p class="text-xs font-bold text-pastel-yellow-dark uppercase tracking-widest mb-2">INSIGHT SUMMARY</p>
+        <p class="text-xl md:text-2xl font-extrabold text-gray-800 leading-relaxed">
+          "언론·미디어 전공은 필수 라이선스(조건)가 아닌,<br class="hidden md:inline">
+          합격을 만들어가기 위한 영리한 <span class="underline decoration-wavy decoration-red-400">준비 전략</span>에 가까웠다."
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== SECTION 10: 재직 분석 Grouped Bar Chart ==================== -->
+  <section class="py-24 px-6 bg-white reveal">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="text-xs font-bold tracking-widest uppercase text-teal-600 bg-teal-50 px-3 py-1 rounded-full">SECTION 10. EMPLOYMENT STATUS</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-4 mb-4">언론/미디어 전공자는 더 오래 재직했을까?</h2>
+        <p class="text-lg text-gray-600 font-medium max-w-2xl mx-auto">"전공과 재직 여부 사이의 뚜렷한 관계는 발견되지 않았다."</p>
+      </div>
+
+      <div class="bg-gray-50 rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm">
+        <div class="h-96 w-full relative">
+          <canvas id="employmentBarChart"></canvas>
+        </div>
+        <div class="mt-6 flex flex-wrap gap-4 justify-center text-xs text-gray-500">
+          <div class="flex items-center gap-2">
+            <span class="w-3.5 h-3.5 rounded bg-[#DDF2FF]"></span> 현직 재직 중 (총 75명)
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3.5 h-3.5 rounded bg-[#FFDDEB]"></span> 퇴사 (총 33명)
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== SECTION 11: 최종 결론 (꽃잎 플라워 네트워크 시각화 정중앙 완벽 배치) ==================== -->
+  <section class="py-24 px-6 hero-gradient relative min-h-screen flex flex-col justify-between overflow-hidden">
+    <div class="max-w-4xl mx-auto text-center z-10 flex-grow flex flex-col justify-center items-center w-full">
+      
+      <span class="text-xs font-bold tracking-widest uppercase text-indigo-600 bg-white/80 border border-indigo-200 px-3.5 py-1.5 rounded-full mb-8">FINAL CONCLUSION</span>
+      
+      <!-- Flower Network Container -->
+      <div class="w-full flex flex-col items-center mb-12">
+        <h3 class="text-lg font-bold text-gray-800 mb-2">다양성의 꽃잎 네트워크 (전공 분포 시각화)</h3>
+        <p class="text-xs text-gray-500 mb-6">노드를 클릭하여 해당 부문의 특징이나 실제 대표 인물을 확인해 보세요.</p>
+        
+        <!-- flex 정렬과 justify-center를 통해 캔버스를 화면 정중앙에 수평 수직 정렬 -->
+        <div class="flex justify-center items-center w-full relative">
+          <div id="flowerNetwork" class="bg-white/80 backdrop-blur border border-white/50 rounded-3xl p-6 shadow-xl w-full max-w-2xl h-[400px] flex justify-center items-center overflow-hidden"></div>
+        </div>
+        
+        <!-- Interactive Detail Block (No native alerts) -->
+        <div id="networkDetailBox" class="mt-6 bg-white border border-indigo-100 rounded-2xl p-4 max-w-2xl w-full text-center shadow-md min-h-[72px] flex items-center justify-center transition-all duration-300">
+          <p class="text-sm text-indigo-500 font-semibold"><i class="fa-solid fa-circle-info mr-1.5"></i> 노드를 클릭하거나 마우스로 드래그하여 전공별 통계와 정보를 탐색해 보세요! (Unknown 데이터는 통계 분석에서 완전히 제외되었습니다)</p>
+        </div>
+      </div>
+
+      <!-- 최종 타이포그래피 전환 무대 -->
+      <div class="space-y-12 my-12">
+        <div>
+          <h2 class="text-2xl md:text-4xl font-extrabold text-gray-800 leading-tight">
+            그래서, 당신의 전공으로도<br class="md:hidden"> 아나운서가 될 수 있을까?
+          </h2>
+        </div>
+        
+        <div class="inline-block bg-white border-2 border-gray-900 px-8 py-4 rounded-2xl shadow-xl transform rotate-1">
+          <p class="text-3xl md:text-6xl font-black text-gray-900 tracking-wider">
+            데이터는 <span class="text-blue-600">"그렇다"</span>고 말한다.
+          </p>
+        </div>
+
+        <div class="max-w-2xl mx-auto text-left space-y-6 text-gray-700 leading-relaxed text-sm md:text-base">
+          <p>
+            2006년부터 2025년까지 지상파 아나운서들은 경제학, 체육학, 교육학, 법학, 공학 등 참으로 눈부시게 다양한 출발지에서 방송을 시작했습니다. 아나운서는 결코 특정 전공자만을 위해 닫혀 있는 직업이 아니었습니다.
+          </p>
+          <div class="border-l-4 border-pastel-pink pl-4 my-6">
+            <h4 class="font-bold text-gray-900">배움의 깊이와 가능성</h4>
+            <p class="text-gray-600 mt-1">
+              "이번 분석은 한 가지 명백한 사실을 보여줍니다. 전공은 가능성을 열어주는 하나의 출발점일 수는 있지만, 가능성의 경계를 완전히 닫아버리는 기준은 될 수 없었습니다."
+            </p>
+          </div>
+          <p>
+            실제로 현장의 수많은 아나운서들은 대학 전공에서 기른 고유의 인문적 감성, 분석적 시각, 예술적 감각 등을 정밀한 방송 역량과 연결 지으며 자기만의 장르를 확장해 왔습니다.
+          </p>
+          <p class="text-indigo-600 font-semibold bg-white/60 p-4 rounded-xl border border-indigo-100 text-center">
+            "어쩌면 지금 당신이 마주하고 있는 전공 또한, 스스로 생각지 못했던 빛나는 진로와 마법처럼 연결될지 모릅니다."
+          </p>
+        </div>
+      </div>
+
+      <!-- 확장 스토리텔링 -->
+      <div class="border-t border-gray-300/60 pt-12 mt-12 text-center max-w-2xl mx-auto">
+        <h4 class="font-bold text-gray-800 mb-4 text-lg">데이터는 정답보다 큰 질문을 남긴다</h4>
+        <p class="text-sm text-gray-600 leading-relaxed mb-6">
+          이러한 전공 다양성 현상은 비단 아나운서 채용 시장에만 국한될까요? 금융권, 공기업, IT 대기업, 혹은 정론지 기자 채용 현장에서는 과연 어떤 일들이 일어나고 있을까요? 본 프로젝트는 당신의 편견에 질문을 던지기 위한 아주 작지만 단단한 시작점입니다.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- 하단 데이터 저널리즘 기사 푸터 정보 -->
+    <footer class="mt-24 border-t border-gray-200/50 pt-8 pb-4 text-xs text-gray-400 max-w-4xl mx-auto text-center space-y-3">
+      <p class="font-semibold text-gray-500 text-sm">향후 과제 & 연구의 한계</p>
+      <div class="space-y-1">
+        <p>"본 분석은 2006년부터 2025년까지의 지상파 본사 아나운서 공개 채용 합격자만을 추적한 조사입니다."</p>
+        <p>"앞으로 금융권, 주요 대기업, 공공기관 및 IT 기술직군과의 비교 데이터 결합을 통해 학력/전공의 불일치 현상이 우리 사회 전반에서 어떻게 작용하는지 더 정교한 프레임워크가 요구됩니다."</p>
+        <p>"이 시각화 리포트가 스스로의 전공 안에서 길을 고민하는 청년들에게 작은 영감과 위로가 되었기를 바랍니다."</p>
+      </div>
+      <p class="text-[10px] text-gray-300 mt-6">© 2026 Interactive Data Journalism Lab. Final Hackathon Project. All Rights Reserved.</p>
+    </footer>
+  </section>
+
+
+  <!-- ==================== BROADCASTER MODAL SYSTEM ==================== -->
+  <div id="broadcasterModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-3xl w-full max-w-lg p-8 relative transform translate-y-4 transition-transform duration-300 shadow-2xl">
+      <!-- 닫기 버튼 -->
+      <button onclick="closeBroadcasterModal()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600">
+        <i class="fa-solid fa-xmark text-2xl"></i>
+      </button>
+
+      <!-- 모달 엠블럼 심볼 플레이스홀더 -->
+      <div id="modalLogoBadge" class="mb-4"></div>
+
+      <!-- 내용 채워지는 영역 -->
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+
+  <!-- SCRIPTS & INTERACTION DATA LOGIC -->
+  <script>
+    // 1. 카드 플립 제어
+    function flipCard(card) {
+      const flipper = card.querySelector('.flipper');
+      flipper.classList.toggle('flipped');
+    }
+
+    // 2. 카운트업 애니메이션 라이브러리식 함수
+    function initCountUp() {
+      const countElements = document.querySelectorAll('.count-up');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const target = parseFloat(entry.target.getAttribute('data-target'));
+            let current = 0;
+            const step = target / 50;
+            const interval = setInterval(() => {
+              current += step;
+              if (current >= target) {
+                entry.target.innerText = target.toFixed(1);
+                clearInterval(interval);
+              } else {
+                entry.target.innerText = current.toFixed(1);
+              }
+            }, 15);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      countElements.forEach(el => observer.observe(el));
+    }
+
+    // 3. 방송사 상세 데이터 정의 & 모달 제어 (팩트 교정 완료)
+    const broadcasterData = {
+      KBS: {
+        title: "KBS",
+        badge: "K",
+        badgeStyle: "broadcast-badge-k",
+        desc: "KBS는 지상파 3사 중 신입 공채 아나운서를 가장 많이 채용한 채널입니다.",
+        trends: "<strong>KBS 분석대상: 49명 (Unknown 3명 제외)</strong><br><br>KBS는 비언론 비율 <strong>71.4% (35명)</strong>, 언론 비율 <strong>28.6% (14명)</strong>로 정밀 산출되었습니다. 주전공 구성에 있어서 사범계열(6명), 상경계열(5명), 이공계(4명) 등 폭넓은 전공의 조화를 보여주면서도 공영방송에 적합한 채용 정합성을 유지했습니다. 복수전공 합격자는 7명이었으나 미디어를 복수 전공한 아나운서는 단 한 명도 확인되지 않은 것이 독창적인 특징입니다.",
+        index: "다양성 지수: 1.83 (상당히 높음)"
+      },
+      MBC: {
+        title: "MBC",
+        badge: "M",
+        badgeStyle: "broadcast-badge-m",
+        desc: "MBC는 세련되고 전형적이지 않은 비언론 합격자의 비율이 매우 도드라집니다.",
+        trends: "<strong>MBC 분석대상: 37명 (Unknown 없음)</strong><br><br>MBC의 비언론 비중은 무려 <strong>81.1% (30명)</strong>, 언론 비율은 <strong>18.9% (7명)</strong>에 달합니다. 특히 MBC의 복수전공자는 총 6명이었으며, 이들 중 <strong>4명(66.7%)이 언론·미디어 계열을 복수전공</strong>으로 연계 이수하여 입사에 성공했습니다. 또한 <strong>2012년 입사자 이후 MBC 합격자 군에서는 복수전공 이수 사례가 단 한 건도 발견되지 않는 특징</strong>이 있습니다.",
+        index: "다양성 지수: 1.76 (안정적)"
+      },
+      SBS: {
+        title: "SBS",
+        badge: "S",
+        badgeStyle: "broadcast-badge-s",
+        desc: "SBS는 컴팩트하고 유연한 인력구성을 통해 전형을 운영해왔습니다.",
+        trends: "<strong>SBS 분석대상: 19명 (Unknown 없음)</strong><br><br>SBS는 전체 공채 아나운서 중 비언론 비율이 <strong>84.2% (16명)</strong>, 언론 비율이 <strong>15.8% (3명)</strong>로 3사 중 가장 높습니다. 주목할 점은 SBS 내에서 복수전공을 이수한 합격자 <strong>3명 전원(3명 중 3명, 100%)이 언론·미디어 계열을 복수전공으로 이수했다는 점</strong>입니다. 비언론 주전공 비율은 극단적으로 높지만, 미디어 복수전공을 준비 전략으로 삼아 우회 돌파했음을 증명합니다. <strong>2010년 이후로는 더 이상 복수전공을 이수한 사례가 발견되지 않습니다.</strong>",
+        index: "다양성 지수: 1.58"
+      }
+    };
+
+    function openBroadcasterModal(key) {
+      const modal = document.getElementById('broadcasterModal');
+      const content = document.getElementById('modalContent');
+      const badge = document.getElementById('modalLogoBadge');
+      const info = broadcasterData[key];
+
+      if (!info) return;
+
+      badge.innerHTML = `<span class="${info.badgeStyle}">${info.badge}</span>`;
+      content.innerHTML = `
+        <h3 class="text-3xl font-extrabold text-gray-900 mt-2">${info.title}</h3>
+        <p class="text-sm font-semibold text-blue-500 uppercase tracking-widest mt-1">${info.index}</p>
+        <p class="text-gray-500 mt-4 text-sm leading-relaxed">${info.desc}</p>
+        <div class="mt-6 bg-gray-50 p-5 rounded-2xl border border-gray-100 text-sm text-gray-700 leading-relaxed">
+          ${info.trends}
+        </div>
+      `;
+
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      modal.querySelector('div').classList.remove('translate-y-4');
+    }
+
+    function closeBroadcasterModal() {
+      const modal = document.getElementById('broadcasterModal');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      modal.querySelector('div').classList.add('translate-y-4');
+    }
+
+
+    // 4. CHART.JS 초기화 및 조작
+    window.onload = function() {
+      // Reveal 효과
+      const reveals = document.querySelectorAll('.reveal');
+      const revealOnScroll = () => {
+        reveals.forEach(element => {
+          const elementTop = element.getBoundingClientRect().top;
+          const elementVisible = 150;
+          if (elementTop < window.innerHeight - elementVisible) {
+            element.classList.add('active');
+          }
+        });
+      };
+      window.addEventListener('scroll', revealOnScroll);
+      revealOnScroll(); // 초기 호출
+      
+      initCountUp();
+
+      // [Chart 1] Donut Chart (Unknown 포함 108명 전체 데이터)
+      const donutCtx = document.getElementById('donutChart').getContext('2d');
+      new Chart(donutCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['비언론/미디어', '언론/미디어', '알 수 없음'],
+          datasets: [{
+            data: [81, 24, 3],
+            backgroundColor: ['#FFDDEB', '#DDF2FF', '#E2E8F0'],
+            borderWidth: 4,
+            borderColor: '#ffffff',
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          cutout: '72%'
+        }
+      });
+
+      // [Chart 2] Stacked Bar Chart
+      const stackedCtx = document.getElementById('stackedBarChart').getContext('2d');
+      const years = ['2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2021', '2023', '2024', '2025'];
+      new Chart(stackedCtx, {
+        type: 'bar',
+        data: {
+          labels: years,
+          datasets: [
+            {
+              label: '비언론',
+              data: [6, 11, 4, 3, 4, 8, 6, 3, 2, 3, 9, 5, 7, 1, 2, 4, 2, 1],
+              backgroundColor: '#FFDDEB',
+              borderRadius: 6
+            },
+            {
+              label: '언론/미디어',
+              data: [3, 1, 2, 1, 1, 3, 3, 1, 0, 1, 1, 0, 0, 1, 4, 1, 0, 1],
+              backgroundColor: '#DDF2FF',
+              borderRadius: 6
+            },
+            {
+              label: 'Unknown',
+              data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0],
+              backgroundColor: '#E2E8F0',
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { stacked: true, grid: { display: false } },
+            y: { stacked: true, grid: { color: '#f3f4f6' } }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+
+      // [Chart 3] Diversity Line Chart
+      const lineCtx = document.getElementById('diversityLineChart').getContext('2d');
+      new Chart(lineCtx, {
+        type: 'line',
+        data: {
+          labels: ['2006-2010', '2011-2015', '2016-2020', '2021-2025'],
+          datasets: [
+            {
+              label: 'KBS',
+              data: [1.45, 1.55, 1.68, 1.83],
+              borderColor: '#004085',
+              backgroundColor: '#DDF2FF',
+              pointRadius: 6,
+              tension: 0.3,
+              fill: false
+            },
+            {
+              label: 'MBC',
+              data: [1.81, 1.76, 1.62, 1.58],
+              borderColor: '#721c24',
+              backgroundColor: '#FFDDEB',
+              pointRadius: 6,
+              tension: 0.3,
+              fill: false
+            },
+            {
+              label: 'SBS',
+              data: [1.65, 1.52, 1.41, 1.35],
+              borderColor: '#856404',
+              backgroundColor: '#FFF5CC',
+              pointRadius: 6,
+              tension: 0.3,
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { min: 1.0, max: 2.1, grid: { color: '#f3f4f6' } },
+            x: { grid: { display: false } }
+          },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { boxWidth: 12, font: { size: 11 } }
+            }
+          }
+        }
+      });
+
+      // [Chart 4] Employment Bar Chart
+      const employmentCtx = document.getElementById('employmentBarChart').getContext('2d');
+      new Chart(employmentCtx, {
+        type: 'bar',
+        data: {
+          labels: ['언론/미디어 전공자군', '비언론/미디어 전공자군'],
+          datasets: [
+            {
+              label: '재직 중',
+              data: [16, 59],
+              backgroundColor: '#DDF2FF',
+              borderRadius: 8
+            },
+            {
+              label: '퇴사',
+              data: [8, 22],
+              backgroundColor: '#FFDDEB',
+              borderRadius: 8
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { grid: { display: false } },
+            y: { grid: { color: '#f3f4f6' } }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+
+      // 5. D3.JS Sankey Diagram 렌더링
+      renderSankey();
+
+      // 6. D3.JS Flower Network 렌더링
+      renderFlowerNetwork();
+    };
+
+    // D3 Sankey Diagram (글씨 잘림 방지를 위해 가로 패딩 대폭 조율)
+    function renderSankey() {
+      const container = d3.select("#sankeyDiagram");
+      const width = Math.min(800, window.innerWidth - 40);
+      const height = 300;
+
+      container.selectAll("*").remove();
+
+      const svg = container.append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+      const paddingX = 140; 
+      const rightPaddingX = 150; 
+      const leftX = paddingX;
+      const rightX = width - rightPaddingX; 
+      const colWidth = 24;
+
+      // 흐름 노드 설정 (기타 복수전공 명칭 반영)
+      const nodes = [
+        { id: 0, name: "인문/사회 (주전공)", x: leftX, y: 30, h: 80, color: "#FFF5CC" },
+        { id: 1, name: "상경계열 (주전공)", x: leftX, y: 130, h: 40, color: "#FFF5CC" },
+        { id: 2, name: "기타 비언론 (주전공)", x: leftX, y: 190, h: 40, color: "#FFF5CC" },
+        { id: 3, name: "언론/미디어 (복수전공)", x: rightX, y: 30, h: 120, color: "#FFDDEB" },
+        { id: 4, name: "기타 복수전공", x: rightX, y: 170, h: 60, color: "#E2E8F0" }
+      ];
+
+      // 흐름 링크 구조화 (시작 오프셋 및 도착 높이 설정)
+      const links = [
+        { source: nodes[0], target: nodes[3], sy: 30, ty: 30, sh: 80, th: 80 }, 
+        { source: nodes[1], target: nodes[3], sy: 130, ty: 110, sh: 40, th: 40 }, 
+        { source: nodes[2], target: nodes[4], sy: 190, ty: 170, sh: 40, th: 40 } 
+      ];
+
+      // 부드러운 Bezier 곡선 형태의 생키 리본 드로잉
+      svg.append("g")
+        .selectAll("path")
+        .data(links)
+        .join("path")
+        .attr("d", d => {
+          const x0 = d.source.x + colWidth;
+          const x1 = d.target.x;
+          const xi = d3.interpolateNumber(x0, x1);
+          const x2 = xi(0.5);
+          const x3 = x2;
+          
+          const y0_top = d.sy;
+          const y1_top = d.ty;
+          const y0_bot = d.sy + d.sh;
+          const y1_bot = d.ty + d.th;
+
+          return `M${x0},${y0_top} C${x2},${y0_top} ${x3},${y1_top} ${x1},${y1_top} L${x1},${y1_bot} C${x3},${y1_bot} ${x2},${y0_bot} ${x0},${y0_bot} Z`;
+        })
+        .attr("fill", "rgb(221, 242, 255)")
+        .attr("opacity", 0.65)
+        .style("mix-blend-mode", "multiply")
+        .on("mouseover", function() { d3.select(this).attr("fill", "#ffccd9").attr("opacity", 0.85); })
+        .on("mouseout", function() { d3.select(this).attr("fill", "rgb(221, 242, 255)").attr("opacity", 0.65); });
+
+      // 노드 사각형 렌더링
+      const nodeG = svg.append("g")
+        .selectAll("g")
+        .data(nodes)
+        .join("g")
+        .attr("transform", d => `translate(${d.x},${d.y})`);
+
+      nodeG.append("rect")
+        .attr("width", colWidth)
+        .attr("height", d => d.h)
+        .attr("fill", d => d.color)
+        .attr("rx", 4)
+        .attr("stroke", "#cbd5e1")
+        .attr("stroke-width", 1.5);
+
+      // 레이블 텍스트 배치
+      nodeG.append("text")
+        .attr("x", d => d.x === leftX ? -12 : colWidth + 12)
+        .attr("y", d => d.h / 2)
+        .attr("dy", "0.35em")
+        .attr("text-anchor", d => d.x === leftX ? "end" : "start")
+        .text(d => d.name)
+        .style("font-size", "11px")
+        .style("font-weight", "bold")
+        .attr("fill", "#475569");
+    }
+
+    // D3 Flower Network (Unknown 제거 및 정밀한 뷰포트 정중앙 정렬 적용)
+    function renderFlowerNetwork() {
+      const container = d3.select("#flowerNetwork");
+      const width = container.node().getBoundingClientRect().width || 600;
+      const height = 400;
+
+      container.selectAll("*").remove();
+
+      // SVG 영역 생성 및 가로세로 중앙 맞춤 배치 설정
+      const svg = container.append("svg")
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("preserveAspectRatio", "xMidYMid meet");
+
+      // Unknown 제외한 순수 전공 분석 데이터셋 정의 (총 105명)
+      const nodes = [
+        { id: "아나운서", size: 32, color: "#EEE6FF", icon: "🎙️", desc: "모든 전공 다양성이 융합되는 중심 허브 채널입니다." },
+        { id: "인문/사회", size: 26, color: "#FFDDEB", icon: "📚", desc: "35명 입사. 영어영문학(전현무) 등 가장 두터운 연고층을 자랑하는 핵심 전공군입니다." },
+        { id: "언론/미디어", size: 23, color: "#DDF2FF", icon: "📰", desc: "24명 입사. 주전공과 전략적 복수전공으로 구성된 핵심적인 직무 밀착형 전공군입니다." },
+        { id: "예체능", size: 19, color: "#FFF5CC", icon: "🎨", desc: "13명 입사. 뛰어난 무대 장악력과 순발력, 독창적인 개성을 지닌 전공군입니다." },
+        { id: "이공/자연", size: 19, color: "#DDF2FF", icon: "🔬", desc: "13명 입사. 방송 환경 속에서 새로운 시사/과학 정보 분석을 선도하는 전공군입니다." },
+        { id: "상경계열", size: 17, color: "#FFDDEB", icon: "📈", desc: "10명 입사. 경영학(김대호) 등 통계적 시각과 구조적 정합성을 갖춘 인재들입니다." },
+        { id: "사범계열", size: 16, color: "#FFF5CC", icon: "🏫", desc: "9명 입사. 교육공학(김가현) 등 명확한 의사전달 체계를 학습한 전공군입니다." },
+        { id: "법학", size: 13, color: "#EEE6FF", icon: "⚖️", desc: "1명 입사. 깊이 있는 법학 지식을 무기로 활약하는 소수 정예 전공군입니다." }
+      ];
+
+      const links = [
+        { source: "아나운서", target: "인문/사회" },
+        { source: "아나운서", target: "언론/미디어" },
+        { source: "아나운서", target: "예체능" },
+        { source: "아나운서", target: "이공/자연" },
+        { source: "아나운서", target: "상경계열" },
+        { source: "아나운서", target: "사범계열" },
+        { source: "아나운서", target: "법학" }
+      ];
+
+      // 포스 레이아웃의 중심과 상호반발력을 조율하여 요소가 늘 한가운데 물리적으로 위치하도록 강제 설정
+      const simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id).distance(110))
+        .force("charge", d3.forceManyBody().strength(-220))
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("collision", d3.forceCollide().radius(d => d.size + 18));
+
+      // 연결망 점선 링크 디자인
+      const link = svg.append("g")
+        .selectAll("line")
+        .data(links)
+        .join("line")
+        .attr("stroke", "#cbd5e1")
+        .attr("stroke-width", 2.2)
+        .attr("stroke-dasharray", "4,4");
+
+      // 개별 전공군 노드 그룹 생성
+      const nodeG = svg.append("g")
+        .selectAll("g")
+        .data(nodes)
+        .join("g")
+        .style("cursor", "pointer")
+        .call(d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended))
+        .on("click", (event, d) => {
+          // iframe 보안 한계에 걸리지 않는 온페이지 피드백 알림 구현
+          const detailBox = document.getElementById("networkDetailBox");
+          detailBox.innerHTML = `
+            <div class="flex items-center justify-center gap-3">
+              <span class="text-3xl">${d.icon}</span>
+              <div class="text-left">
+                <span class="font-extrabold text-indigo-900 text-sm md:text-base">${d.id} 전공군</span>
+                <span class="text-xs bg-indigo-100 text-indigo-700 font-semibold px-2 py-0.5 rounded-full ml-2">선택완료</span>
+                <p class="text-xs md:text-sm text-gray-600 mt-1">${d.desc}</p>
+              </div>
+            </div>
+          `;
+          detailBox.classList.remove("border-indigo-100", "bg-white");
+          detailBox.classList.add("border-indigo-300", "bg-indigo-50/70", "scale-[1.01]");
+          
+          setTimeout(() => {
+            detailBox.classList.remove("scale-[1.01]");
+          }, 150);
+        });
+
+      // 노드 배경 꽃잎 원형 디자인
+      nodeG.append("circle")
+        .attr("r", d => d.size)
+        .attr("fill", d => d.color)
+        .attr("stroke", "#ffffff")
+        .attr("stroke-width", 3)
+        .style("filter", "drop-shadow(0px 4px 6px rgba(0,0,0,0.06))");
+
+      // 아이콘(이모지) 배치
+      nodeG.append("text")
+        .attr("text-anchor", "middle")
+        .attr("dy", "0.33em")
+        .style("font-size", d => d.id === "아나운서" ? "22px" : "15px")
+        .text(d => d.icon);
+
+      // 레이블 글씨 정렬
+      nodeG.append("text")
+        .attr("text-anchor", "middle")
+        .attr("y", d => d.size + 16)
+        .text(d => d.id)
+        .style("font-size", "11px")
+        .style("font-weight", "bold")
+        .attr("fill", "#475569");
+
+      simulation.on("tick", () => {
+        link
+          .attr("x1", d => d.source.x)
+          .attr("y1", d => d.source.y)
+          .attr("x2", d => d.target.x)
+          .attr("y2", d => d.target.y);
+
+        nodeG.attr("transform", d => `translate(${d.x},${d.y})`);
+      });
+
+      function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+      }
+
+      function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+      }
+
+      function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+      }
+    }
+  </script>
+
+</body>
+</html>

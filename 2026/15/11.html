@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경험 소비와 F&B 트렌드 교체 현상 - 데이터 저널리즘</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Playfair Display (Serif), Noto Serif KR & Noto Sans KR -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandBg: '#FAF8F5',       /* 화이트 기반의 차분하고 고급스러운 베이지톤 배경 */
+                        brandDark: '#1E2022',     /* 프리미엄 차콜/다크슬레이트 */
+                        brandAccent: '#AF8B58',   /* 포인트 베이지/골드 */
+                        brandMuted: '#6E7278',    /* 가독성 서브 컬러 */
+                        brandLightBeige: '#F3EFE9',/* 연한 베이지 */
+                        brandCoral: '#C05A5A'     /* 포인트 차트/강조용 코랄 */
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'sans-serif'],
+                        serif: ['Noto Serif KR', 'serif'],
+                        playfair: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 고급스러운 스크롤 바 및 애니메이션 효과 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF8F5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #AF8B58;
+            border-radius: 4px;
+        }
+        
+        .fade-in-element {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fade-in-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 히트맵 그리드 스타일 커스텀 */
+        .heatmap-cell {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+            z-index: 10;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-brandBg text-brandDark font-sans selection:bg-brandAccent selection:text-white overflow-x-hidden">
+
+    <!-- 상단 스크롤 인디케이터 바 (뉴욕타임즈 저널리즘 스타일) -->
+    <div class="fixed top-0 left-0 w-full h-[4px] bg-brandLightBeige z-50">
+        <div id="progressBar" class="h-full bg-brandAccent w-0 transition-all duration-75"></div>
+    </div>
+
+    <!-- 미니멀 헤더/네비게이션 -->
+    <header class="fixed top-0 left-0 w-full py-6 px-8 md:px-16 flex justify-between items-center z-40 bg-brandBg/80 backdrop-blur-md border-b border-brandLightBeige">
+        <div class="font-serif font-bold text-lg tracking-widest text-brandDark uppercase">
+            Experience <span class="text-brandAccent">Insight</span>
+        </div>
+        <div class="hidden md:flex space-x-8 text-sm tracking-wider uppercase text-brandMuted font-medium">
+            <a href="#problem" class="hover:text-brandAccent transition">01. 문제 제기</a>
+            <a href="#definition" class="hover:text-brandAccent transition">02. 경험 소비란</a>
+            <a href="#discourse" class="hover:text-brandAccent transition">03. 담론 분석</a>
+            <a href="#heatmap-section" class="hover:text-brandAccent transition">04. 트렌드 분석</a>
+            <a href="#case" class="hover:text-brandAccent transition">05. 두 가지 전략</a>
+            <a href="#insight" class="hover:text-brandAccent transition">06. 인사이트</a>
+        </div>
+    </header>
+
+    <!-- 1. Hero / Cover Section -->
+    <section class="min-h-screen flex flex-col justify-center items-center px-6 md:px-12 text-center relative pt-20">
+        <div class="max-w-4xl mx-auto space-y-8">
+            <span class="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-brandAccent block mb-4 fade-in-element">F&B TREND & EXPERIENCE ECONOMY</span>
+            
+            <h1 class="font-serif text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight md:leading-none text-brandDark fade-in-element" style="transition-delay: 200ms;">
+                어제의 트렌드는 왜<br>
+                <span class="font-playfair italic text-brandAccent font-light">금세 평범해지는가?</span>
+            </h1>
+            
+            <div class="w-16 h-[2px] bg-brandAccent mx-auto my-8 fade-in-element" style="transition-delay: 400ms;"></div>
+            
+            <p class="font-serif text-lg md:text-xl text-brandMuted max-w-2xl mx-auto leading-relaxed fade-in-element" style="transition-delay: 600ms;">
+                경험 소비 시대의 F&B 트렌드 교체 패턴 탐구
+            </p>
+        </div>
+        
+        <!-- 아래로 스크롤 유도 마크 -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-2 text-brandMuted">
+            <span class="text-[10px] tracking-[0.2em] uppercase font-bold">Scroll to explore</span>
+            <div class="w-[1px] h-12 bg-brandAccent/40 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1/2 bg-brandAccent animate-bounce"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. [문제 제기] (최신 2026 기사 데이터 반영하여 리빌딩) -->
+    <section id="problem" class="py-32 px-6 md:px-16 lg:px-32 bg-white border-y border-brandLightBeige relative overflow-hidden">
+        <div class="max-w-5xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="font-serif text-brandAccent text-sm font-semibold tracking-wider block">01 / PROBLEM STATEMENT</span>
+                    <h2 class="font-serif text-3xl md:text-4xl font-bold leading-snug">
+                        붕괴된 트렌드 수명,<br>알고리즘이 만든 피로.
+                    </h2>
+                    <p class="text-brandMuted text-sm md:text-base leading-relaxed">
+                        과거 허니버터칩이 1년, 탕후루가 6개월 동안 시장을 호령했던 것과 달리, 최근 두쫀쿠(두바이 쫀득 쿠키)는 단 3개월 만에 열기가 식었습니다. SNS 숏폼 알고리즘을 타고 단 12일 만에 검색량이 100배로 치솟은 '버터떡'의 사례처럼, 오늘날 디저트는 미식의 대상이 아닌 소모적인 'SNS용 일회성 콘텐츠'로 즉시 대체되고 있습니다.
+                    </p>
+                    <div class="bg-brandBg border-l-2 border-brandCoral p-4 rounded-r-xl">
+                        <p class="text-xs text-brandMuted leading-relaxed">
+                            <strong class="text-brandDark">실제 여론 조사 결과:</strong> 소비자의 <strong>79%</strong>가 "디저트 트렌드가 지나치게 빠르게 바뀐다"며 유행 과포화와 피로감을 체감하고 있습니다. 또한 카다이프(68.3%↑) 등 단기 수요 폭주에 따른 원재료 가격 폭등으로 시장 변동성마저 커지는 실정입니다.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="lg:col-span-7">
+                    <!-- 유행 수명 붕괴 타임라인 그래픽 -->
+                    <div class="relative flex flex-col md:flex-row justify-between items-center gap-6 md:gap-4">
+                        <!-- Connecting Line for MD/LG screen -->
+                        <div class="absolute top-1/2 left-0 w-full h-[1px] bg-brandLightBeige -translate-y-1/2 hidden md:block"></div>
+                        
+                        <!-- Item 1: Honey Butter -->
+                        <div class="bg-brandBg border border-brandLightBeige p-5 rounded-2xl w-full md:w-[22%] text-center relative z-10 hover:border-brandAccent/60 transition group">
+                            <span class="text-[10px] text-brandMuted font-bold block mb-1">2014~2015</span>
+                            <h4 class="font-serif font-bold text-sm group-hover:text-brandAccent transition">허니버터칩</h4>
+                            <div class="text-[10px] text-brandCoral font-bold mt-1">유행 주기: 1년</div>
+                        </div>
+                        <!-- Arrow for Mobile -->
+                        <div class="md:hidden text-brandAccent text-sm"><i class="fa-solid fa-chevron-down"></i></div>
+
+                        <!-- Item 2: Tanghulu -->
+                        <div class="bg-brandBg border border-brandLightBeige p-5 rounded-2xl w-full md:w-[22%] text-center relative z-10 hover:border-brandAccent/60 transition group">
+                            <span class="text-[10px] text-brandMuted font-bold block mb-1">2023. 09</span>
+                            <h4 class="font-serif font-bold text-sm group-hover:text-brandAccent transition">탕후루</h4>
+                            <div class="text-[10px] text-brandCoral font-bold mt-1">유행 주기: 6개월</div>
+                        </div>
+                        <!-- Arrow for Mobile -->
+                        <div class="md:hidden text-brandAccent text-sm"><i class="fa-solid fa-chevron-down"></i></div>
+
+                        <!-- Item 3: Du-jjon-ku -->
+                        <div class="bg-brandBg border border-brandLightBeige p-5 rounded-2xl w-full md:w-[22%] text-center relative z-10 hover:border-brandAccent/60 transition group">
+                            <span class="text-[10px] text-brandMuted font-bold block mb-1">2024. 10</span>
+                            <h4 class="font-serif font-bold text-sm group-hover:text-brandAccent transition">두바이쿠키</h4>
+                            <div class="text-[10px] text-brandCoral font-bold mt-1">유행 주기: 3개월</div>
+                        </div>
+                        <!-- Arrow for Mobile -->
+                        <div class="md:hidden text-brandAccent text-sm"><i class="fa-solid fa-chevron-down"></i></div>
+
+                        <!-- Item 4: Butter Rice Cake (최신 2026.03 버터떡 반영) -->
+                        <div class="bg-brandBg border border-brandAccent/40 p-5 rounded-2xl w-full md:w-[22%] text-center relative z-10 hover:border-brandAccent transition group bg-brandLightBeige/40">
+                            <span class="text-[10px] text-brandAccent font-bold block mb-1">2026. 03</span>
+                            <h4 class="font-serif font-bold text-sm text-brandDark">버터떡</h4>
+                            <div class="text-[10px] text-brandCoral font-bold mt-1">단 12일만 100배↑</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 유행 간격 일침 요약 라인 -->
+            <div class="mt-12 text-center border-t border-brandLightBeige pt-8">
+                <p class="font-serif text-lg md:text-xl font-bold text-brandCoral tracking-wide">
+                    허니버터칩(1년) → 탕후루(6개월) → 두바이초콜릿(3개월) → 버터떡(실시간 급증)
+                </p>
+                <p class="text-xs text-brandMuted mt-2 font-bold uppercase tracking-wider">
+                    가상 알고리즘이 밀어 올린 트렌드의 수명이 한계점 수준으로 짧아지고 있다.
+                </p>
+            </div>
+            
+            <!-- 핵심 연구 질문 강조 (변경 불가 가이드라인 문장 완벽 준수) -->
+            <div class="mt-16 bg-brandBg border border-brandLightBeige p-8 md:p-12 rounded-3xl text-center max-w-3xl mx-auto shadow-sm">
+                <span class="text-[11px] tracking-widest text-brandAccent font-bold uppercase block mb-3">Core Research Question</span>
+                <p class="font-serif text-xl md:text-3xl font-bold leading-relaxed text-brandDark">
+                    "왜 우리는 더 빨리 질리고,<br>더 새로운 소비를 찾는가?"
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. [경험 소비] (소유 -> 경험 -> 공유 -> 기억 흐름 연출) -->
+    <section id="definition" class="py-32 px-6 md:px-16 lg:px-32 bg-brandBg relative">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center max-w-2xl mx-auto mb-20">
+                <span class="font-serif text-brandAccent text-sm font-semibold tracking-wider block mb-2">02 / THE SHIFT OF VALUE</span>
+                <h2 class="font-serif text-3xl md:text-4xl font-bold">소비를 넘어서는 경험의 여정</h2>
+                <p class="text-brandMuted mt-4 leading-relaxed">
+                    오늘날 소비자는 단순한 제품의 소유를 넘어 그것이 제공하는 무형의 경험 가치를 중심으로 소비 흐름을 완성합니다.
+                </p>
+            </div>
+            
+            <!-- 소유 -> 경험 -> 공유 -> 기억 인터랙티브 타임라인 -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Step 1 -->
+                <div class="bg-white p-8 rounded-2xl border border-brandLightBeige hover:shadow-lg transition duration-500 flex flex-col justify-between">
+                    <div>
+                        <div class="font-playfair text-4xl italic text-brandAccent/40 font-light mb-6">01</div>
+                        <h3 class="font-serif text-xl font-bold mb-3">소유 (Ownership)</h3>
+                        <p class="text-sm text-brandMuted leading-relaxed">
+                            물건을 직접 획득하고 내 것으로 소유하는 전통적 물질 중심의 가치 단계.
+                        </p>
+                    </div>
+                    <div class="h-1 bg-brandLightBeige w-full mt-8 rounded-full overflow-hidden">
+                        <div class="bg-brandAccent h-full w-1/4"></div>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="bg-white p-8 rounded-2xl border border-brandLightBeige hover:shadow-lg transition duration-500 flex flex-col justify-between">
+                    <div>
+                        <div class="font-playfair text-4xl italic text-brandAccent/40 font-light mb-6">02</div>
+                        <h3 class="font-serif text-xl font-bold mb-3">경험 (Experience)</h3>
+                        <p class="text-sm text-brandMuted leading-relaxed">
+                            공간과 맛, 그리고 특별한 시간에 온전히 스며들며 오감으로 경험하는 단계.
+                        </p>
+                    </div>
+                    <div class="h-1 bg-brandLightBeige w-full mt-8 rounded-full overflow-hidden">
+                        <div class="bg-brandAccent h-full w-2/4"></div>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="bg-white p-8 rounded-2xl border border-brandLightBeige hover:shadow-lg transition duration-500 flex flex-col justify-between">
+                    <div>
+                        <div class="font-playfair text-4xl italic text-brandAccent/40 font-light mb-6">03</div>
+                        <h3 class="font-serif text-xl font-bold mb-3">공유 (Sharing)</h3>
+                        <p class="text-sm text-brandMuted leading-relaxed">
+                            체험한 순간을 SNS에 업로드하여 정체성을 알리고 타인과 연결되는 교류 단계.
+                        </p>
+                    </div>
+                    <div class="h-1 bg-brandLightBeige w-full mt-8 rounded-full overflow-hidden">
+                        <div class="bg-brandAccent h-full w-3/4"></div>
+                    </div>
+                </div>
+                
+                <!-- Step 4 -->
+                <div class="bg-white p-8 rounded-2xl border border-brandAccent/20 hover:shadow-lg transition duration-500 flex flex-col justify-between">
+                    <div>
+                        <div class="font-playfair text-4xl italic text-brandAccent font-bold mb-6">04</div>
+                        <h3 class="font-serif text-xl font-bold text-brandDark mb-3">기억 (Memory)</h3>
+                        <p class="text-sm text-brandMuted leading-relaxed">
+                            나만의 취향 콜렉션으로 굳어지며 오랫동안 정체성의 일부로 영속하는 궁극적 지향점.
+                        </p>
+                    </div>
+                    <div class="h-1 bg-brandAccent/30 w-full mt-8 rounded-full overflow-hidden">
+                        <div class="bg-brandAccent h-full w-full"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. [텍스트 분석] -->
+    <section id="discourse" class="py-32 px-6 md:px-16 lg:px-32 bg-white border-y border-brandLightBeige relative">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="font-serif text-brandAccent text-sm font-semibold tracking-wider block mb-2">03 / DISCOURSE ANALYSIS</span>
+                <h2 class="font-serif text-3xl md:text-4xl font-bold">경험 소비 담론 분석 핵심 요약</h2>
+                <p class="text-brandMuted mt-3 leading-relaxed text-sm">
+                    미디어 기사 35건 텍스트 분석 결과, 복잡한 통계 기법보다 실제 발현되는 현상을 중심으로 도출한 핵심 발견점들입니다.
+                </p>
+            </div>
+
+            <!-- 5개 직관적 카드 형태로 전면 개편 -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-16">
+                <!-- Card 1: Experience -->
+                <div class="bg-brandBg p-6 rounded-2xl border border-brandLightBeige text-center hover:border-brandAccent transition duration-300 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="w-12 h-12 rounded-full bg-brandLightBeige flex items-center justify-center mx-auto mb-4 text-brandAccent text-lg">
+                            <i class="fa-solid fa-compass"></i>
+                        </div>
+                        <h3 class="font-serif font-bold text-base text-brandDark tracking-wider mb-2">Experience</h3>
+                    </div>
+                    <div class="text-xs text-brandMuted border-t border-brandLightBeige/80 pt-3 font-medium">
+                        팝업스토어 · 전시 · 체험
+                    </div>
+                </div>
+
+                <!-- Card 2: Emotion -->
+                <div class="bg-brandBg p-6 rounded-2xl border border-brandLightBeige text-center hover:border-brandAccent transition duration-300 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="w-12 h-12 rounded-full bg-brandLightBeige flex items-center justify-center mx-auto mb-4 text-brandAccent text-lg">
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                        <h3 class="font-serif font-bold text-base text-brandDark tracking-wider mb-2">Emotion</h3>
+                    </div>
+                    <div class="text-xs text-brandMuted border-t border-brandLightBeige/80 pt-3 font-medium">
+                        몰입 · 행복 · 힐링
+                    </div>
+                </div>
+
+                <!-- Card 3: Community -->
+                <div class="bg-brandBg p-6 rounded-2xl border border-brandLightBeige text-center hover:border-brandAccent transition duration-300 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="w-12 h-12 rounded-full bg-brandLightBeige flex items-center justify-center mx-auto mb-4 text-brandAccent text-lg">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <h3 class="font-serif font-bold text-base text-brandDark tracking-wider mb-2">Community</h3>
+                    </div>
+                    <div class="text-xs text-brandMuted border-t border-brandLightBeige/80 pt-3 font-medium">
+                        팬덤 · SNS · 공유
+                    </div>
+                </div>
+
+                <!-- Card 4: Exploration -->
+                <div class="bg-brandBg p-6 rounded-2xl border border-brandLightBeige text-center hover:border-brandAccent transition duration-300 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="w-12 h-12 rounded-full bg-brandLightBeige flex items-center justify-center mx-auto mb-4 text-brandAccent text-lg">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                        <h3 class="font-serif font-bold text-base text-brandDark tracking-wider mb-2">Exploration</h3>
+                    </div>
+                    <div class="text-xs text-brandMuted border-t border-brandLightBeige/80 pt-3 font-medium">
+                        취향 탐색 · 정체성
+                    </div>
+                </div>
+
+                <!-- Card 5: Price -->
+                <div class="bg-brandBg p-6 rounded-2xl border border-brandLightBeige text-center hover:border-brandAccent transition duration-300 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="w-12 h-12 rounded-full bg-brandLightBeige flex items-center justify-center mx-auto mb-4 text-brandAccent text-lg">
+                            <i class="fa-solid fa-tags"></i>
+                        </div>
+                        <h3 class="font-serif font-bold text-base text-brandDark tracking-wider mb-2">Price</h3>
+                    </div>
+                    <div class="text-xs text-brandMuted border-t border-brandLightBeige/80 pt-3 font-medium">
+                        경험 사치 · 양극화
+                    </div>
+                </div>
+            </div>
+
+            <!-- 핵심 발견 & 연구 연결 (editorial box) -->
+            <div class="border-l-4 border-brandAccent pl-6 space-y-4 max-w-4xl mx-auto">
+                <div class="text-xs font-bold tracking-widest text-brandAccent uppercase">Key Findings & Research Connection</div>
+                <p class="font-serif text-lg leading-relaxed text-brandDark">
+                    "경험 소비 담론은 단순히 '돈을 쓰는 방식'의 변화가 아니라 소비자가 경험을 통해 자신의 취향과 정체성을 탐색하는 현상으로 나타납니다."
+                </p>
+                <p class="text-sm text-brandMuted leading-relaxed">
+                    위 분석 카드에서 볼 수 있듯이, 현대 소비자들은 제품 고유의 기능보다는 체험, 몰입, 스토리, 공유, 그리고 커뮤니티와 같은 속성들에 지속적으로 반응합니다. 새로운 경험을 수집하고 타인과 나누며 자신을 정의하는 일련의 과정이 F&B 트렌드의 빠른 소모와 순환을 야기하는 근본적 배경이 됩니다.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. [F&B 트렌드 분석] -->
+    <section id="heatmap-section" class="py-32 px-6 md:px-16 lg:px-32 bg-brandBg relative">
+        <div class="max-w-5xl mx-auto">
+            <!-- 제목 (변경 금지 요구사항 완벽 반영) -->
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="font-serif text-brandAccent text-sm font-semibold tracking-wider block mb-2">04 / DATA VISUALIZATION</span>
+                <h2 class="font-serif text-3xl md:text-5xl font-bold leading-tight" id="heatmap-main-title">F&B 트렌드의 등장과 교체 패턴</h2>
+                <p class="text-brandAccent text-lg font-serif mt-2" id="heatmap-sub-title">경험 소비 확산에 따른 소비자 관심 이동</p>
+                <div class="w-12 h-[1px] bg-brandAccent/60 mx-auto mt-6"></div>
+            </div>
+
+            <!-- 히트맵 차트 영역 -->
+            <div class="bg-white p-8 rounded-3xl border border-brandLightBeige shadow-sm mb-12">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div class="text-xs font-bold text-brandDark tracking-wider uppercase">네이버 데이터랩 검색량 기반 분석 (2016 - 2025)</div>
+                    <!-- Color Legend -->
+                    <div class="flex items-center space-x-2">
+                        <span class="text-[10px] text-brandMuted">Low</span>
+                        <div class="flex space-x-[2px]">
+                            <div class="w-3 h-3 bg-[#FAF8F5] border border-brandLightBeige"></div>
+                            <div class="w-3 h-3 bg-[#F4ECDF]"></div>
+                            <div class="w-3 h-3 bg-[#EADCC6]"></div>
+                            <div class="w-3 h-3 bg-[#D3AF83]"></div>
+                            <div class="w-3 h-3 bg-[#A47141]"></div>
+                            <div class="w-3 h-3 bg-[#C05A5A]"></div>
+                        </div>
+                        <span class="text-[10px] text-brandMuted">High</span>
+                    </div>
+                </div>
+
+                <!-- Interactive Heatmap Container -->
+                <div class="overflow-x-auto">
+                    <div class="min-w-[700px]">
+                        <!-- Header Grid (Years) -->
+                        <div class="grid grid-cols-11 gap-2 mb-3 text-center text-xs font-bold text-brandMuted">
+                            <div class="text-left font-serif text-brandDark">품목</div>
+                            <div>2016</div>
+                            <div>2017</div>
+                            <div>2018</div>
+                            <div>2019</div>
+                            <div>2020</div>
+                            <div>2021</div>
+                            <div>2022</div>
+                            <div>2023</div>
+                            <div>2024</div>
+                            <div>2025</div>
+                        </div>
+
+                        <!-- Rows Container -->
+                        <div class="space-y-2" id="heatmapGrid">
+                            <!-- JS에서 데이터를 바탕으로 동적 생성 및 인터랙티브 툴팁 탑재 -->
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="text-[11px] text-brandMuted mt-4 text-center">
+                    * 각 셀 위에 마우스를 가져가면(모바일은 터치) 실제 네이버 데이터랩 연도별 검색 수치를 확인할 수 있습니다.
+                </p>
+            </div>
+
+            <!-- [필수] Key Findings 심층 해석 영역 - 히트맵 하단으로 재배치 -->
+            <div class="bg-white p-8 md:p-12 rounded-3xl border border-brandLightBeige shadow-sm">
+                <div class="flex items-center space-x-3 mb-8">
+                    <div class="w-2 h-6 bg-brandAccent rounded-full"></div>
+                    <h3 class="font-serif text-2xl font-bold text-brandDark">Key Findings & Data Interpretation</h3>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Finding 1 -->
+                    <div class="space-y-3">
+                        <div class="text-brandAccent font-bold text-lg">① 트렌드 교체 가속화</div>
+                        <p class="text-sm text-brandMuted leading-relaxed">
+                            각 품목의 메가 트렌드 시점이 완전히 분리되며, 매우 가파르고 뾰족한 검색 피크를 형성하고 이동하는 양상이 나타납니다. 소비자는 유행이 안정화되기 전에 완전히 이탈합니다.
+                        </p>
+                    </div>
+
+                    <!-- Finding 2 -->
+                    <div class="space-y-3">
+                        <div class="text-brandAccent font-bold text-lg">② 유행 중첩 현상 증가</div>
+                        <p class="text-sm text-brandMuted leading-relaxed">
+                            어느 한 품목의 인기가 정점을 친 뒤 쇠퇴하기 전, 이미 차세대 디저트가 치고 올라와 소비자 경험을 채우기 시작하여 복수의 유행 주기가 밀접하게 교차 및 중첩됩니다.
+                        </p>
+                    </div>
+
+                    <!-- Finding 3 -->
+                    <div class="space-y-3">
+                        <div class="text-brandAccent font-bold text-lg">③ 소비자 관심 이동</div>
+                        <p class="text-sm text-brandMuted leading-relaxed">
+                            이 히트맵 분석의 주목적은 유행 주기가 단순히 짧아진 것만을 계산하려는 것이 아니라, 소비자의 시선과 경험 에너지가 흑당버블티에서 요아정으로 끊임없이 급속 선회하는 <strong>소비자 관심 이동 현상 자체를 증명</strong>하는 데 있습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 히트맵에서 사례 연구로 전환되는 가교 역할의 저널리즘 징검다리 섹션 -->
+    <section class="py-24 px-6 md:px-16 lg:px-32 bg-brandBg border-t border-brandLightBeige relative overflow-hidden">
+        <div class="max-w-4xl mx-auto text-center space-y-6">
+            <span class="text-xs font-semibold tracking-[0.2em] uppercase text-brandAccent block">Transition Insight Bridge</span>
+            <div class="w-10 h-[1px] bg-brandAccent/60 mx-auto"></div>
+            <blockquote class="font-serif text-2xl md:text-3xl lg:text-4xl font-bold leading-relaxed text-brandDark max-w-3xl mx-auto">
+                "소비자는 왜 특정 경험에 반응하는가?<br>
+                <span class="font-playfair italic text-brandCoral">그리고 경험은 어떻게 지속되는가?</span>"
+            </blockquote>
+            <p class="text-sm text-brandMuted max-w-2xl mx-auto leading-relaxed pt-2">
+                데이터가 보여준 무자비한 유행 곡선의 이면을 들여다봅니다. 급변하는 파도 위에서 단발적인 흥미 유발에 그친 시도와, 일상적인 루틴으로 안착하여 가치를 불어넣은 경험들의 설계적 차이를 추적합니다.
+            </p>
+        </div>
+    </section>
+
+    <!-- 6. [사례 분석] (경험 소비 시대에 브랜드가 선택한 두 전략) -->
+    <section id="case" class="py-32 px-6 md:px-16 lg:px-32 bg-white border-t border-brandLightBeige relative">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center max-w-2xl mx-auto mb-20">
+                <span class="font-serif text-brandAccent text-sm font-semibold tracking-wider block mb-2">05 / CASE STUDY</span>
+                <h2 class="font-serif text-3xl md:text-4xl font-bold">경험 소비 시대에 브랜드가 선택한 두 전략</h2>
+                <p class="text-brandMuted mt-4 leading-relaxed">
+                    트렌드 극복과 소비자의 회귀를 만들어내기 위해 두 브랜드가 실천하는 고유한 경험 메커니즘을 분석합니다.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch mb-20">
+                <!-- Case 1: Kancho -->
+                <div class="bg-brandBg rounded-3xl border border-brandLightBeige overflow-hidden flex flex-col justify-between hover:shadow-lg transition duration-500">
+                    <div class="p-8 md:p-12 space-y-6">
+                        <div class="flex justify-between items-start">
+                            <span class="bg-brandAccent text-white text-[10px] tracking-wider font-bold px-3 py-1 rounded-full uppercase">Case 01</span>
+                            <span class="text-xs text-brandAccent font-bold">참여형 소비</span>
+                        </div>
+                        <h3 class="font-serif text-3xl font-bold text-brandDark">칸쵸 : <span class="text-brandAccent">새로운 경험</span></h3>
+                        
+                        <div class="space-y-4 pt-4 border-t border-brandLightBeige/60">
+                            <h4 class="font-bold text-sm text-brandDark">핵심 전략</h4>
+                            <p class="text-sm text-brandMuted leading-relaxed">
+                                호기심 자극을 통한 단기적 몰입과 참여형 이벤트 위주의 확산 방식
+                            </p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="font-bold text-sm text-brandDark">주요 조사 내용</h4>
+                            <ul class="text-sm text-brandMuted space-y-2">
+                                <li><i class="fa-solid fa-circle-nodes text-brandAccent mr-2 text-[10px]"></i> <strong>이름 찾기 캠페인:</strong> 504개 이름 속 마이 네임 탐색 유희</li>
+                                <li><i class="fa-solid fa-circle-nodes text-brandAccent mr-2 text-[10px]"></i> <strong>SNS 유행 공유:</strong> '칸쵸깡' 등 놀이적 피드 확산 자극</li>
+                                <li><i class="fa-solid fa-circle-nodes text-brandAccent mr-2 text-[10px]"></i> <strong>참여형 소비:</strong> 놀이 기획 자체가 가치가 되는 순간 설계</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="p-8 md:px-12 md:pb-12 bg-brandLightBeige/40 border-t border-brandLightBeige/60 text-center">
+                        <span class="text-[10px] tracking-widest text-brandAccent font-bold uppercase block mb-2">Core Message</span>
+                        <p class="font-serif text-lg font-bold text-brandDark italic">"찾는 과정 자체가 소비 경험이 된다."</p>
+                    </div>
+                </div>
+
+                <!-- Case 2: Lululemon -->
+                <div class="bg-brandBg rounded-3xl border border-brandLightBeige overflow-hidden flex flex-col justify-between hover:shadow-lg transition duration-500">
+                    <div class="p-8 md:p-12 space-y-6">
+                        <div class="flex justify-between items-start">
+                            <span class="bg-brandDark text-white text-[10px] tracking-wider font-bold px-3 py-1 rounded-full uppercase">Case 02</span>
+                            <span class="text-xs text-brandAccent font-bold">커뮤니티 중심</span>
+                        </div>
+                        <h3 class="font-serif text-3xl font-bold text-brandDark">룰루레몬 : <span class="text-brandAccent">지속적인 경험</span></h3>
+                        
+                        <div class="space-y-4 pt-4 border-t border-brandLightBeige/60">
+                            <h4 class="font-bold text-sm text-brandDark">핵심 전략</h4>
+                            <p class="text-sm text-brandMuted leading-relaxed">
+                                라이프스타일에 침투하여 단단한 유대감을 구축하는 관계 유지 방식
+                            </p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="font-bold text-sm text-brandDark">주요 조사 내용</h4>
+                            <ul class="text-sm text-brandMuted space-y-2">
+                                <li><i class="fa-solid fa-arrows-spin text-brandAccent mr-2 text-[10px]"></i> <strong>러닝 클럽:</strong> 건강이라는 일상의 루틴을 매개체 삼아 소통</li>
+                                <li><i class="fa-solid fa-arrows-spin text-brandAccent mr-2 text-[10px]"></i> <strong>요가 클래스:</strong> 오프라인 매장을 피트니스 요람으로 전개</li>
+                                <li><i class="fa-solid fa-arrows-spin text-brandAccent mr-2 text-[10px]"></i> <strong>앰배서더 프로그램:</strong> 고객 스스로가 전도사가 되는 연계 고리</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="p-8 md:px-12 md:pb-12 bg-brandLightBeige/40 border-t border-brandLightBeige/60 text-center">
+                        <span class="text-[10px] tracking-widest text-brandAccent font-bold uppercase block mb-2">Core Message</span>
+                        <p class="font-serif text-lg font-bold text-brandDark italic">"참여할 이유를 지속적으로 제공한다."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 칸쵸 vs 룰루레몬 경험 설계 매트릭스 다이어그램 표 -->
+            <div class="mb-20 bg-brandBg border border-brandLightBeige rounded-3xl p-8 md:p-12">
+                <div class="text-center mb-8">
+                    <span class="text-xs text-brandAccent font-bold uppercase tracking-widest">Experience Paradigm Shift</span>
+                    <h4 class="font-serif text-xl font-bold mt-1">두 전략의 경험 가치 다이어그램</h4>
+                    <p class="text-xs text-brandMuted mt-1">새로운 단발성 경험에서 일상에 스며드는 영속적인 관계로의 비교</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[500px]">
+                        <thead>
+                            <tr class="border-b border-brandLightBeige/80">
+                                <th class="pb-4 font-serif text-sm font-bold text-brandMuted uppercase tracking-wider w-1/4">구분 (Dimension)</th>
+                                <th class="pb-4 font-serif text-sm font-bold text-brandAccent uppercase tracking-wider w-3/8 text-center bg-brandAccent/5 rounded-t-xl">칸쵸 (새로운 경험)</th>
+                                <th class="pb-4 font-serif text-sm font-bold text-brandDark uppercase tracking-wider w-3/8 text-center">룰루레몬 (지속적인 경험)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-brandLightBeige/60">
+                            <tr>
+                                <td class="py-4 font-bold text-xs md:text-sm text-brandDark">발견 및 관계</td>
+                                <td class="py-4 text-center text-xs md:text-sm text-brandMuted bg-brandAccent/5"><strong>참여:</strong> 숨은 이름 찾기</td>
+                                <td class="py-4 text-center text-xs md:text-sm text-brandDark font-medium"><strong>관계:</strong> 끈끈한 취향 커뮤니티</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 font-bold text-xs md:text-sm text-brandDark">공유 및 지속</td>
+                                <td class="py-4 text-center text-xs md:text-sm text-brandMuted bg-brandAccent/5"><strong>화제성:</strong> 단발적인 바이럴 전파</td>
+                                <td class="py-4 text-center text-xs md:text-sm text-brandDark font-medium"><strong>커뮤니티:</strong> 동료와의 영속적 상호작용</td>
+                            </tr>
+                            <tr class="border-b border-brandLightBeige">
+                                <td class="py-4 font-bold text-xs md:text-sm text-brandDark">경험 주기</td>
+                                <td class="py-4 text-center text-xs md:text-sm text-brandCoral font-bold bg-brandAccent/5 rounded-b-xl">단기 경험 (Ephemeral)</td>
+                                <td class="py-4 text-center text-xs md:text-sm text-brandDark font-bold">지속 경험 (Enduring)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 최종 비교 테이블 / 카드뷰 (변경 불가 대조 논리 유지) -->
+            <div class="bg-brandBg border border-brandLightBeige rounded-3xl p-8 md:p-12">
+                <h4 class="font-serif text-xl font-bold text-center mb-8">두 전략의 종착점 비교</h4>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center text-center">
+                    
+                    <div class="md:col-span-5 space-y-2">
+                        <span class="text-xs text-brandAccent font-bold">KANCHONIAN WAY</span>
+                        <div class="font-serif text-2xl font-bold text-brandDark">칸쵸 : 새로운 경험</div>
+                        <p class="text-xs text-brandMuted">빠르고 폭발적인 순간 점령, 탐색의 유희</p>
+                    </div>
+                    
+                    <div class="md:col-span-2 flex justify-center text-brandAccent font-serif italic text-3xl">
+                        <i class="fa-solid fa-shuffle rotate-90 md:rotate-0"></i>
+                    </div>
+                    
+                    <div class="md:col-span-5 space-y-2">
+                        <span class="text-xs text-brandAccent font-bold">LULULEMON WAY</span>
+                        <div class="font-serif text-2xl font-bold text-brandDark">룰루레몬 : 지속적인 경험</div>
+                        <p class="text-xs text-brandMuted">깊고 단단한 충성 고객층 획득, 정체성 확장</p>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. 최종 인사이트 (에필로그 출처 크레딧 명시 완료) -->
+    <section id="insight" class="py-32 px-6 md:px-16 lg:px-32 bg-brandDark text-brandBg relative overflow-hidden">
+        <!-- 배경 데코 요소 -->
+        <div class="absolute -right-20 -bottom-20 w-96 h-96 rounded-full bg-brandAccent/10 blur-3xl"></div>
+        <div class="absolute -left-20 -top-20 w-96 h-96 rounded-full bg-[#9E3B3B]/10 blur-3xl"></div>
+
+        <div class="max-w-4xl mx-auto text-center space-y-8 relative z-10">
+            <span class="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-brandAccent block mb-4">06 / FINAL INSIGHT</span>
+            
+            <h2 class="font-serif text-2xl md:text-5xl font-bold tracking-tight leading-relaxed text-white">
+                "경험 소비 시대에는 상품 자체보다<br>소비자가 <span class="font-playfair italic text-brandAccent font-light">다시 참여하고 싶게 만드는</span><br>경험 설계가 중요하다."
+            </h2>
+            
+            <div class="w-12 h-[2px] bg-brandAccent mx-auto my-8"></div>
+            
+            <!-- 최종 인사이트 본문 및 하단 크레딧 정식 삽입 -->
+            <div class="max-w-3xl mx-auto space-y-6 text-sm md:text-base text-[#BAC1C8] leading-relaxed font-serif text-left md:text-center">
+                <p>
+                    고객의 구매 여정은 이제 예측 가능한 실선이 아니다. 잠깐 반짝였다 사라지는 점에 가깝다. 따라서 브랜딩은 짧고 결정적인 고객과의 만남 순간에 집중해야 한다. 
+                </p>
+                <p class="text-brandAccent font-semibold text-base md:text-lg">
+                    브랜딩의 목표는 긴 여정에서 반드시 들러야 하는 경유지가 될 필요가 있다.
+                </p>
+                <p>
+                    그 경유지는 거대한 세계관이 아니라, 소비자의 기억에 남는 하나의 <strong class="text-white font-sans font-bold">‘작은 경험’</strong>이다. 그리고 그 경험은 이탈 이후에도 다시 떠올릴 수 있는 <span class="text-white border-b border-brandAccent/40 pb-1 font-sans">여운</span>을 남겨야 한다.
+                </p>
+                
+                <!-- 매거진 정식 출처 링크 (뉴욕타임즈 에디토리얼 스타일) -->
+                <div class="pt-8 border-t border-[#BAC1C8]/10 text-xs text-brandMuted/80 font-sans tracking-wide">
+                    <span class="block mb-1 text-[10px] text-brandAccent uppercase tracking-widest font-bold">Source of Inspiration</span>
+                    출처: <a href="https://magazine.cheil.com/57611?utm_source=chatgpt.com" target="_blank" class="text-brandBg hover:text-brandAccent transition underline underline-offset-4 decoration-brandAccent/40 hover:decoration-brandAccent">제일기획 매거진 『이탈하는 소비자를 잡는 ‘작은 경험’의 여운』</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#121314] text-[#6E7278] text-xs py-12 px-6 border-t border-brandDark text-center">
+        <p class="uppercase tracking-widest font-serif mb-3">EXPERIENCE CONSUMPTION & F&B TRENDS DECK MOCKUP</p>
+        <p>&copy; 2026 Experience Insight Project. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript for Data Loading and Scroll Interaction -->
+    <script>
+        // 1. CSV 데이터 객체화 (요청하신 업로드 파일 구조 그대로 탑재)
+        const trendsData = {
+            "요아정": [25.18, 19.06, 15.19, 16.86, 26.15, 105.86, 211.27, 198.58, 599.13, 162.99],
+            "크룽지": [0.02, 0.03, 0.02, 5.30, 1016.64, 906.35, 486.18, 301.59, 159.24, 93.01],
+            "탕후루": [24.46, 58.48, 295.69, 432.16, 273.67, 139.34, 221.09, 2695.32, 715.31, 218.49],
+            "흑당버블티": [127.72, 134.18, 224.68, 1580.45, 345.12, 120.34, 65.11, 40.08, 30.12, 25.18]
+        };
+
+        const years = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
+
+        // 데이터의 최대값 및 최솟값 탐색 (색 농도 정규화를 위함)
+        let maxValue = 0;
+        Object.values(trendsData).forEach(arr => {
+            arr.forEach(val => { if(val > maxValue) maxValue = val; });
+        });
+
+        // 2. 히트맵 셀 색상 매핑 함수 (세련된 미니멀 골드/베이지 스케일링에서 피크치는 코랄-레드로 반전 강조)
+        function getCellBgColor(val) {
+            const ratio = val / maxValue;
+            if (ratio < 0.01) return '#FAF8F5'; // 최소치
+            if (ratio < 0.05) return '#F4ECDF';
+            if (ratio < 0.15) return '#EADCC6';
+            if (ratio < 0.3) return '#D3AF83';
+            if (ratio < 0.6) return '#A47141';
+            return '#C05A5A'; // 최고 관심도 구간 (탕후루 2695 / 흑당버블티 1580 / 크룽지 1016)
+        }
+
+        // 히트맵 동적 렌더링
+        const gridContainer = document.getElementById('heatmapGrid');
+        
+        Object.entries(trendsData).forEach(([item, values]) => {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'grid grid-cols-11 gap-2 items-center';
+
+            // 품목 이름 셀
+            const nameCell = document.createElement('div');
+            nameCell.className = 'text-left font-serif font-bold text-sm text-brandDark pr-2 py-3 border-r border-brandLightBeige';
+            nameCell.innerText = item;
+            rowDiv.appendChild(nameCell);
+
+            // 각 연도별 수치 셀
+            values.forEach((val, idx) => {
+                const cell = document.createElement('div');
+                const bgColor = getCellBgColor(val);
+                cell.className = 'heatmap-cell h-12 rounded-lg cursor-pointer flex items-center justify-center text-[10px] font-bold text-transparent hover:text-white relative';
+                cell.style.backgroundColor = bgColor;
+                
+                // 만약 아주 진한 셀이면 글자색 흰색, 연하면 차콜로 툴팁 보완
+                const isDark = val > 400;
+                cell.innerHTML = `
+                    <span class="hidden md:inline select-none">${Math.round(val)}</span>
+                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-brandDark text-white text-[10px] p-2 rounded shadow-lg z-30 whitespace-nowrap">
+                        ${item} (${years[idx]}년): ${val.toLocaleString()}
+                    </div>
+                `;
+
+                // Hover Interaction 커스텀
+                cell.addEventListener('mouseenter', (e) => {
+                    cell.querySelector('div').classList.remove('hidden');
+                    cell.classList.remove('text-transparent');
+                    cell.classList.add(isDark ? 'text-white' : 'text-brandDark');
+                });
+                cell.addEventListener('mouseleave', () => {
+                    cell.querySelector('div').classList.add('hidden');
+                    cell.classList.add('text-transparent');
+                });
+
+                rowDiv.appendChild(cell);
+            });
+
+            gridContainer.appendChild(rowDiv);
+        });
+
+        // 3. 스크롤 진행률 탐지 및 헤더 스타일 전환
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // 4. 스크롤 페이드인 인터랙션 구현 (Intersection Observer)
+        const observerOptions = {
+            root: null,
+            threshold: 0.1,
+            rootMargin: '0px'
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-element').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 윈도우 로드 시 첫 메인 트리거 실행
+        window.onload = function() {
+            document.querySelectorAll('.fade-in-element').forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('visible');
+                }, index * 150);
+            });
+        };
+    </script>
+</body>
+</html>

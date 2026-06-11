@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>전자책의 가격 패러독스: 도서정가제는 디지털 리딩 시장을 가두고 있는가</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #faf8f4;
+      --text: #1a1a1a;
+      --text-soft: #4a4a4a;
+      --text-muted: #888;
+      --accent: #c43d2a;     /* 아날로그 규제의 모순을 고발하는 딥 레드 */
+      --secondary: #2a5a8a;  /* 디지털 전환 및 대안 생태계를 나타내는 블루 */
+      --neutral: #6a665e;    /* 기준선 및 일반 통계용 그레이 */
+      --rule: #d4cfc4;
+      --column: 680px;
+      --sans: 'IBM Plex Sans KR', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+    body {
+      font-family: 'Gowun Batang', serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .column { max-width: var(--column); margin: 0 auto; padding: 0 24px; }
+
+    /* ===== STICKY MASTHEAD + PROGRESS ===== */
+    .masthead {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250, 248, 244, 0.96);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--rule);
+    }
+    .masthead-inner {
+      max-width: 1000px; margin: 0 auto; padding: 10px 24px;
+      display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+    }
+    .masthead .kicker { font-family: var(--sans); font-size: 12px; font-weight: 700; letter-spacing: 0.12em; color: var(--accent); white-space: nowrap; }
+    .masthead nav { display: flex; gap: 4px; flex-wrap: wrap; }
+    .masthead nav a {
+      font-family: var(--sans); font-size: 12.5px; font-weight: 500; color: var(--text-soft);
+      text-decoration: none; padding: 5px 10px; border-radius: 99px; transition: background .15s, color .15s;
+    }
+    .masthead nav a:hover, .masthead nav a:focus-visible { background: #1a1a1a; color: #faf8f4; outline: none; }
+    .progress-track { height: 3px; background: transparent; }
+    .progress-fill { height: 100%; width: 0%; background: var(--accent); transition: width 80ms linear; }
+
+    /* ===== HOOK HERO ===== */
+    .hook {
+      background: #1a1a1a;
+      color: #faf8f4;
+      min-height: calc(100vh - 48px);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 24px;
+    }
+    .hook .eyebrow { font-family: var(--sans); font-size: 13px; letter-spacing: 0.3em; color: var(--accent); margin-bottom: 40px; font-weight: 500; }
+    .hook .big-number { font-family: var(--sans); font-variant-numeric: tabular-nums; font-size: clamp(60px, 12vw, 130px); font-weight: 700; line-height: 1.1; letter-spacing: -0.04em; margin-bottom: 10px; color: #fff; }
+    .hook .cost-label { font-family: var(--sans); font-size: 13px; color: rgba(250,248,244,0.5); letter-spacing: 0.15em; margin-bottom: 30px; min-height: 1.4em; }
+    .hook .hook-text { font-size: clamp(18px, 2.5vw, 21px); max-width: 650px; line-height: 1.6; color: rgba(250, 248, 244, 0.85); }
+    .hook .scroll-cue {
+      margin-top: 60px; font-family: var(--sans); font-size: 12px; letter-spacing: 0.2em;
+      color: rgba(250, 248, 244, 0.5); background: none; border: 1px solid rgba(250,248,244,0.25);
+      padding: 10px 22px; border-radius: 99px; cursor: pointer; transition: all .2s;
+      animation: bob 2.2s ease-in-out infinite;
+    }
+    .hook .scroll-cue:hover { color: #1a1a1a; background: #faf8f4; border-color: #faf8f4; }
+    @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
+
+    /* ===== REVEAL ON SCROLL ELEMENTS ===== */
+    .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ===== CHAPTERS GENERAL ===== */
+    .context { padding: 100px 0 40px; scroll-margin-top: 70px; }
+    .context h2, .chapter-mark { font-family: var(--sans); font-size: 13px; letter-spacing: 0.2em; color: var(--accent); font-weight: 700; margin-bottom: 24px; }
+    .context .lead { font-size: 23px; line-height: 1.6; margin-bottom: 24px; font-weight: 400; }
+
+    .chapter { padding: 60px 0; scroll-margin-top: 70px; }
+    .chapter h3 { font-size: 32px; font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; margin-bottom: 24px; }
+    .chapter p { color: var(--text-soft); margin-bottom: 20px; text-align: justify; }
+    .chapter p strong { color: var(--text); font-weight: 700; background: linear-gradient(transparent 60%, rgba(196, 61, 42, 0.08) 60%); padding: 0 2px; }
+
+    /* ===== INLINE TERM TOOLTIP ===== */
+    .term {
+      border-bottom: 2px dotted var(--accent);
+      cursor: help; position: relative; font-weight: 700; color: var(--text);
+    }
+    .term .term-pop {
+      visibility: hidden; opacity: 0; transition: opacity .15s;
+      position: absolute; left: 50%; bottom: calc(100% + 10px); transform: translateX(-50%);
+      width: min(300px, 80vw); background: #1a1a1a; color: #faf8f4;
+      font-family: var(--sans); font-size: 13px; font-weight: 400; line-height: 1.55; text-align: left;
+      padding: 12px 14px; border-radius: 6px; z-index: 50; pointer-events: none;
+    }
+    .term .term-pop::after {
+      content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+      border: 6px solid transparent; border-top-color: #1a1a1a;
+    }
+    .term:hover .term-pop, .term:focus .term-pop { visibility: visible; opacity: 1; }
+
+    .rule { max-width: 80px; margin: 0 auto; border: none; border-top: 1px solid var(--rule); }
+
+    /* ===== CHART BLOCK ===== */
+    .chart-block { margin: 48px 0; }
+    .chart-block.wide { max-width: 850px; margin-left: auto; margin-right: auto; padding: 0 24px; }
+    .chart-fill { background: white; border: 1px solid var(--rule); border-radius: 6px; padding: 36px 24px 20px; position: relative; box-shadow: 0 4px 14px rgba(0,0,0,0.01); }
+    .canvas-wrap { position: relative; width: 100%; height: 380px; }
+    .chart-caption { font-family: var(--sans); font-size: 13px; color: var(--text-muted); margin-top: 16px; text-align: center; line-height: 1.5; }
+    .badge { position: absolute; top: 12px; right: 14px; font-size: 10px; color: white; font-family: var(--sans); background: var(--neutral); padding: 3px 8px; border-radius: 3px; font-weight: 500; letter-spacing: 0.05em; z-index: 2; }
+
+    /* ===== INTERACTIVE CONTROLS ===== */
+    .chart-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+    .chart-title { font-family: var(--sans); font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: 0.02em; }
+
+    /* ===== DATA TABLE SUMMARY ACCORDION ===== */
+    .data-table-wrap { margin-top: 12px; font-family: var(--sans); }
+    .data-table-wrap summary {
+      cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12.5px; font-weight: 700; color: var(--secondary); padding: 4px 0; user-select: none;
+    }
+    .data-table-wrap summary::-webkit-details-marker { display: none; }
+    .data-table-wrap summary::after { content: '▾'; transition: transform .15s; }
+    .data-table-wrap[open] summary::after { transform: rotate(180deg); }
+    .data-table-wrap table { border-collapse: collapse; width: 100%; margin-top: 10px; font-size: 13px; }
+    .data-table-wrap th { background: #1a1a1a; color: #fff; padding: 8px 10px; text-align: left; font-weight: 500; }
+    .data-table-wrap td { padding: 8px 10px; border-bottom: 1px solid var(--rule); color: var(--text-soft); }
+    .data-table-wrap tr:last-child td { border-bottom: none; }
+    .data-table-wrap .src { font-size: 11.5px; color: var(--text-muted); margin-top: 6px; }
+
+    /* ===== STATS DASHBOARD COUNTERS ===== */
+    .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 34px 0 20px; }
+    .stat { background: white; border: 1px solid var(--rule); border-top: 3px solid var(--secondary); border-radius: 6px; padding: 18px 14px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.01); }
+    .stat .num { font-family: var(--sans); font-variant-numeric: tabular-nums; font-size: clamp(24px, 4.5vw, 34px); font-weight: 700; color: var(--secondary); line-height: 1.2; }
+    .stat .num .unit { font-size: 0.5em; color: var(--text-soft); margin-left: 2px; }
+    .stat .lbl { font-family: var(--sans); font-size: 12px; color: var(--text-muted); margin-top: 6px; line-height: 1.4; }
+    @media (max-width: 540px) { .stat-row { grid-template-columns: 1fr; } }
+
+    /* ===== CHART 4 DYNAMIC PANEL ===== */
+    .detail-panel {
+      margin-top: 14px; padding: 14px 16px; border-left: 3px solid var(--accent);
+      background: #f7f3ec; border-radius: 0 6px 6px 0;
+      font-family: var(--sans); font-size: 13.5px; line-height: 1.6; color: var(--text-soft);
+      display: none;
+    }
+    .detail-panel.show { display: block; }
+    .detail-panel b { color: var(--text); }
+    .detail-hint { font-family: var(--sans); font-size: 12px; color: var(--text-muted); margin-top: 8px; text-align: center; }
+
+    /* ===== CONCLUSION & FOOTER ===== */
+    .conclusion { background: #1a1a1a; color: #faf8f4; padding: 100px 0; margin-top: 80px; scroll-margin-top: 70px; }
+    .conclusion h2 { color: var(--accent); font-family: var(--sans); font-size: 13px; letter-spacing: 0.3em; margin-bottom: 24px; }
+    .conclusion .closing { font-size: 28px; line-height: 1.5; letter-spacing: -0.02em; margin-bottom: 32px; font-weight: 700; }
+    .conclusion p { color: rgba(250, 248, 244, 0.75); margin-bottom: 16px; }
+
+    .colophon { padding: 60px 0 100px; font-family: var(--sans); font-size: 13px; color: var(--text-muted); }
+    .colophon h4 { font-size: 12px; color: var(--text); margin: 24px 0 8px 0; font-weight: 700; }
+
+    .to-top {
+      position: fixed; right: 22px; bottom: 22px; z-index: 90;
+      width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--rule);
+      background: #fff; color: var(--text); font-size: 18px; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08); transition: all .15s;
+    }
+    .to-top:hover { background: #1a1a1a; color: #faf8f4; }
+
+    :focus-visible { outline: 2px solid var(--secondary); outline-offset: 2px; }
+
+    @media (max-width: 768px) {
+      .masthead nav { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hook .scroll-cue { animation: none; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="masthead">
+    <div class="masthead-inner">
+      <span class="kicker">도서정가제 데이터 저널리즘</span>
+      <nav aria-label="챕터 이동">
+        <a href="#intro">서론</a>
+        <a href="#timeline">연표</a>
+        <a href="#ch1">01 독서율</a>
+        <a href="#ch2">02 시장 격차</a>
+        <a href="#ch3">03 구독 급등</a>
+        <a href="#ch4">04 가격·독서율</a>
+        <a href="#conclusion">결론</a>
+      </nav>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </header>
+
+  <section class="hook">
+    <div class="eyebrow">융합데이터시각화 기말 최종 프로젝트</div>
+    <div class="big-number"><span id="counter">16,800</span>원</div>
+    <div class="cost-label" id="costLabel">국내 단행본 평균 정가</div>
+    <div class="hook-text">
+      전자책 생산과 유통에 필요한 종이값, 인쇄비, 창고 물류 보관 한계비용.<br>
+      실질적 한계비용이 제로에 수렴함에도 왜 전자책은 종이책과 가격이 비슷할까?<br>
+      <span style="color:var(--accent); font-weight:700;">"도서정가제의 전자책 적용은 디지털 독서 시장의 자연스러운 성장을 가로막고 있는가?"</span>
+    </div>
+    <button class="scroll-cue" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">실증 데이터 탐색 시작 ↓</button>
+  </section>
+
+  <section class="context reveal" id="intro">
+    <div class="column">
+      <h2>서론: 형태가 없는 재화, 고착된 가격 성벽</h2>
+      <p class="lead">본 연구 프로젝트는 전자책과 종이책의 실질 가격 격차가 미미하다는 소비자의 일상적 의문점에서 출발했습니다.</p>
+      <p>물리적 마진 구조와 인쇄 물류 비용에서 완전히 자유로운 디지털 전자책이 시장 논리를 거스르고 고가 정책을 유지하는 이면에는 아날로그 문법에 묶인 가격 통제 규제가 자리잡고 있습니다. 형태를 잃은 텍스트 매체에 무차별적으로 대입된
+        <span class="term" tabindex="0">도서정가제<span class="term-pop">출판사가 정가 이외의 가격으로 도서를 판매하지 못하도록 하는 제도. 현행법상 직접 할인 10%와 간접 할인(마일리지 등) 5%를 합쳐 최대 15%까지만 할인이 허용된다.</span></span>가
+        초래한 불균형과 가설들을 실증 데이터를 기반으로 검증하여 차기 개정안의 다원적 논의 체계를 촉발하고자 해당 주제를 선정했습니다.</p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section class="chapter" id="timeline">
+    <div class="column reveal">
+      <div class="chapter-mark">TIMELINE INFOGRAPHIC</div>
+      <h3>도서정가제 법적 규제의 전자책 적용 시점</h3>
+      <p>한국의 출판 유통 규제가 아날로그를 넘어 스크린 속 활자 자율성까지 포위해 온 역사적 연표입니다. 온·오프라인의 비대칭 할인 한도를 통제하던 제도가 점차 강화되어 전자책 생태계의 패러다임을 지체시키는 변곡점으로 작용했음을 파악할 수 있습니다.</p>
+
+      <div style="margin: 36px 0 20px 0; min-height: 400px;">
+        <div class="flourish-embed flourish-timeline" data-src="visualisation/29323569">
+          <script src="https://public.flourish.studio/resources/embed.js"></script>
+          <noscript>
+            <img src="https://public.flourish.studio/visualisation/29323569/thumbnail" width="100%" alt="timeline visualization" />
+          </noscript>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="ch1">
+    <div class="column reveal">
+      <div class="chapter-mark">CHAPTER 01</div>
+      <h3>성인 전체 독서율 감소 대비 전자책 독서 비율의 방어와 정체</h3>
+      <p>단순히 시장의 매출 규모가 아닌 실제 국민 독서 문해력의 중심인 '사람'의 이동을 추적합니다. 문화체육관광부 국민독서실태조사에 따르면 전체 성인 종이책 독서율은 매년 심각하게 하락하고 있습니다. <strong>반면, 전자책 독서 비율은 전체 독서율이 감소하고 있는 와중에도 청년층을 중심으로 증가 및 유지</strong>되고 있습니다. 이는 독자가 활자 자체를 포기한 것이 아니라 매체를 스크린으로 이동했음을 뜻하며, 규제의 완화가 디지털 리딩 인프라 확대의 마중물이 될 수 있음을 방증합니다.</p>
+    </div>
+
+    <div class="chart-block wide reveal">
+      <div class="chart-fill">
+        <span class="badge">문체부 국민독서실태조사</span>
+        
+        <div style="margin: 20px 0 10px 0; min-height: 380px;">
+          <div class="flourish-embed flourish-chart" data-src="visualisation/29334283">
+            <script src="https://public.flourish.studio/resources/embed.js"></script>
+            <noscript>
+              <img src="https://public.flourish.studio/visualisation/29334283/thumbnail" width="100%" alt="chart visualization" />
+            </noscript>
+          </div>
+        </div>
+
+        <details class="data-table-wrap">
+          <summary>데이터 표 보기</summary>
+          <table>
+            <thead><tr><th>조사연도</th><th>종이책 독서율</th><th>전자책 독서율</th></tr></thead>
+            <tbody>
+              <tr><td>2015년</td><td>65.3%</td><td>10.2%</td></tr>
+              <tr><td>2017년</td><td>59.9%</td><td>14.1%</td></tr>
+              <tr><td>2019년</td><td>52.1%</td><td>16.5%</td></tr>
+              <tr><td>2021년</td><td>40.7%</td><td>19.0%</td></tr>
+              <tr><td>2023년</td><td>32.3%</td><td>19.4%</td></tr>
+            </tbody>
+          </table>
+          <div class="src">출처: 문화체육관광부, 「국민독서실태조사」 각 연도(격년 조사, 만 19세 이상 성인).</div>
+        </details>
+      </div>
+      <div class="chart-caption">그림 1: 성인 종이책 독서율의 지속적 침하 대비 전체 독서율 감소세 속에서도 유지·소폭 증가 흐름을 보이는 전자책 독서율 추이. Flourish 인터랙티브 범례를 활용해 필터링 조회가 가능합니다.</div>
+    </div>
+  </section>
+
+  <section class="chapter" id="ch2">
+    <div class="column reveal">
+      <div class="chapter-mark">CHAPTER 02</div>
+      <h3>도서정가제 적용 이후 전자책의 판매 성과 및 웹소설 · 웹툰과의 성장률 비교</h3>
+      <p>동일한 모바일 스크린 환경에서 소비되는 매체 간의 대조는 규제가 가한 경제적 제동력을 시사합니다. 한국출판문화산업진흥원 출판산업 실태조사 기준 전자책 유통사 매출은 2019년 4,198억 원으로 전년 대비 55.4% 급증했으나, <strong>이후 성장세가 둔화되어 2022년 5,600억 원에 머물렀습니다.</strong> 반면, 도서정가제 적용 대상에서 사실상 자유로웠던 웹툰 산업은 자유로운 할인·프로모션을 무기로 2020년 1조 538억 원(+64.6%), 2022년 1조 8,290억 원으로 단기간에 전자책 시장의 3배가 넘는 규모로 성장하며 대조적 트렌드를 형성했습니다.</p>
+    </div>
+
+    <div class="chart-block wide reveal">
+      <div class="chart-fill">
+        <span class="badge">출판진흥원 / 콘텐츠진흥원</span>
+        <div class="chart-head">
+          <span class="chart-title" id="growthTitle">전자책 vs 웹툰 시장 규모 (억 원)</span>
+        </div>
+        <div class="canvas-wrap"><canvas id="chartGrowthCompare"></canvas></div>
+        <details class="data-table-wrap">
+          <summary>데이터 표 보기</summary>
+          <table>
+            <thead><tr><th>연도</th><th>전자책 유통 (억 원)</th><th>웹툰 산업 (억 원)</th><th>전자책 성장률</th><th>웹툰 성장률</th></tr></thead>
+            <tbody>
+              <tr><td>2018년</td><td>2,702</td><td>4,663</td><td>—</td><td>—</td></tr>
+              <tr><td>2019년</td><td>4,198</td><td>6,400</td><td>+55.4%</td><td>+37.3%</td></tr>
+              <tr><td>2020년</td><td>4,600</td><td>10,538</td><td>+9.6%</td><td>+64.6%</td></tr>
+              <tr><td>2021년</td><td>미공표</td><td>15,660</td><td>산출 불가</td><td>+48.6%</td></tr>
+              <tr><td>2022년</td><td>5,600</td><td>18,290</td><td>+4.8%</td><td>+16.8%</td></tr>
+            </tbody>
+          </table>
+          <div class="src">출처: 한국출판문화산업진흥원 및 한국콘텐츠진흥원 실태조사.</div>
+        </details>
+      </div>
+      <div class="chart-caption">그림 2: 전자책 유통 시장과 웹툰 산업의 연간 시장 규모(억 원) 비교. 전자책 2021년 수치는 미확보로 보간(점선) 처리되었습니다.</div>
+    </div>
+  </section>
+
+  <section class="chapter" id="ch3">
+    <div class="column reveal">
+      <div class="chapter-mark">CHAPTER 03</div>
+      <h3>구독형 전자책 시장의 급등: 규제 우회가 만들어낸 새로운 생태계</h3>
+      <p>단품 가격이 규제 성벽에 가로막혀 소비자의 심리적 저항선 위에 놓이자, 시장 내부에서는 이를 우회하기 위해 <strong>월정액 안에서 무제한 대여·열람이 가능한 구독 플랫폼으로 대거 이동</strong>하는 경제적 우회 현상이 발생했습니다. 단권 가격 통제의 공백을 구독 모델이 빠르게 채운 셈입니다. 리디 셀렉트·교보 sam·예스24 크레마 클럽 등 대형 유통사도 잇달아 자체 구독 서비스를 론칭하며 시장 경쟁이 본격화되었고, 결과적으로 구독형 전자책 시장은 단권 시장의 성장을 압도하는 독자적 생태계로 팽창하고 있습니다.</p>
+
+      <div class="stat-row reveal" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="stat"><div class="num"><span class="count" data-to="726">0</span><span class="unit">억 원</span></div><div class="lbl">밀리의서재 2024년 연매출<br>(전년 대비 +28.3%)</div></div>
+        <div class="stat"><div class="num"><span class="count" data-to="856">0</span><span class="unit">만 명</span></div><div class="lbl">밀리의서재 2024년 누적 가입자<br>(전년 대비 +20%)</div></div>
+        <div class="stat"><div class="num" style="font-size: clamp(18px, 3vw, 26px);">4개 플랫폼</div><div class="lbl">국내 주요 구독형 전자책 서비스<br>(밀리·리디·교보·예스24)</div></div>
+      </div>
+
+      <p>플랫폼별 성장 궤적은 뚜렷한 차별화를 보입니다. <strong>리디 셀렉트(현 리디 구독)</strong>는 웹소설·웹툰과의 교차 구독으로 구독 저변을 확장해왔으며, <strong>교보문고 sam</strong>은 기존 도서관 연계망을 기반으로 대형 출판사 계약 콘텐츠를 강점으로 내세웠습니다. <strong>예스24 크레마 클럽</strong>은 크레마 단말기 생태계와 결합한 락인(lock-in) 전략을 통해 기존 종이책 독자층을 구독으로 전환하는 데 집중하고 있습니다.</p>
+    </div>
+
+    <div class="chart-block wide reveal">
+      <div class="chart-fill">
+        <span class="badge">각사 공시 · 추정치</span>
+        <div class="chart-head">
+          <span class="chart-title" id="subChartTitle">주요 구독형 전자책 플랫폼 실적 추이 (억 원)</span>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button id="btnRevenue" onclick="switchSubChart('revenue')" style="font-family:var(--sans); font-size:12px; padding:5px 12px; border-radius:99px; border:1.5px solid var(--secondary); background:var(--secondary); color:white; cursor:pointer;">연매출</button>
+            <button id="btnSubs" onclick="switchSubChart('subs')" style="font-family:var(--sans); font-size:12px; padding:5px 12px; border-radius:99px; border:1.5px solid var(--rule); background:transparent; color:var(--text-soft); cursor:pointer;">가입자(만 명)</button>
+          </div>
+        </div>
+        <div class="canvas-wrap"><canvas id="chartSubscriptionPivot"></canvas></div>
+        <details class="data-table-wrap">
+          <summary>데이터 표 보기</summary>
+          <table>
+            <thead><tr><th>연도</th><th>밀리의서재 (억 원)</th><th>리디 셀렉트 (억 원)</th><th>교보 sam (억 원)</th><th>예스24 크레마 클럽 (억 원)</th></tr></thead>
+            <tbody>
+              <tr><td>2021년</td><td>350</td><td>180</td><td>90</td><td>45</td></tr>
+              <tr><td>2022년</td><td>458</td><td>240</td><td>130</td><td>65</td></tr>
+              <tr><td>2023년</td><td>566</td><td>310</td><td>175</td><td>88</td></tr>
+              <tr><td>2024년</td><td>726</td><td>395</td><td>225</td><td>115</td></tr>
+            </tbody>
+          </table>
+          <div class="src">출처: 밀리의서재 감사보고서 공시(2021~2024); 리디·교보·예스24 수치는 각사 IR 자료 및 언론 공개치 기반 추정치 포함.</div>
+        </details>
+      </div>
+      <div class="chart-caption">그림 3: 국내 주요 구독형 전자책 플랫폼 4사의 연매출 실적 추이. 리디 셀렉트·교보 sam·예스24 크레마 클럽 수치는 공개 IR 자료 기반 추정값을 포함합니다. 상단 버튼으로 가입자 수 추이를 비교할 수 있습니다.</div>
+    </div>
+  </section>
+
+  <section class="chapter" id="ch4">
+    <div class="column reveal">
+      <div class="chapter-mark">CHAPTER 04</div>
+      <h3>전자책 vs 종이책: 국가별 가격 격차와 전자책 독서율의 상관관계</h3>
+      <p>전자책의 한계비용은 국경과 무관하게 제로에 수렴하지만, 가격 할인 폭은 국가별 규제 구조에 따라 극명하게 갈립니다. <strong>가격 자율화 시장(미국·영국)에서는 동일 제목 기준 전자책이 종이책 대비 평균 40~50% 저렴</strong>한 반면, 법정 고정가제를 적용하는 독일·프랑스에서는 그 격차가 15% 내외에 그칩니다. 한국은 도서정가제로 인해 최대 할인율이 15%로 묶여 있어 독일·프랑스와 유사한 고가격 구조를 공유합니다.</p>
+      <p>아래 복합 차트는 <strong>가격 격차(전자책이 종이책보다 얼마나 싼지, 막대)</strong>와 <strong>전자책 독서율(성인 인구 중 연 1권 이상 전자책 독자 비중, 꺾은선)</strong>을 국가별로 나란히 배치합니다. 가격 자율성이 높은 국가일수록 전자책 독서율도 높게 나타나는 경향이 뚜렷하게 관찰됩니다. 단, 독서율은 시장 성숙도·디지털 인프라·문화적 습관 등 다중 변수의 영향을 받으므로 가격 규제와의 단순 인과 관계로 해석하기보다 방향성 지표로 활용해야 합니다.</p>
+
+      <div class="stat-row reveal" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 8px;">
+        <div class="stat" style="border-top-color: var(--secondary);">
+          <div class="num" style="font-size: clamp(20px,3.5vw,30px);">−48%</div>
+          <div class="lbl">미국 전자책 평균 할인율<br><span style="color:var(--secondary); font-weight:700;">독서율 36%</span></div>
+        </div>
+        <div class="stat" style="border-top-color: var(--accent);">
+          <div class="num" style="font-size: clamp(20px,3.5vw,30px);">−14%</div>
+          <div class="lbl">독일 전자책 평균 할인율<br><span style="color:var(--accent); font-weight:700;">독서율 18%</span></div>
+        </div>
+        <div class="stat" style="border-top-color: #1a1a1a;">
+          <div class="num" style="font-size: clamp(20px,3.5vw,30px);">−13%</div>
+          <div class="lbl">한국 전자책 평균 할인율<br><span style="color:var(--accent); font-weight:700;">독서율 19%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-block wide reveal">
+      <div class="chart-fill">
+        <span class="badge">AAP / Publishers Association / Börsenverein / SNE / 문체부</span>
+        <div class="chart-head">
+          <span class="chart-title" id="globalChartTitle">국가별 전자책 평균 가격 할인율(막대) vs 전자책 독서율(꺾은선)</span>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button id="btnPrice" onclick="switchGlobalChart('price')" style="font-family:var(--sans);font-size:12px;padding:5px 12px;border-radius:99px;border:1.5px solid var(--secondary);background:var(--secondary);color:white;cursor:pointer;">가격 격차</button>
+            <button id="btnRead" onclick="switchGlobalChart('read')" style="font-family:var(--sans);font-size:12px;padding:5px 12px;border-radius:99px;border:1.5px solid var(--rule);background:transparent;color:var(--text-soft);cursor:pointer;">독서율만 보기</button>
+          </div>
+        </div>
+        <div class="canvas-wrap" style="height:360px;"><canvas id="chartGlobalCompare"></canvas></div>
+        <div class="detail-hint">막대(할인율)를 클릭하면 해당 국가의 가격 규제 구조와 시장 맥락이 아래 패널에 표시됩니다.</div>
+        <div class="detail-panel" id="globalDetail"></div>
+        <details class="data-table-wrap">
+          <summary>데이터 표 보기</summary>
+          <table>
+            <thead>
+              <tr>
+                <th>국가</th>
+                <th>가격 규제 유형</th>
+                <th>종이책 평균가 (USD 환산)</th>
+                <th>전자책 평균가 (USD 환산)</th>
+                <th>평균 할인율</th>
+                <th>전자책 독서율</th>
+                <th>기준 연도</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>미국</td><td>정가제 없음</td><td>$18.2</td><td>$9.4</td><td>−48%</td><td>36%</td><td>AAP / Pew Research 2023</td></tr>
+              <tr><td>영국</td><td>가격 자율(RPM 폐지)</td><td>£14.6</td><td>£8.1</td><td>−45%</td><td>32%</td><td>Publishers Assoc. 2023</td></tr>
+              <tr><td>호주</td><td>부분 자율</td><td>A$29.0</td><td>A$17.5</td><td>−40%</td><td>28%</td><td>Books+Publishing 2023</td></tr>
+              <tr><td>일본</td><td>재판매가격 유지(재판제)</td><td>¥1,540</td><td>¥1,100</td><td>−28%</td><td>22%</td><td>全国出版協会 2023</td></tr>
+              <tr><td>프랑스</td><td>Lang법(전자책 포함)</td><td>€19.5</td><td>€16.8</td><td>−14%</td><td>17%</td><td>SNE 2023</td></tr>
+              <tr><td>독일</td><td>Buchpreisbindung(전자책 포함)</td><td>€18.0</td><td>€15.5</td><td>−14%</td><td>18%</td><td>Börsenverein 2023</td></tr>
+              <tr><td><strong>한국</strong></td><td><strong>도서정가제(15% 할인 상한)</strong></td><td><strong>₩16,800</strong></td><td><strong>₩14,600</strong></td><td><strong>−13%</strong></td><td><strong>19%</strong></td><td><strong>문체부 2023</strong></td></tr>
+            </tbody>
+          </table>
+          <div class="src">출처: AAP StatShot 2023, Publishers Association (UK) 2023, Börsenverein des Deutschen Buchhandels 2023, SNE (Syndicat National de l'Édition) 2023, 全国出版協会 2023, Pew Research Center 2023, 문화체육관광부 국민독서실태조사 2023. 환산 평균가는 각국 베스트셀러 100종 기준 단순 평균이며, 독서율은 성인 인구 중 연 1권 이상 전자책을 읽은 비율.</div>
+        </details>
+      </div>
+      <div class="chart-caption">그림 4: 7개국 전자책 평균 가격 할인율(종이책 대비, 막대) 및 성인 전자책 독서율(꺾은선) 비교. 가격 자율화 정도가 높을수록 전자책 독서율도 높게 나타나는 방향성 상관이 관찰됩니다.</div>
+    </div>
+  </section>
+
+  <section class="conclusion reveal" id="conclusion">
+    <div class="column">
+      <h2>결론: 2026년 대개정을 위한 다원적 방향성 제언</h2>
+      <div class="closing">디지털 시대의 문화적 자산 수호는 가격의 강제가 아닌,<br>매체 특성에 맞춘 유연한 가격 메커니즘의 보장에서 출발합니다.</div>
+      <p>실증 데이터가 증명하듯 지난 10년간의 획일적인 전자책 정가제 규제는 가격 경직성을 낳았고, 이는 독자들로 하여금 단권 구매를 외면하고 웹콘텐츠 및 무제한 구독 플랫폼이라는 우회로로 대거 이주하게 만드는 왜곡을 초래했습니다. 안그래도 숏폼 미디어와 OTT 플랫폼 등 다양한 디지털 매체들과 유한한 인간의 체류 시간을 두고 치열하게 전면전을 벌여야 하는 환경입니다.</p>
+      <p>문화적 자산인 책 생태계를 사수하기 위한 수단은 이제 가격표를 묶어두는 통제 중심의 단차원적 아날로그 프레임에서 벗어나야 합니다. 다가오는 <strong>2026년 도서정가제 법적 재검토 논의에서는 전자책에 한해 발행 후 일정 기간 경과 시 가격 통제를 해제하는 규제 일몰제 조항 도입, 디지털 매체 프로모션 자율권 보장 등 유연하고 분절된 가격 정책 방향성이 적극적으로 고려되어야 함</strong>을 제언합니다.</p>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <div class="column">
+      <h4>공식 학술 데이터 소스 및 참고 문헌 (References)</h4>
+      <p style="font-size: 13px; line-height: 1.7;">
+        · <strong>문화체육관광부 (2024).</strong> <i>2023년 국민독서실태조사</i>. (그림 1)<br>
+        · <strong>한국출판문화산업진흥원 (각 연도).</strong> <i>출판산업 실태조사</i> — 전자책 유통사 매출액 규모. (그림 2)<br>
+        · <strong>문화체육관광부·한국콘텐츠진흥원 (2024).</strong> <i>2023 웹툰 실태조사(사업체·작가)</i>. (그림 2)<br>
+        · <strong>밀리의서재 (2021~2025).</strong> 연간 실적 발표 및 감사보고서 공시 자료. (그림 3)<br>
+        · <strong>리디 주식회사 (2021~2024).</strong> 리디 셀렉트(리디 구독) IR 자료 및 언론 공개치. (그림 3, 추정치 포함)<br>
+        · <strong>교보문고 (2021~2024).</strong> 교보 sam 구독 서비스 관련 IR 자료 및 언론 공개치. (그림 3, 추정치 포함)<br>
+        · <strong>예스24 (2021~2024).</strong> 크레마 클럽 서비스 관련 IR 자료 및 언론 공개치. (그림 3, 추정치 포함)<br>
+        · <strong>Association of American Publishers (2024).</strong> <i>AAP StatShot Annual Report 2023</i>. (그림 4)<br>
+        · <strong>Publishers Association UK (2024).</strong> <i>Publishing Yearbook 2023</i>. (그림 4)<br>
+        · <strong>Börsenverein des Deutschen Buchhandels (2024).</strong> <i>Das E-Book in Deutschland 2023</i>. (그림 4)<br>
+        · <strong>Syndicat National de l'Édition — SNE (2024).</strong> <i>Les chiffres de l'édition 2022-2023</i>. (그림 4)<br>
+        · <strong>全国出版協会 (2024).</strong> <i>出版指標年報 2023年版</i>. (그림 4)<br>
+        · <strong>Pew Research Center (2023).</strong> <i>Who Reads Books in America?</i> (그림 4 독서율)
+      </p>
+      <h4 style="margin-top:20px;">명지대학교 융합데이터시각화 기말 최종 프로젝트 포트폴리오</h4>
+      <p>도서정가제 데이터 저널리즘 아웃풋 (인터랙티브 마스터 통합본) · 정우영 (2026)</p>
+    </div>
+  </footer>
+
+  <button class="to-top" aria-label="맨 위로 이동" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
+
+  <script>
+    Chart.defaults.font.family = 'IBM Plex Sans KR';
+    Chart.defaults.color = '#6a665e';
+    const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (REDUCED) Chart.defaults.animation = false;
+
+    const TOOLTIP_CFG = {
+      backgroundColor: '#1a1a1a',
+      titleColor: '#faf8f4',
+      bodyColor: 'rgba(250,248,244,0.9)',
+      padding: 12,
+      cornerRadius: 6,
+      titleFont: { weight: '700', size: 13 },
+      bodyFont: { size: 12.5 },
+      boxPadding: 4
+    };
+    const HOVER_MODE = { mode: 'index', intersect: false };
+
+    /* ---------- DATA LAYER ---------- */
+    const DATA_MARKET = {
+      labels: ['2018년', '2019년', '2020년', '2021년', '2022년'],
+      ebookSize:  [2702, 4198, 4600, null, 5600],
+      webtoonSize:[4663, 6400, 10538, 15660, 18290]
+    };
+
+    const DATA_GLOBAL = {
+      labels: ['미국', '영국', '호주', '일본', '프랑스', '독일', '한국'],
+      discount: [48, 45, 40, 28, 14, 14, 13],   // 전자책 평균 가격 할인율 (%)
+      readRate: [36, 32, 28, 22, 17, 18, 19],    // 전자책 독서율 (%)
+      // 도서정가제 미시행국 4개(블루), 시행국 2개(레드), 핵심 대조군 한국(다크 차콜) 순으로 매핑
+      colors: ['rgba(42, 90, 138, 0.75)', 'rgba(42, 90, 138, 0.75)', 'rgba(42, 90, 138, 0.75)', 'rgba(42, 90, 138, 0.75)', 'rgba(196, 61, 42, 0.75)', 'rgba(196, 61, 42, 0.75)', 'rgba(26, 26, 26, 0.9)'],
+      details: [
+        '<b>미국 — 정가제 없음</b><br>출판사·유통사가 자유롭게 가격을 책정합니다. Kindle 등 플랫폼 경쟁으로 전자책 가격이 종이책 대비 평균 48% 저렴하며, Pew Research 기준 성인 독서율이 36%로 7개국 중 가장 높습니다.',
+        '<b>영국 — 가격 자율 (RPM 폐지)</b><br>1990년대 Net Book Agreement 폐지 이후 완전 자율 시장입니다. Amazon UK 및 Kobo 기반 전자책 가격이 45% 저렴하며 독서율 32%를 기록합니다.',
+        '<b>호주 — 부분 자율</b><br>병행수입 규제 외 가격 통제 없음. 전자책 평균 할인율 40%, 독서율 28%.',
+        '<b>일본 — 재판매가격 유지제(재판제)</b><br>종이책은 재판제 적용으로 할인 불가이나 전자책은 사실상 예외·할인 허용. 전자책 할인율 28%, 독서율 22%.',
+        '<b>프랑스 — Lang법 (전자책 포함)</b><br>2011년 개정 Lang법이 전자책에도 적용되어 최대 5% 할인 상한. 전자책 할인율 14%, 독서율 17%.',
+        '<b>독일 — Buchpreisbindung (전자책 포함)</b><br>법률로 종이책·전자책 모두 고정가제 적용. 할인율 14%, 독서율 18%.',
+        '<b>한국 — 도서정가제 (15% 할인 상한)</b><br>직접 10% + 간접 5% 최대 15% 할인 허용. 실질 할인율 13% 수준으로 독일·프랑스와 동일한 고가격 구조. 전자책 독서율 19% (문체부 2023).'
+      ]
+    };
+
+    let globalMode = 'price';
+
+    function switchGlobalChart(mode) {
+      if (!charts.c4) return;
+      globalMode = mode;
+      const isPrice = mode === 'price';
+      document.getElementById('globalChartTitle').textContent = isPrice
+        ? '국가별 전자책 평균 가격 할인율(막대) vs 전자책 독서율(꺾은선)'
+        : '국가별 성인 전자책 독서율 (%)';
+
+      document.getElementById('btnPrice').style.background = isPrice ? 'var(--secondary)' : 'transparent';
+      document.getElementById('btnPrice').style.color = isPrice ? 'white' : 'var(--text-soft)';
+      document.getElementById('btnPrice').style.borderColor = isPrice ? 'var(--secondary)' : 'var(--rule)';
+      document.getElementById('btnRead').style.background = !isPrice ? 'var(--secondary)' : 'transparent';
+      document.getElementById('btnRead').style.color = !isPrice ? 'white' : 'var(--text-soft)';
+      document.getElementById('btnRead').style.borderColor = !isPrice ? 'var(--secondary)' : 'var(--rule)';
+
+      if (isPrice) {
+        charts.c4.data.datasets = [
+          {
+            type: 'bar', label: '전자책 평균 할인율 (%)',
+            data: DATA_GLOBAL.discount,
+            backgroundColor: DATA_GLOBAL.colors,
+            borderRadius: 4, yAxisID: 'yLeft', order: 2
+          },
+          {
+            type: 'line', label: '전자책 독서율 (%)',
+            data: DATA_GLOBAL.readRate,
+            borderColor: '#c43d2a', borderWidth: 2.5,
+            pointRadius: 6, pointHoverRadius: 9, pointBackgroundColor: '#c43d2a',
+            fill: false, yAxisID: 'yRight', order: 1, tension: 0.3
+          }
+        ];
+        charts.c4.options.scales.yLeft.display = true;
+        charts.c4.options.scales.yRight.display = true;
+        charts.c4.options.plugins.tooltip.callbacks.label = c => {
+          if (c.dataset.yAxisID === 'yLeft') return ' 가격 할인율: −' + c.parsed.y + '%';
+          return ' 전자책 독서율: ' + c.parsed.y + '%';
+        };
+      } else {
+        charts.c4.data.datasets = [{
+          type: 'bar', label: '성인 전자책 독서율 (%)',
+          data: DATA_GLOBAL.readRate,
+          backgroundColor: DATA_GLOBAL.colors,
+          borderRadius: 4, yAxisID: 'yLeft', order: 1
+        }];
+        charts.c4.options.scales.yLeft.max = 50;
+        charts.c4.options.scales.yLeft.display = true;
+        charts.c4.options.scales.yRight.display = false;
+        charts.c4.options.plugins.tooltip.callbacks.label = c => ' 독서율: ' + c.parsed.y + '%';
+      }
+      charts.c4.update();
+    }
+
+    function buildChart4() {
+      const panel = document.getElementById('globalDetail');
+      charts.c4 = new Chart(document.getElementById('chartGlobalCompare').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: DATA_GLOBAL.labels,
+          datasets: [
+            {
+              type: 'bar', label: '전자책 평균 할인율 (%)',
+              data: DATA_GLOBAL.discount,
+              backgroundColor: DATA_GLOBAL.colors,
+              borderRadius: 4, yAxisID: 'yLeft', order: 2
+            },
+            {
+              type: 'line', label: '전자책 독서율 (%)',
+              data: DATA_GLOBAL.readRate,
+              borderColor: '#c43d2a', borderWidth: 2.5,
+              pointRadius: 6, pointHoverRadius: 9, pointBackgroundColor: '#c43d2a',
+              fill: false, yAxisID: 'yRight', order: 1, tension: 0.3
+            }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: HOVER_MODE,
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: Object.assign({}, TOOLTIP_CFG, {
+              callbacks: {
+                label: c => {
+                  if (c.dataset.yAxisID === 'yLeft') return ' 가격 할인율: −' + c.parsed.y + '%';
+                  return ' 전자책 독서율: ' + c.parsed.y + '%';
+                }
+              }
+            })
+          },
+          onClick: function(evt, elements) {
+            // 어느 단위를 누르든 인덱스 정보 매핑 유효화 처리
+            if (!elements.length) return;
+            panel.innerHTML = DATA_GLOBAL.details[elements[0].index];
+            panel.classList.add('show');
+          },
+          onHover: function(evt, elements) {
+            evt.native.target.style.cursor = elements.length ? 'pointer' : 'default';
+          },
+          scales: {
+            yLeft: {
+              type: 'linear', position: 'left',
+              max: 60, min: 0,
+              ticks: { callback: v => v + '%' },
+              grid: { color: '#ebe7e0' },
+              title: { display: true, text: '가격 할인율 (%)', font: { family: 'IBM Plex Sans KR', size: 11 }, color: '#6a665e' }
+            },
+            yRight: {
+              type: 'linear', position: 'right',
+              max: 50, min: 0,
+              ticks: { callback: v => v + '%' },
+              grid: { drawOnChartArea: false },
+              title: { display: true, text: '전자책 독서율 (%)', font: { family: 'IBM Plex Sans KR', size: 11 }, color: '#c43d2a' }
+            },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    const charts = {};
+
+    /* ---------- 2. CHART BUILDERS ---------- */
+    function buildChart2() {
+      charts.c2 = new Chart(document.getElementById('chartGrowthCompare').getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: DATA_MARKET.labels,
+          datasets: [
+            { label: '전자책 유통 시장 규모 (억 원)', data: DATA_MARKET.ebookSize, spanGaps: true, borderColor: '#6a665e', borderWidth: 2, pointRadius: 4, pointHoverRadius: 7, segment: { borderDash: ctx => (ctx.p0.skip || ctx.p1.skip) ? [5, 5] : undefined }, fill: false },
+            { label: '웹툰 산업 매출액 (억 원)', data: DATA_MARKET.webtoonSize, borderColor: '#c43d2a', borderWidth: 3.5, pointRadius: 6, pointHoverRadius: 9, pointBackgroundColor: '#c43d2a', fill: false }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: HOVER_MODE,
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: Object.assign({}, TOOLTIP_CFG, { callbacks: { label: c => c.parsed.y === null ? ' ' + c.dataset.label + ': 미공표' : ' ' + c.dataset.label + ': ' + c.parsed.y.toLocaleString() + '억 원' } })
+          },
+          scales: {
+            y: { max: 20000, min: 0, ticks: { callback: v => v.toLocaleString() + '억' }, grid: { color: '#ebe7e0' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    const DATA_SUB = {
+      labels: ['2021년', '2022년', '2023년', '2024년'],
+      revenue: [
+        { label: '밀리의서재', data: [350, 458, 566, 726], borderColor: '#2a5a8a', backgroundColor: 'rgba(42,90,138,0.75)', borderRadius: 4 },
+        { label: '리디 셀렉트',  data: [180, 240, 310, 395], borderColor: '#c43d2a', backgroundColor: 'rgba(196,61,42,0.72)', borderRadius: 4 },
+        { label: '교보 sam',     data: [90,  130, 175, 225], borderColor: '#6a665e', backgroundColor: 'rgba(106,102,94,0.72)', borderRadius: 4 },
+        { label: '예스24 크레마 클럽', data: [45,  65,  88,  115], borderColor: '#b07c2e', backgroundColor: 'rgba(176,124,46,0.72)', borderRadius: 4 }
+      ],
+      subs: [
+        { label: '밀리의서재 (만 명)',      data: [480, 600, 713, 856], borderColor: '#2a5a8a', backgroundColor: 'rgba(42,90,138,0.75)', borderRadius: 4 },
+        { label: '리디 셀렉트 (만 명)',     data: [200, 270, 340, 420], borderColor: '#c43d2a', backgroundColor: 'rgba(196,61,42,0.72)', borderRadius: 4 },
+        { label: '교보 sam (만 명)',        data: [95,  140, 185, 230], borderColor: '#6a665e', backgroundColor: 'rgba(106,102,94,0.72)', borderRadius: 4 },
+        { label: '예스24 크레마 클럽 (만 명)', data: [48,  68,  88,  112], borderColor: '#b07c2e', backgroundColor: 'rgba(176,124,46,0.72)', borderRadius: 4 }
+      ]
+    };
+
+    let subMode = 'revenue';
+
+    function switchSubChart(mode) {
+      if (!charts.c3) return;
+      subMode = mode;
+      const isRevenue = mode === 'revenue';
+      document.getElementById('subChartTitle').textContent = isRevenue
+        ? '주요 구독형 전자책 플랫폼 실적 추이 (억 원)'
+        : '주요 구독형 전자책 플랫폼 가입자 추이 (만 명)';
+      document.getElementById('btnRevenue').style.background = isRevenue ? 'var(--secondary)' : 'transparent';
+      document.getElementById('btnRevenue').style.color = isRevenue ? 'white' : 'var(--text-soft)';
+      document.getElementById('btnRevenue').style.borderColor = isRevenue ? 'var(--secondary)' : 'var(--rule)';
+      document.getElementById('btnSubs').style.background = !isRevenue ? 'var(--secondary)' : 'transparent';
+      document.getElementById('btnSubs').style.color = !isRevenue ? 'white' : 'var(--text-soft)';
+      document.getElementById('btnSubs').style.borderColor = !isRevenue ? 'var(--secondary)' : 'var(--rule)';
+      const srcData = DATA_SUB[mode];
+      charts.c3.data.datasets = srcData.map(d => ({ ...d, type: 'bar' }));
+      charts.c3.options.scales.y.max = isRevenue ? 800 : 1000;
+      charts.c3.options.scales.y.ticks.callback = isRevenue ? v => v + '억' : v => v + '만';
+      charts.c3.options.plugins.tooltip.callbacks.label = c => ' ' + c.dataset.label + ': ' + c.parsed.y + (isRevenue ? '억 원' : '만 명');
+      charts.c3.update();
+    }
+
+    function buildChart3() {
+      charts.c3 = new Chart(document.getElementById('chartSubscriptionPivot').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: DATA_SUB.labels,
+          datasets: DATA_SUB.revenue.map(d => ({ ...d }))
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: HOVER_MODE,
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: Object.assign({}, TOOLTIP_CFG, { callbacks: { label: c => ' ' + c.dataset.label + ': ' + c.parsed.y + '억 원' } })
+          },
+          scales: {
+            y: { max: 800, ticks: { callback: v => v + '억' }, grid: { color: '#ebe7e0' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // Lazy load Observer
+    const lazyRegistry = [
+      { id: 'chartGrowthCompare', builder: buildChart2 },
+      { id: 'chartSubscriptionPivot', builder: buildChart3 },
+      { id: 'chartGlobalCompare', builder: buildChart4 }
+    ];
+    
+    const lazyObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const target = lazyRegistry.find(item => item.id === entry.target.id);
+        if (target && !target.initialized) {
+          target.builder();
+          target.initialized = true;
+        }
+        lazyObserver.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -5% 0px' });
+    lazyRegistry.forEach(item => lazyObserver.observe(document.getElementById(item.id)));
+
+    /* ---------- 3. UX GENERAL ANIMATIONS ---------- */
+    const progressBar = document.getElementById('progressFill');
+    window.addEventListener('scroll', () => {
+      const doc = document.documentElement;
+      const totalScrollable = doc.scrollHeight - doc.clientHeight;
+      const percentage = totalScrollable > 0 ? (doc.scrollTop / totalScrollable) * 100 : 0;
+      progressBar.style.width = percentage + '%';
+    }, { passive: true });
+
+    const generalRevealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in');
+        generalRevealObserver.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -6% 0px' });
+    document.querySelectorAll('.reveal').forEach(node => generalRevealObserver.observe(node));
+
+    function executeCountUp(element) {
+      const targetInt = Number(element.dataset.to);
+      if (REDUCED) { element.textContent = targetInt.toLocaleString('ko-KR'); return; }
+      const animationDuration = 1600, executionStartTime = performance.now();
+      const cubicEaseOut = t => 1 - Math.pow(1 - t, 3);
+      
+      (function frameUpdate(currentTime) {
+        const progress = Math.min((currentTime - executionStartTime) / animationDuration, 1);
+        element.textContent = Math.round(targetInt * cubicEaseOut(progress)).toLocaleString('ko-KR');
+        if (progress < 1) requestAnimationFrame(frameUpdate);
+      })(executionStartTime);
+    }
+    
+    const dashboardCounterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          executeCountUp(entry.target);
+          dashboardCounterObserver.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.count').forEach(node => dashboardCounterObserver.observe(node));
+  </script>
+</body>
+</html>

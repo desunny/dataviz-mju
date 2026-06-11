@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지방 소멸 지역의 복지 사각지대</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1e3a8a;
+            --light-blue: #3b82f6;
+            --accent-red: #dc2626;
+            --light-red: #fca5a5;
+            --dark-gray: #1f2937;
+            --light-gray: #f3f4f6;
+            --border-gray: #e5e7eb;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 18px; 
+        }
+
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.7;
+            color: var(--dark-gray);
+            background: #ffffff;
+        }
+
+        /* ========== 헤더 & 네비게이션 ========== */
+        header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.8rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: left; 
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 1rem;
+        }
+
+        .header-top {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-bottom {
+            font-size: 0.95rem;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        /* ========== 섹션 기본 스타일 ========== */
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5rem 2rem;
+            scroll-margin-top: 60px;
+        }
+
+        .section-inner {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* ========== 1. 히어로 섹션 ========== */
+        #hero {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #1e40af 100%);
+            color: white;
+            text-align: center;
+            padding: 7rem 2rem;
+            min-height: auto;
+        }
+
+        #hero h2 {
+            font-size: 2.7rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            line-height: 1.4;
+            animation: fadeInDown 0.8s ease-out;
+            word-break: keep-all;
+        }
+
+        #hero .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            font-weight: 300;
+        }
+
+        #hero .problem-statement {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            border-left: 5px solid var(--light-red);
+            margin-top: 2rem;
+            border-radius: 4px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+            text-align: left;
+            font-size: 1.05rem;
+            line-height: 1.9;
+            max-width: 950px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ========== 1.5. 전국 지도 섹션 ========== */
+        #map-section {
+            background: white;
+            padding: 5rem 2rem;
+            min-height: auto;
+        }
+        
+        .map-container {
+            text-align: center;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .map-container h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        .map-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* ========== 2. 문제 인식 섹션 ========== */
+        #problem {
+            background: var(--light-gray);
+        }
+
+        #problem h2, #analysis h2, #mobility h2 {
+            font-size: 2.2rem;
+            margin-bottom: 3.5rem;
+            text-align: center;
+            color: var(--primary-blue);
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        #problem h2::after, #analysis h2::after, #mobility h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--light-blue);
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .comparison-item {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .comparison-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-item h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .comparison-item img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .comparison-item p {
+            font-size: 1.05rem;
+            color: #444;
+            line-height: 1.8;
+            word-break: keep-all;
+        }
+
+        /* ========== 3. 데이터 분석 섹션 ========== */
+        #analysis {
+            background: white;
+        }
+
+        .analysis-subtitle {
+            text-align: center;
+            color: #555;
+            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+        }
+
+        .data-visualization {
+            background: var(--light-gray);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .data-insight {
+            background: white;
+            padding: 2rem;
+            border-left: 5px solid var(--light-blue);
+            margin-top: 2rem;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            word-break: keep-all;
+            font-size: 1.05rem;
+        }
+
+        .data-insight strong {
+            color: var(--primary-blue);
+        }
+
+        /* ========== 4. 이동시간 비교 섹션 ========== */
+        #mobility {
+            background: var(--light-gray);
+        }
+
+        .mobility-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .mobility-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .mobility-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1.2rem;
+            text-align: center;
+        }
+
+        .mobility-card.imbalance h3 {
+            color: var(--accent-red);
+            font-weight: 600;
+        }
+
+        .mobility-card.balance h3 {
+            color: var(--light-blue);
+            font-weight: 600;
+        }
+
+        .mobility-note {
+            margin-top: 1.2rem;
+            padding: 1.2rem;
+            background: var(--light-gray);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            color: #444;
+            text-align: center;
+            word-break: keep-all;
+            line-height: 1.7;
+        }
+
+        /* ========== 5. 결론 섹션 ========== */
+        #conclusion {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #1e40af 100%);
+            color: white;
+            text-align: center;
+            min-height: auto;
+            padding: 7rem 2rem;
+        }
+
+        #conclusion h2 {
+            font-size: 2.2rem;
+            margin-bottom: 2.5rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .problem-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            border-radius: 8px;
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            word-break: keep-all;
+        }
+
+        .problem-box h3 {
+            font-size: 1.35rem;
+            margin-bottom: 1.2rem;
+            color: var(--light-red);
+        }
+
+        .problem-box p {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .solution-box {
+            background: rgba(252, 165, 165, 0.15);
+            padding: 2.5rem;
+            border-radius: 8px;
+            border: 2px solid rgba(252, 165, 165, 0.3);
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .solution-box h3 {
+            font-size: 1.45rem;
+            margin-bottom: 1.2rem;
+            color: #ffd4d4;
+            font-weight: 700;
+        }
+
+        .solution-box p {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .solution-points {
+            text-align: left;
+            display: inline-block;
+            margin-top: 2rem;
+        }
+
+        .solution-points li {
+            list-style: none;
+            margin-bottom: 1rem;
+            padding-left: 1.8rem;
+            position: relative;
+            font-size: 1.05rem;
+        }
+
+        .solution-points li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--light-red);
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .image-caption {
+            font-size: 0.95rem;
+            color: #666;
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        /* ========== 애니메이션 & 기타 ========== */
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .highlight-red { color: var(--accent-red); font-weight: 600; }
+        .highlight-blue { color: var(--light-blue); font-weight: 600; }
+
+        @media (max-width: 768px) {
+            html { font-size: 16px; } 
+            #hero h2 { font-size: 2rem; }
+            #hero .subtitle { font-size: 1.1rem; }
+            section { padding: 3.5rem 1.5rem; min-height: auto; }
+            .comparison-grid, .mobility-comparison { grid-template-columns: 1fr; }
+            #problem h2, #analysis h2, #mobility h2, #conclusion h2 { font-size: 1.6rem; }
+            .problem-statement, .problem-box, .solution-box { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <div class="header-top">융합데이터시각화_해커톤 프로젝트</div>
+            <h1>📊 지방 소멸 지역의 복지 사각지대: 데이터로 증명하다</h1>
+            <div class="header-bottom">60230418 공공인재학부 행정학전공 심예원</div>
+        </div>
+    </header>
+
+    <section id="hero">
+        <div class="section-inner">
+            <h2>불균형 지역의 어르신들,<br>누가 돌봐야 할까?</h2>
+            <p class="subtitle">인프라 예산의 역설과 이동형 복지로의 전환</p>
+            
+            <div class="problem-statement">
+                <strong>현 상황</strong> 
+                <br><br>
+                지방소멸위험지수가 높고 노인 인구 밀도가 낮은 지역에서는, 
+                <br>고정형 보건의료 시설에 투자해도 혜택을 보는 인구가 적어 예산 효율성이 극도로 떨어진다.
+                <br><br>
+                그 결과, 흩어져 사는 어르신들이 아픈 몸을 이끌고 열악한 교통망을 뚫고 먼 거리를 이동해야만 하는
+                <br><span class="highlight-red">심각한 공간적 복지 단절</span>이 방치되고 있다. 
+            </div>
+        </div>
+    </section>
+
+    <section id="map-section">
+        <div class="section-inner">
+            <div class="map-container data-insight" style="margin-top: 0; text-align: center;">
+                <h3 style="margin-bottom: 15px; color: var(--primary-blue);">대한민국 지방소멸위험지도</h3>
+                <img src="https://i.imgur.com/WyEGgRx.png" alt="대한민국 지방소멸위험지도" style="max-height: 500px; width: auto;">
+                <p style="margin-top: 10px; font-size: 0.9rem; color: #666;">▲ 붉은색일수록 소멸 위험 및 고령화가 심각한 지역 (분석 가설의 기반)</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="analysis">
+        <div class="section-inner">
+            <h2>수요와 인프라의 엇갈림</h2>
+            <p class="analysis-subtitle">노인 인구 밀도와 보건시설 수를 활용한 불균형 지역 도출</p>
+
+            <div class="data-visualization">
+                <div class="flourish-embed flourish-chart" data-src="visualisation/29260070"><script src="https://public.flourish.studio/resources/embed.js"></script><noscript><img src="https://public.flourish.studio/visualisation/29260070/thumbnail" width="100%" alt="chart visualization" /></noscript></div>
+            </div>
+
+            <div class="data-insight">
+                • <span class="highlight-red">[불균형] 인구 대비 보건시설 부족:</span> 남해군 등은 노인 인구 밀도 대비 고정형 보건시설 숫자가 확연히 부족
+                <br>• <span class="highlight-blue">[비교적 균형] 수요 및 인프라 적정:</span> 의성군 등은 파란 영역에 위치해 비교적 균형 유지
+                <br><br>
+                <strong>저밀도 지역의 분산된 수요를 기존의 '건물 짓기' 방식만으로는 충족할 수 없음</strong>을 의미
+            </div>
+        </div>
+    </section>
+
+    <section id="problem">
+        <div class="section-inner">
+            <h2>공간적 불일치: 두 지역의 극명한 대비</h2>
+            
+            <div class="comparison-grid">
+                <div class="comparison-item red">
+                    <h3>🔴 남해군 (불균형 심화)</h3>
+                    <img src="https://i.imgur.com/lz317Cn.png" alt="남해군 노인 인구 밀도">
+                    <p><strong>특징:</strong> 인구가 넓은 지역에 산발적으로 퍼진 형태.
+                    <br><br>
+                    낮은 인구 밀도로 인해 거점에 시설을 지어도 <span class="highlight-red">접근하지 못하는 수요층이 다수 발생하는</span> 사각지대 형성</p>
+                </div>
+
+              <div class="comparison-item blue">
+                    <h3>🔵 의성군 (비교적 균형)</h3>
+                    <img src="https://i.imgur.com/leCXs4u.png" alt="의성군 노인 인구 밀도">
+                    <p><strong>특징:</strong> 인구가 비교적 중심 거점에 모여있는 형태. 
+                    <br><br>
+                    보건시설 배치와 수요의 지리적 일치도가 높아 <span class="highlight-blue">기존 고정형 인프라 투자의 효과를 기대할 수 있는</span> 지역</p>
+                </div>
+            </div>
+
+            <div class="data-insight">
+                <strong>단순히 시설의 <span class="highlight-gray">개수</span>가 문제가 아니라, 인구가 흩어진 지역일수록 고정된 건축물 하나로는 의료 수요를 모두 감당할 수 없음.</strong>
+            </div>
+        </div>
+    </section>
+
+    <section id="mobility">
+        <div class="section-inner">
+            <h2>보건시설까지의 이동시간: 현실의 벽</h2>
+
+            <div class="mobility-comparison">
+                <div class="mobility-card imbalance">
+                    <h3>🔴 남해군 (불균형 지역)</h3>
+                    <div class="flourish-embed flourish-chart" data-src="visualisation/29260925"><script src="https://public.flourish.studio/resources/embed.js"></script><noscript><img src="https://public.flourish.studio/visualisation/29260925/thumbnail" width="100%" alt="chart visualization" /></noscript></div>
+                    <div class="mobility-note">
+                        자동차로는 10분 이내 거리임에도, 
+                       <br>대중교통 이용 시 <span class="highlight-red">최대 40분 이상 소요</span>
+                    </div>
+                </div>
+
+                <div class="mobility-card balance">
+                    <h3>🔵 의성군 (균형 지역)</h3>
+                    <div class="flourish-embed flourish-chart" data-src="visualisation/29261003"><script src="https://public.flourish.studio/resources/embed.js"></script><noscript><img src="https://public.flourish.studio/visualisation/29261003/thumbnail" width="100%" alt="chart visualization" /></noscript></div>
+                    <div class="mobility-note">
+                        인구 대비 인프라 숫자가 비교적 균형 잡힌 지역조차도 
+                        <br><span class="highlight-blue">대중교통 이용 시 최대 40분 가까이 소요</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-insight">
+                 • <strong>몸이 불편한 어르신에게 대중교통 40분은 사실상 <span class="highlight-gray">의료 접근 포기</span></strong>
+                <br>• <strong>균형 지역조차 이동에 40분이 걸린다는 것은, 물리적인 시설을 짓는 <span class="highlight-gray">고정형 인프라</span> 자체가 넒은 면적의 소멸 지역에서는 한계에 부딪혔음</strong>
+            </div>
+        </div>
+    </section>
+
+    <section id="conclusion">
+        <div class="section-inner">
+            <h2>🎯 해결책: '이동형 복지'로의 전환</h2>
+
+            <div class="problem-box">
+                <h3>❌ 기존 방식의 한계</h3>
+                <p>
+                   소멸위험지역에 계속해서 <strong>고정형 인프라(건축물)</strong>를 짓는 방식은 근본적인 해결책이 될 수 없다
+                 <br>시설 건립 예산은 투입되지만 주민들의 접근성은 여전히 떨어지는 <strong>인프라 예산의 비효율성</strong>이 발생한다.
+                </p>
+            </div>
+
+            <div class="solution-box">
+                <h3>✅ 수요자를 직접 찾아가는 '이동형 복지' 시스템</h3>
+                <p>
+                    물리적 거리에 의존하는 건축 중심의 정책에서 벗어나, 보건의료 서비스가 어르신들을 <strong>직접 찾아가는 방식</strong>으로 전환해야 한다.
+                </p>
+
+                <ul class="solution-points">
+                    <li><strong>이동식 보건 클리닉 (Mobile Clinic):</strong> 의료 장비를 갖춘 특장차량을 활용한 마을 단위 순회 진료</li>
+                    <li><strong>수요응답형 교통수단 (DRT) 연계:</strong> 고령층 맞춤형 '부르면 오는' 의료용 셔틀버스 도입</li>
+                    <li><strong>스마트 원격 헬스케어:</strong> 마을회관 거점의 비대면 원격 진료 및 만성질환 모니터링</li>
+                </ul>
+
+                <p style="margin-top: 1.5rem; font-style: italic; color: rgba(255, 255, 255, 0.85);">
+                    이는 단순한 행정 편의주의가 아니라, 흩어져 살아도 보호받아야 할 국민의 <strong>기본적 의료권</strong>을 보장하기 위한 정책 방향이다!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // 부드러운 스크롤 및 섹션 애니메이션
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.comparison-item, .data-insight, .mobility-card, .map-container').forEach(el => {
+            el.style.opacity = '0';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>내 데이터는 어디로 갔을까</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg: #F8F7F4;
+  --ink: #1C1C1A;
+  --muted: #6B6B67;
+  --faint: #B0B0AA;
+  --border: #E2E2DC;
+  --card: #FFFFFF;
+  --accent: #C8871A;
+  --accent-bg: #FDF3E3;
+  --green: #1D9E75;
+  --green-bg: #E1F5EE;
+  --danger: #C0392B;
+  --danger-bg: #FDECEA;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,'Helvetica Neue',sans-serif;font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(248,247,244,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem}
+.nav-logo{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--ink);text-decoration:none}
+.nav-steps{display:flex;gap:6px}
+.nav-step{width:28px;height:3px;border-radius:2px;background:var(--border);transition:background .3s;cursor:pointer}
+.nav-step.done{background:var(--accent)}
+.nav-step.active{background:var(--ink)}
+.progress-bar{position:fixed;top:50px;left:0;height:2px;background:var(--accent);z-index:201;transition:width .15s}
+
+/* CHAPTER */
+.chapter{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 1.5rem 60px;max-width:680px;margin:0 auto}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:.8rem}
+.big-title{font-family:Georgia,serif;font-size:clamp(1.8rem,4.5vw,2.8rem);font-weight:400;line-height:1.2;color:var(--ink);margin-bottom:1rem}
+.big-title em{font-style:italic;color:var(--accent)}
+.lead{font-size:.95rem;color:var(--muted);line-height:1.85;margin-bottom:2rem;max-width:560px}
+.divider{border:none;border-top:1px solid var(--border);margin:3rem 0}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:12px}
+.card.accent{background:var(--accent-bg);border-color:#E8C07A}
+.card.green{background:var(--green-bg);border-color:#8DD5BB}
+.card.danger{background:var(--danger-bg);border-color:#E8A09A}
+
+/* METRIC GRID */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:1.5rem 0}
+.mcard{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem}
+.mcard-label{font-size:11px;color:var(--muted);margin-bottom:.4rem;line-height:1.4}
+.mcard-val{font-family:Georgia,serif;font-size:1.8rem;font-weight:400;color:var(--ink);line-height:1}
+.mcard-unit{font-size:11px;color:var(--faint);margin-top:.25rem}
+.mcard.hi .mcard-val{color:var(--accent)}
+.mcard.hi{background:var(--accent-bg);border-color:#E8C07A}
+
+/* SLIDER */
+.slider-block{margin:1rem 0}
+.slider-label{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);margin-bottom:.4rem}
+.slider-val{font-weight:700;color:var(--ink);font-size:14px}
+input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
+
+/* RESULT BOX */
+.result-box{background:var(--ink);color:#F0F0EC;border-radius:12px;padding:1.4rem 1.6rem;margin:1.6rem 0;text-align:center}
+.result-label{font-size:12px;color:#888884;letter-spacing:.06em;margin-bottom:.5rem}
+.result-val{font-family:Georgia,serif;font-size:2.6rem;color:#F0F0EC;line-height:1}
+.result-unit{font-size:13px;color:#888884;margin-top:.4rem}
+.result-equiv{font-size:13px;color:#C8C8C0;margin-top:.8rem;padding-top:.8rem;border-top:1px solid rgba(255,255,255,.1)}
+
+/* FLOW ANIM */
+.flow-stage{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:1.6rem 0}
+.flow-node{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.55rem 1rem;font-size:13px;color:var(--ink);transition:all .4s;opacity:.35}
+.flow-node.lit{opacity:1;transform:scale(1.04)}
+.flow-node.lit.hot{background:var(--accent-bg);border-color:#E8C07A;color:#7A4A0A}
+.flow-node.lit.danger{background:var(--danger-bg);border-color:#E8A09A;color:#7A1A14}
+.flow-arr{color:var(--faint);font-size:16px}
+
+/* REGION BARS */
+.rbar-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.rbar-name{font-size:12px;color:var(--muted);width:60px;text-align:right;flex-shrink:0}
+.rbar-bg{flex:1;height:16px;background:#EEEEEA;border-radius:3px;overflow:hidden}
+.rbar-fill{height:100%;border-radius:3px;background:var(--green);transition:width 1s ease}
+.rbar-mw{font-size:12px;font-weight:600;color:var(--ink);width:54px;flex-shrink:0}
+
+/* IEA CHART */
+.chart-wrap{position:relative;width:100%}
+
+/* CHECKLIST */
+.checklist{margin:1.4rem 0}
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:.9rem 0;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity .2s}
+.check-item:last-child{border-bottom:none}
+.check-item.done{opacity:.45}
+.check-box{width:22px;height:22px;border:2px solid var(--border);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all .2s}
+.check-item.done .check-box{background:var(--green);border-color:var(--green);color:#fff}
+.check-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:.15rem}
+.check-sub{font-size:12px;color:var(--muted);line-height:1.5}
+.check-item.done .check-title{text-decoration:line-through;color:var(--muted)}
+.co2-saved{font-size:11px;color:var(--green);font-weight:600;margin-top:.2rem}
+
+/* HOOK */
+.hook{border-left:3px solid var(--accent);padding:.9rem 1.2rem;background:var(--accent-bg);border-radius:0 10px 10px 0;margin:1.6rem 0;font-family:Georgia,serif;font-size:1rem;font-style:italic;color:var(--ink);line-height:1.65}
+
+/* SCROLL HINT */
+.scroll-hint{display:flex;align-items:center;gap:.6rem;font-size:11px;color:var(--faint);letter-spacing:.06em;margin-top:2.5rem}
+.scroll-line{width:1px;height:28px;background:var(--faint);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.2}50%{opacity:1}}
+
+/* DARK EPILOGUE */
+#ep{background:var(--ink);color:#F0F0EC;padding:5rem 1.5rem;min-height:60vh;display:flex;align-items:center}
+.ep-inner{max-width:640px;margin:0 auto;text-align:center}
+#ep .eyebrow{color:var(--accent)}
+#ep .big-title{color:#F0F0EC}
+#ep .lead{color:#AEAEA8;margin:0 auto 2rem}
+.ep-quote{font-family:Georgia,serif;font-size:1.05rem;font-style:italic;color:#888884;line-height:1.9;margin-top:2.4rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,.08)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .65s ease,transform .65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* SOURCE */
+.source{font-size:11px;color:var(--faint);margin-top:.8rem}
+
+@media(max-width:520px){
+  .flow-node{font-size:12px;padding:.45rem .75rem}
+  .mgrid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">🌍 내 데이터의 여행</a>
+  <div class="nav-steps" id="navSteps">
+    <div class="nav-step active" onclick="scrollTo(0)"></div>
+    <div class="nav-step" onclick="scrollTo(1)"></div>
+    <div class="nav-step" onclick="scrollTo(2)"></div>
+    <div class="nav-step" onclick="scrollTo(3)"></div>
+    <div class="nav-step" onclick="scrollTo(4)"></div>
+    <div class="nav-step" onclick="scrollTo(5)"></div>
+  </div>
+</nav>
+<div class="progress-bar" id="pbar"></div>
+
+<!-- ── 0. HOOK ── -->
+<section class="chapter" id="s0">
+  <p class="eyebrow">오늘의 질문</p>
+  <h1 class="big-title">카톡 사진 한 장,<br>보내고 나면 <em>어디 가요?</em></h1>
+  <p class="lead">
+    우리는 매일 사진을 보내고, 영상을 틀고, 파일을 저장한다.<br>
+    그런데 그 데이터들이 "어딘가"에 있다는 걸 생각해본 적 있나요?<br><br>
+    지금부터 내 스마트폰 속 데이터가 어떤 여행을 하는지, 5분 만에 따라가볼게요.
+  </p>
+  <div class="mgrid">
+    <div class="mcard hi">
+      <div class="mcard-label">우리가 만드는 데이터 중<br>다시 안 보는 비율</div>
+      <div class="mcard-val">52%</div>
+      <div class="mcard-unit">Veritas, 2024</div>
+    </div>
+    <div class="mcard">
+      <div class="mcard-label">한국인 하루 평균<br>모바일 데이터 사용량</div>
+      <div class="mcard-val">843MB</div>
+      <div class="mcard-unit">카톡 사진 281장 분량</div>
+    </div>
+  </div>
+  <div class="scroll-hint"><div class="scroll-line"></div>스크롤해서 따라가기</div>
+</section>
+
+<div class="divider" style="max-width:680px;margin:0 auto"></div>
+
+<!-- ── 1. 나의 하루 ── -->
+<section class="chapter reveal" id="s1">
+  <p class="eyebrow">Step 1 — 나의 하루</p>
+  <h2 class="big-title">오늘 나는<br>얼마나 만들었을까?</h2>
+  <p class="lead">슬라이더를 움직여서 오늘 하루 내 디지털 활동을 입력해보세요. 숫자는 자동으로 계산돼요.</p>
+
+  <div class="card">
+    <div class="slider-block">
+      <div class="slider-label"><span>📸 카톡/인스타 사진 전송</span><span class="slider-val" id="v1">10장</span></div>
+      <input type="range" min="0" max="100" step="1" value="10" id="s_photo" oninput="calc()">
+    </div>
+    <div class="slider-block">
+      <div class="slider-label"><span>▶️ 유튜브 / 릴스 시청</span><span class="slider-val" id="v2">1시간</span></div>
+      <input type="range" min="0" max="12" step="1" value="1" id="s_video" oninput="calc()">
+    </div>
+    <div class="slider-block">
+      <div class="slider-label"><span>📧 이메일 수신 (스팸 포함)</span><span class="slider-val" id="v3">20통</span></div>
+      <input type="range" min="0" max="200" step="1" value="20" id="s_email" oninput="calc()">
+    </div>
+    <div class="slider-block">
+      <div class="slider-label"><span>☁️ 클라우드 저장 사진</span><span class="slider-val" id="v4">5GB</span></div>
+      <input type="range" min="0" max="100" step="1" value="5" id="s_cloud" oninput="calc()">
+    </div>
+  </div>
+
+  <div class="result-box">
+    <div class="result-label">오늘 내가 발생시킨 탄소</div>
+    <div class="result-val" id="co2val">—</div>
+    <div class="result-unit">gCO₂</div>
+    <div class="result-equiv" id="co2equiv">슬라이더를 움직여보세요</div>
+  </div>
+
+  <div class="card green" style="font-size:13px;color:#085041;line-height:1.7">
+    💡 <strong>참고로</strong> — 이 탄소가 생기는 이유는, 내 데이터를 저장하는 서버가 24시간 전기를 쓰기 때문이에요. 내가 다시 안 봐도요.
+  </div>
+</section>
+
+<div class="divider" style="max-width:680px;margin:0 auto"></div>
+
+<!-- ── 2. 데이터의 여행 ── -->
+<section class="chapter reveal" id="s2">
+  <p class="eyebrow">Step 2 — 데이터의 여행</p>
+  <h2 class="big-title">사진 한 장,<br>이렇게 <em>흘러간다</em></h2>
+  <p class="lead">카톡으로 사진을 보내는 순간부터 무슨 일이 일어나는지, 차례로 따라가볼게요.</p>
+
+  <div class="flow-stage" id="flowStage">
+    <div class="flow-node" id="fn0">📱 내 폰에서 전송</div>
+    <span class="flow-arr">→</span>
+    <div class="flow-node" id="fn1">☁️ 카카오 서버 저장</div>
+    <span class="flow-arr">→</span>
+    <div class="flow-node" id="fn2">🖥 데이터센터 보관</div>
+    <span class="flow-arr">→</span>
+    <div class="flow-node hot" id="fn3">⚡ 24시간 전력 소비</div>
+    <span class="flow-arr">→</span>
+    <div class="flow-node danger" id="fn4">💨 탄소 배출</div>
+  </div>
+
+  <div class="card accent" id="flowDesc" style="font-size:14px;line-height:1.75;color:#5A3A08;min-height:60px">
+    버튼을 눌러서 사진이 어떻게 흘러가는지 따라가보세요.
+  </div>
+
+  <div style="display:flex;gap:10px;margin-top:1rem">
+    <button onclick="flowPrev()" style="flex:1;padding:.7rem;border:1px solid var(--border);border-radius:8px;background:var(--card);cursor:pointer;font-size:13px;color:var(--muted)">← 이전</button>
+    <button onclick="flowNext()" style="flex:1;padding:.7rem;border:1px solid var(--accent);border-radius:8px;background:var(--accent);cursor:pointer;font-size:14px;color:#fff;font-weight:600">다음 단계 →</button>
+  </div>
+
+  <div class="hook" style="margin-top:2rem">
+    "문제는 내가 그 사진을 다시 보든 안 보든, 서버는 계속 전기를 쓴다는 거예요. 방치된 데이터에도 청구서는 온다 — 다만 그 청구서는 지구에 간다."
+  </div>
+</section>
+
+<div class="divider" style="max-width:680px;margin:0 auto"></div>
+
+<!-- ── 3. 서버 현황 ── -->
+<section class="chapter reveal" id="s3">
+  <p class="eyebrow">Step 3 — 서버는 어디에?</p>
+  <h2 class="big-title">우리나라에만<br>데이터센터가 <em>150개</em></h2>
+  <p class="lead">국내 데이터센터 전기 계약전력 총합 1,386MW. 경기도 하나만 해도 원자력발전소 절반 수준의 전력을 씁니다.</p>
+
+  <div class="mgrid">
+    <div class="mcard hi">
+      <div class="mcard-label">수도권 집중도</div>
+      <div class="mcard-val">88%</div>
+      <div class="mcard-unit">서울 + 경기</div>
+    </div>
+    <div class="mcard">
+      <div class="mcard-label">총 계약전력</div>
+      <div class="mcard-val">1,386MW</div>
+      <div class="mcard-unit">중소 도시 하나가 쓰는 양</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:.3rem">지역별 데이터센터 전력 규모</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:1rem">단위: MW — 출처: 한국전력공사 (2023)</div>
+    <div id="rbarList"></div>
+  </div>
+
+  <div class="card green" style="font-size:13px;color:#085041;line-height:1.75;margin-top:.5rem">
+    💡 이 전력의 상당 부분은 <strong>화력발전소</strong>에서 옵니다. 한국 전력 1kWh를 만들 때 나오는 탄소는 <strong>417gCO₂</strong>예요 (2023 기준).
+  </div>
+  <p class="source">출처: 한국전력공사 데이터센터 전기공급 현황 (2023.12)</p>
+</section>
+
+<div class="divider" style="max-width:680px;margin:0 auto"></div>
+
+<!-- ── 4. 앞으로 ── -->
+<section class="chapter reveal" id="s4">
+  <p class="eyebrow">Step 4 — 앞으로는?</p>
+  <h2 class="big-title">AI 시대, 전력 소비는<br><em>4배</em>가 된다</h2>
+  <p class="lead">챗GPT 같은 AI 서비스가 폭발적으로 늘면서, 데이터센터가 쓰는 전력도 함께 급증하고 있어요. 2035년이면 지금의 4~5배가 될 전망이에요.</p>
+
+  <div class="card" style="margin-bottom:1rem">
+    <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:.25rem">전 세계 데이터센터 전력소비 전망</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:.8rem">단위: TWh (테라와트시) — 출처: IEA (2025)</div>
+    <div style="display:flex;gap:12px;font-size:11px;color:var(--muted);margin-bottom:.6rem">
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px;vertical-align:middle"></span>친환경 전환 시</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#C0392B;margin-right:4px;vertical-align:middle"></span>지금처럼 간다면</span>
+    </div>
+    <div class="chart-wrap" style="height:220px">
+      <canvas id="ieaChart" role="img" aria-label="IEA 데이터센터 전력소비 전망. 2020년 270TWh에서 2035년 최대 1220TWh로 급증.">2020년 270TWh → 2035년 950~1220TWh.</canvas>
+    </div>
+  </div>
+
+  <div class="card accent">
+    <div style="font-size:13px;font-weight:600;color:#7A4A0A;margin-bottom:.4rem">📌 숫자가 어렵다면 이렇게 생각해요</div>
+    <div style="font-size:13px;color:#5A3A08;line-height:1.75">
+      2020년 기준 전 세계 데이터센터가 쓴 전력 = <strong>270TWh</strong><br>
+      2035년 예상치 = 최대 <strong>1,220TWh</strong><br>
+      → 한국 전체 연간 전력소비의 <strong>2배</strong>가 넘는 양이에요.
+    </div>
+  </div>
+  <p class="source">출처: IEA Energy and AI (2025)</p>
+</section>
+
+<div class="divider" style="max-width:680px;margin:0 auto"></div>
+
+<!-- ── 5. 내가 할 수 있는 것 ── -->
+<section class="chapter reveal" id="s5">
+  <p class="eyebrow">Step 5 — 지금 당장</p>
+  <h2 class="big-title">오늘 할 수 있는<br><em>디지털 다이어트</em></h2>
+  <p class="lead">거창한 게 아니에요. 클릭 몇 번으로 탄소를 줄일 수 있어요. 체크해보세요.</p>
+
+  <div class="checklist" id="checkList">
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <div>
+        <div class="check-title">스팸 메일 100통 삭제하기</div>
+        <div class="check-sub">읽지도 않는 메일이 서버에 쌓여있어요.</div>
+        <div class="co2-saved">절감: 약 400gCO₂ (나무 한 그루가 하루 흡수하는 양)</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <div>
+        <div class="check-title">클라우드 중복·흐릿한 사진 정리하기</div>
+        <div class="check-sub">같은 장면 연사 10장 중 9장은 안 봐요.</div>
+        <div class="co2-saved">절감: 1GB 정리 시 연간 약 3.4kgCO₂</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <div>
+        <div class="check-title">오래된 카톡/단톡방 파일 삭제하기</div>
+        <div class="check-sub">3년 전 단톡방 영상, 아직도 저장되어 있어요.</div>
+        <div class="co2-saved">절감: 10GB 정리 시 연간 약 34kgCO₂</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <div>
+        <div class="check-title">영상 스트리밍 화질 낮추기 (HD → SD)</div>
+        <div class="check-sub">화질 차이는 거의 없고, 탄소는 절반으로 줄어요.</div>
+        <div class="co2-saved">절감: 1시간 시청 시 약 18gCO₂</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box">✓</div>
+      <div>
+        <div class="check-title">구독하지 않는 뉴스레터 수신 거부하기</div>
+        <div class="check-sub">읽지 않는 메일은 지구에 쌓여요.</div>
+        <div class="co2-saved">절감: 월 50통 기준 연간 약 2.4kgCO₂</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="result-box" id="checkResult" style="display:none">
+    <div class="result-label">지금까지 줄인 탄소</div>
+    <div class="result-val" id="savedCo2">0</div>
+    <div class="result-unit">gCO₂ 절감</div>
+    <div class="result-equiv" id="savedEquiv">작은 실천이 쌓이면 달라져요</div>
+  </div>
+</section>
+
+<!-- ── EPILOGUE ── -->
+<section id="ep">
+  <div class="ep-inner">
+    <p class="eyebrow">마치며</p>
+    <h2 class="big-title">디지털은 깨끗하지 않다</h2>
+    <p class="lead">연기도 없고, 쓰레기도 없어 보이지만 — 우리의 데이터는 물리적인 세계와 연결되어 있어요.</p>
+    <div class="mgrid" style="text-align:left">
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:1rem">
+        <div style="font-size:11px;color:#888884;margin-bottom:.4rem">전 세계 데이터센터<br>탄소 배출 비중</div>
+        <div style="font-family:Georgia,serif;font-size:1.7rem;color:#F0F0EC">~1%</div>
+        <div style="font-size:11px;color:#666662;margin-top:.2rem">전 세계 항공산업과 비슷</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:1rem">
+        <div style="font-size:11px;color:#888884;margin-bottom:.4rem">2035년 예상 전력 소비</div>
+        <div style="font-family:Georgia,serif;font-size:1.7rem;color:#F0F0EC">1,220TWh</div>
+        <div style="font-size:11px;color:#666662;margin-top:.2rem">지금의 4.5배</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:1rem">
+        <div style="font-size:11px;color:#888884;margin-bottom:.4rem">한국인 하루<br>디지털 탄소 배출</div>
+        <div style="font-family:Georgia,serif;font-size:1.7rem;color:#F0F0EC">~200g</div>
+        <div style="font-size:11px;color:#666662;margin-top:.2rem">CO₂ 추정치</div>
+      </div>
+    </div>
+    <p class="ep-quote">
+      "우리가 방치한 데이터는<br>
+      지금 이 순간도 지구 어딘가의 서버실에서<br>
+      전기를 소비하며 탄소를 만들고 있다."
+    </p>
+  </div>
+</section>
+
+<script>
+// 진행 바
+window.addEventListener('scroll',()=>{
+  const p=window.scrollY/(document.body.scrollHeight-window.innerHeight)*100;
+  document.getElementById('pbar').style.width=Math.min(p,100)+'%';
+  updateNav();
+});
+
+const secs=['s0','s1','s2','s3','s4','s5'];
+function updateNav(){
+  const steps=document.querySelectorAll('.nav-step');
+  secs.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    const r=el.getBoundingClientRect();
+    steps[i].className='nav-step';
+    if(r.bottom<0) steps[i].classList.add('done');
+    else if(r.top<=window.innerHeight/2) steps[i].classList.add('active');
+  });
+}
+
+// reveal
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// 슬라이더 계산
+function calc(){
+  const photo=+document.getElementById('s_photo').value;
+  const video=+document.getElementById('s_video').value;
+  const email=+document.getElementById('s_email').value;
+  const cloud=+document.getElementById('s_cloud').value;
+
+  document.getElementById('v1').textContent=photo+'장';
+  document.getElementById('v2').textContent=video+'시간';
+  document.getElementById('v3').textContent=email+'통';
+  document.getElementById('v4').textContent=cloud+'GB';
+
+  // 탄소 계산 (gCO2)
+  const co2=Math.round(photo*3 + video*36 + email*4 + cloud*1000*0.0034/365*1000);
+  document.getElementById('co2val').textContent=co2.toLocaleString();
+
+  let equiv='';
+  if(co2<50) equiv='🌱 아메리카노 한 잔 만드는 탄소(약 21g)보다 조금 많아요';
+  else if(co2<200) equiv='🚗 자동차로 약 '+Math.round(co2/120*1000)+'m 달리는 것과 같아요';
+  else if(co2<500) equiv='🌳 나무 한 그루가 '+Math.round(co2/5)+'일 동안 흡수하는 양이에요';
+  else equiv='✈️ 서울↔부산 비행기 탑승의 약 '+((co2/55000)*100).toFixed(1)+'%에 해당해요';
+  document.getElementById('co2equiv').textContent=equiv;
+}
+calc();
+
+// 플로우 애니메이션
+const flowDescs=[
+  '📱 <strong>내 폰에서 사진을 전송하는 순간</strong> — 데이터는 빛의 속도로 인터넷을 타고 날아가요.',
+  '☁️ <strong>카카오 서버에 저장됩니다</strong> — 상대방이 받았어도, 원본은 서버에 그대로 남아요.',
+  '🖥 <strong>데이터센터에 보관됩니다</strong> — 수천 대의 서버가 24시간 돌아가는 거대한 건물이에요.',
+  '⚡ <strong>서버는 계속 전기를 씁니다</strong> — 내가 그 사진을 다시 보든 안 보든, 서버는 멈추지 않아요.',
+  '💨 <strong>탄소가 배출됩니다</strong> — 전기를 만들기 위해 발전소가 돌아가고, 탄소가 나와요. 사진 한 장에 약 3gCO₂예요.',
+];
+let flowStep=-1;
+function flowNext(){
+  if(flowStep<4) flowStep++;
+  updateFlow();
+}
+function flowPrev(){
+  if(flowStep>-1) flowStep--;
+  updateFlow();
+}
+function updateFlow(){
+  for(let i=0;i<5;i++){
+    const n=document.getElementById('fn'+i);
+    n.className='flow-node';
+    if(i===flowStep){
+      n.classList.add('lit');
+      if(i===3) n.classList.add('hot');
+      if(i===4) n.classList.add('danger');
+    }
+  }
+  const desc=document.getElementById('flowDesc');
+  if(flowStep===-1) desc.innerHTML='버튼을 눌러서 사진이 어떻게 흘러가는지 따라가보세요.';
+  else desc.innerHTML=flowDescs[flowStep];
+}
+
+// 지역 바
+const regions=[
+  {n:'경기',mw:681},{n:'서울',mw:653},{n:'부울경',mw:179},
+  {n:'대전충남',mw:162},{n:'강원',mw:85},{n:'인천',mw:69},
+  {n:'대구경북',mw:63},{n:'광주전남',mw:62},{n:'충북',mw:30},{n:'전북',mw:2}
+];
+const rl=document.getElementById('rbarList');
+regions.forEach(r=>{
+  const p=Math.round(r.mw/681*100);
+  rl.innerHTML+=`<div class="rbar-row">
+    <span class="rbar-name">${r.n}</span>
+    <div class="rbar-bg"><div class="rbar-fill" style="width:${p}%"></div></div>
+    <span class="rbar-mw">${r.mw}MW</span>
+  </div>`;
+});
+
+// IEA 차트
+new Chart(document.getElementById('ieaChart'),{
+  type:'line',
+  data:{
+    labels:[2020,2022,2024,2026,2028,2030,2032,2035],
+    datasets:[
+      {label:'친환경 전환',data:[270,320,430,560,740,840,910,950],borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,.07)',fill:true,tension:.3,pointRadius:3,borderWidth:2},
+      {label:'지금처럼',data:[270,320,430,560,780,980,1120,1220],borderColor:'#C0392B',backgroundColor:'rgba(192,57,43,.05)',fill:true,tension:.3,borderDash:[5,3],pointRadius:3,borderWidth:2}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#999',font:{size:11}},grid:{display:false}},
+      y:{ticks:{color:'#999',font:{size:11},callback:v=>v+'TWh'},grid:{color:'rgba(0,0,0,.05)'}}
+    }
+  }
+});
+
+// 체크리스트
+const savings=[400, 3400, 34000, 18*30, 2400];
+function toggleCheck(el){
+  el.classList.toggle('done');
+  const box=el.querySelector('.check-box');
+  box.textContent=el.classList.contains('done')?'✓':'';
+  updateSaved();
+}
+function updateSaved(){
+  const items=document.querySelectorAll('.check-item');
+  let total=0;
+  items.forEach((el,i)=>{if(el.classList.contains('done')) total+=savings[i];});
+  const res=document.getElementById('checkResult');
+  if(total>0){
+    res.style.display='block';
+    document.getElementById('savedCo2').textContent=total.toLocaleString();
+    const trees=Math.round(total/5);
+    document.getElementById('savedEquiv').textContent='나무 '+trees+'그루가 하루 흡수하는 양을 줄였어요 🌱';
+  } else {
+    res.style.display='none';
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>12주차 과제 - 포장지를 사는 사람들: 기호소비와 공간의 계급화</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@600;700;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-sunny: #faf8f5;        
+            --bg-card: #ffffff;         
+            --primary: #0f766e;         
+            --primary-light: #ccfbf1;   
+            --accent-orange: #ea580c;   
+            --text-dark: #0f172a;       
+            --text-muted: #475569;      
+            --border: #e2e8f0;
+            --card-shadow: 0 20px 40px rgba(15, 118, 110, 0.05);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-sunny);
+            color: var(--text-dark);
+            font-family: 'Noto Sans KR', sans-serif;
+            line-height: 1.8;
+            padding: 0 0 120px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .assignment-header {
+            width: 100%;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.01);
+        }
+        .assignment-info h3 { font-size: 16px; color: var(--primary); }
+        .assignment-info p { font-size: 13px; color: var(--text-muted); }
+
+        .hero-banner {
+            width: 100%;
+            min-height: 40vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 20px;
+            background: radial-gradient(circle at 15% 20%, rgba(15, 118, 110, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 85% 75%, rgba(234, 88, 12, 0.05) 0%, transparent 40%);
+        }
+        .hero-banner h1 { font-size: 46px; font-weight: 800; line-height: 1.4; margin-bottom: 25px; letter-spacing: -1.5px; }
+        .hero-banner h1 span { color: var(--accent-orange); position: relative; z-index: 1; }
+        .hero-banner h1 span::after { content: ''; position: absolute; bottom: 6px; left: 0; width: 100%; height: 14px; background-color: #ffedd5; z-index: -1; border-radius: 4px; }
+        .hero-banner p { font-size: 18px; color: var(--text-muted); max-width: 850px; font-weight: 500; text-align: center; line-height: 1.7; word-break: keep-all; }
+        .hero-banner p strong { color: var(--text-dark); }
+
+        .story-container { width: 100%; max-width: 1050px; padding: 0 20px; display: flex; flex-direction: column; gap: 70px; }
+
+        .director-matrix-box {
+            background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
+            border: 2px dashed var(--accent-orange);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--card-shadow);
+        }
+        .director-matrix-box h3 { font-size: 22px; color: var(--accent-orange); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .hypothesis-list { margin-top: 15px; list-style: none; }
+        .hypothesis-list li { font-size: 17px; color: var(--text-dark); margin-bottom: 10px; font-weight: 500; }
+        .hypothesis-list li i { color: var(--primary); margin-right: 10px; }
+
+        .story-card {
+            background-color: var(--bg-card);
+            border: 1px solid rgba(15, 118, 110, 0.06);
+            border-radius: 28px;
+            padding: 50px 55px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .section-tag { display: inline-block; align-self: flex-start; background-color: #fff7ed; color: var(--accent-orange); padding: 6px 16px; border-radius: 50px; font-size: 14px; font-weight: 700; border: 1px solid rgba(234, 88, 12, 0.2); }
+        .story-card h2 { font-size: 30px; font-weight: 700; color: var(--text-dark); line-height: 1.4; word-break: keep-all; }
+        .story-card h2 em { font-style: normal; color: var(--primary); }
+        .story-card p.context { font-size: 18px; color: var(--text-muted); font-weight: 400; word-break: keep-all; line-height: 1.6; }
+
+        .visual-frame { background-color: #fbfbf9; border-radius: 20px; padding: 35px; border: 1px solid #f1f1ee; }
+
+        /* 예측 시나리오 박스 스타일 */
+        .prediction-split { display: flex; gap: 24px; margin-top: 10px; }
+        .predict-box { flex: 1; padding: 35px 30px; border-radius: 20px; text-align: center; border: 1px solid var(--border); box-shadow: 0 10px 20px rgba(0,0,0,0.02); }
+        .predict-box.up { background-color: #f8fafc; border-top: 5px solid var(--primary); }
+        .predict-box.down { background-color: #fff7ed; border-top: 5px solid var(--accent-orange); }
+        .predict-box h4 { font-size: 22px; font-weight: 700; color: var(--text-dark); margin-bottom: 15px; }
+        .predict-box .trend-icon { font-size: 36px; margin-bottom: 15px; }
+        .predict-box.up .trend-icon { color: var(--primary); }
+        .predict-box.down .trend-icon { color: var(--accent-orange); }
+        .predict-box p { font-size: 16px; color: var(--text-muted); line-height: 1.6; word-break: keep-all; text-align: justify; }
+
+        .table-brick { border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+        .research-table { width: 100%; border-collapse: collapse; font-size: 15px; text-align: left; }
+        .research-table th { background-color: #f8fafc; color: var(--text-dark); font-weight: 700; padding: 18px 20px; border-bottom: 3px solid #ffedd5; }
+        .research-table td { padding: 18px 20px; border-bottom: 1px solid #f1f5f9; line-height: 1.5; }
+        .research-table tr:hover td { background-color: #fff7ed; }
+
+        .sunny-outro {
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent-orange) 0%, #9a3412 100%);
+            color: #ffffff;
+            padding: 50px;
+            border-radius: 28px;
+            box-shadow: 0 15px 30px rgba(234, 88, 12, 0.15);
+        }
+        .sunny-outro blockquote { font-size: 22px; font-weight: 500; line-height: 1.6; word-break: keep-all; }
+
+        /* 반응형 처리 */
+        @media (max-width: 768px) {
+            .prediction-split { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="assignment-header">
+        <div class="assignment-info">
+            <h3>융합데이터시각화 기말과제</h3>
+            <p>경제학과 신동진</p>
+        </div>
+    </div>
+
+    <header class="hero-banner">
+        <h1>장 보드리야르의 <span>'기호 소비':</span>공간의 계급화</h1>
+        <p>
+            보여지는 것을 중요시하는 현대사회에서서는 껍데기를 비싼값에 소비합니다. 저는 이 보이지 않는 껍데기인 기호의 위력을 '부동산 실거래가 데이터'를 통해 완벽히 증명하고자 합니다.
+        </p>
+    </header>
+
+    <main class="story-container">
+
+        <div class="story-card">
+            <span class="section-tag">INTRO. 일상의 선 긋기</span>
+            <h2>도로 하나를 둔 <em>두 동네의 기묘한 장벽</em></h2>
+            <p class="context">
+                영등포구 신길동과 대림동. 길 하나를 사이에 둔 두 동네의 집값은 약 1.5배 차이가 납니다. 신길동은 왜 대림동과의 학군 통합을 그토록 두려워할까요? <strong>'이름표'가 섞이는 순간, 내 자산의 프리미엄 기호가 무너진다는 경제적 공포 때문입니다.</strong>
+            </p>
+            
+            <div class="visual-frame">
+                <div class="flourish-embed flourish-chart" data-src="visualisation/29229674">
+                    <script src="https://public.flourish.studio/resources/embed.js"></script>
+                    <noscript>
+                        <img src="https://public.flourish.studio/visualisation/29229674/thumbnail" width="100%" alt="chart visualization" />
+                    </noscript>
+                </div>
+            </div>
+        </div>
+
+        <div class="director-matrix-box" id="research-design">
+            <h3><i class="fa-solid fa-lightbulb"></i> 핵심 가설 : "지명(기호)이 섞이면 자산 가치도 섞인다"</h3>
+            <p style="font-size: 16px; color: var(--text-muted); line-height: 1.6; margin-bottom: 10px;">신길동 주민들의 공포는 과연 합리적일까요? 우리는 과거의 명확한 실증 사례 두 가지를 짚어봅니다.</p>
+            <ul class="hypothesis-list">
+                <li><i class="fa-solid fa-arrow-trend-up"></i> <strong>상승 사례:</strong> 기호를 무상으로 획득한 '포이동 ➔ 개포동'</li>
+                <li><i class="fa-solid fa-arrow-trend-down"></i> <strong>하락 사례:</strong> 기호가 강제로 희석되었던 '부천 중동'</li>
+            </ul>
+        </div>
+
+        <div class="story-card">
+            <span class="section-tag">CASE 01. 포이동사태</span>
+            <h2>간판 교체 직후 벌어진 <em>소름 돋는 시세 동기화</em></h2>
+            <p class="context">
+                첫 번째 사례로 과거 강남구 낙후 지역이던 '포이동'이 부촌 '개포동'으로 편입된 사건입니다. 땅의 물리적 위치는 100% 동일했습니다. 바뀐 것은 오직 주소창의 '세 글자'뿐이었습니다. 2008년 지명 통합 직후, 저평가되던 포이동의 실거래가는 기존 개포동 시세를 무섭게 추격합니다. 사람들은 땅의 물리적 가치가 아닌 <strong>'개포'라는 사회적 지위의 간판 값으로 많은돈을 지불</strong>했습니다.
+            </p>
+            
+            <div class="visual-frame">
+                <div class="flourish-embed flourish-chart" data-src="visualisation/29229865">
+                    <script src="https://public.flourish.studio/resources/embed.js"></script>
+                    <noscript>
+                        <img src="https://public.flourish.studio/visualisation/29229865/thumbnail" width="100%" alt="chart visualization" />
+                    </noscript>
+                </div>
+            </div>
+        </div>
+
+        <div class="story-card">
+            <span class="section-tag">CASE 01. 포이동사태</span>
+            <h2>단지 착시가 아닌 <em>지역 생태계의 상향 평준화</em></h2>
+            <p class="context">
+                특정 고가 단지의 착시가 아닙니다. 가격 분포의 꼬리 자체가 통째로 우측(상향) 이동했습니다. <strong>'개포'라는 기호가 지역 전체의 자산 평가를 지배</strong>했음을 증명하는 분포도입니다.
+            </p>
+            
+            <div class="visual-frame">
+                <div class="flourish-embed flourish-chart" data-src="visualisation/29237805">
+                    <script src="https://public.flourish.studio/resources/embed.js"></script>
+                    <noscript>
+                        <img src="https://public.flourish.studio/visualisation/29237805/thumbnail" width="100%" alt="chart visualization" />
+                    </noscript>
+                </div>
+            </div>
+        </div>
+
+        <div class="story-card">
+            <span class="section-tag">CASE 02.부천 중동 사태</span>
+            <h2>오염된 기호, <em>그리고 남겨진 영원한 흉터</em></h2>
+            <p class="context">
+                다음으로 부천중동의 행정 통합 사건입니다. 한때 부천 중동은 탁월한 서울 접근성과 완벽하게 계획된 1기 신도시의 인프라 때문에 주목받았었지만 2019년 원미구, 소사구, 오정구가 10개의 광역동으로 행정이 통합되며 기존에 '원미구 중동'이라는 독자적인 브랜드로 누리던 가치가, 다른 동네들과 희석되어 버린 것입니다. 이로 인해 <strong>투자자들에게 중동만의 특별한 매력이 사라졌고, 결과적으로 상승세가 더뎌졌습니다.</strong>
+            </p>
+            
+            <div class="visual-frame">
+                <div class="flourish-embed flourish-chart" data-src="visualisation/29238650">
+                    <script src="https://public.flourish.studio/resources/embed.js"></script>
+                    <noscript>
+                        <img src="https://public.flourish.studio/visualisation/29238650/thumbnail" width="100%" alt="chart visualization" />
+                    </noscript>
+                </div>
+            </div>
+        </div>
+
+        <div class="story-card">
+            <span class="section-tag">CONCLUSION</span>
+            <h2>부동산 기호 가치 법칙의 양면성</h2>
+            
+            <div class="table-brick">
+                <table class="research-table">
+                    <thead>
+                        <tr>
+                            <th>분석 사례</th>
+                            <th>도구적 변수 (X)</th>
+                            <th>자산 결과 (Y)</th>
+                            <th>기호소비 관점의 해석</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>포이동</strong></td>
+                            <td>개포동 행정구역 편입</td>
+                            <td style="color:var(--primary); font-weight:700;">기존 부촌 시세 추격</td>
+                            <td>상류층의 기호를 무상으로 획득하여 이루어진 <strong>동기화 및 가치 세탁</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>부천 중동</strong></td>
+                            <td>광역동 통합 후 더딘 상승세</td>
+                            <td style="color:var(--accent-orange); font-weight:700;">통합 후 가치하락</td>
+                            <td>행정구역 통합으로 인해 고유의 독점적 브랜드 기호와 가치가 <strong>훼손됨</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="story-card">
+            <span class="section-tag">PREDICTION. 미래 시나리오</span>
+            <h2>학군 통합 시뮬레이션: <em>누가 얻고, 누가 잃는가?</em></h2>
+            <p class="context">
+                지금까지 살펴본 두 가지 실증 사례(포이동의 획득, 중동의 훼손)의 논리를 그대로 적용하여, 만약 <strong>신길동과 대림동의 학군이 강제로 통합될 경우 벌어질 자산 가치의 변동</strong>을 시뮬레이션 해보았습니다.
+            </p>
+            
+            <div class="prediction-split">
+                <div class="predict-box up">
+                    <i class="fa-solid fa-arrow-trend-up trend-icon"></i>
+                    <h4>대림동 (수혜자)</h4>
+                    <p>포이동이 개포동의 간판을 얻어 시세가 폭등했듯, 신길뉴타운의 프리미엄 학군 이미지를 무상으로 획득하게 됩니다. 땅의 위치적 가치와 무관하게 <strong>자산 가치가 상향 동기화될 확률이 높습니다.</strong></p>
+                </div>
+                <div class="predict-box down">
+                    <i class="fa-solid fa-arrow-trend-down trend-icon"></i>
+                    <h4>신길동 (피해자)</h4>
+                    <p>부천 중동의 사례처럼, <strong>그들만의 프리미엄이었던 학군 이미지가 희석되면서 자산 가치의 하향 평준화 위험에 직면하게 됩니다.</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="sunny-outro">
+            <blockquote>
+                "장 보드리야르는 현대 소비를 실체가 아닌 '기호의 소비'로 정의했습니다.<br>부동산 시장에서도 마찬가지로, 지역의 이름은 단순한 지명이 아니라<br>해당 입지가 가진 차별성을 보증하는 기호로 작동합니다."
+            </blockquote>
+        </div>
+
+    </main>
+
+</body>
+</html>
