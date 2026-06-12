@@ -297,9 +297,9 @@
             본 대시보드의 데이터는 <strong>세계불평등데이터베이스(WID), OECD 더 나은 삶 지수(BLI), 세계행복보고서(WHR)</strong> 등 3개의 이종 데이터셋을 통합하여 구축되었습니다. 
             데이터 무결성을 위해 국가 코드(ISO-3166)를 표준화한 뒤, 3개 자료에 모두 존재하는 국가만 추출하는 내부 조인(Inner Join) 연산을 수행하여 통계적 편향을 통제했습니다.
           </p>
-          <h3 style="margin-top: 1.5rem;">스케일링 및 결측치 대체 (Scaling & Imputation)</h3>
+          <h3 style="margin-top: 1.5rem;">스케일링 및 결측치 대체</h3>
           <p>
-            서로 다른 측정 단위를 가진 지표들을 비교하기 위해 <strong>최소-최대 정규화(Min-Max Normalization)</strong>를 적용했습니다 ($X_{norm} = \frac{X - X_{min}}{X_{max} - X_{min}}$). 
+            서로 다른 측정 단위를 가진 지표들을 비교하기 위해 <strong>최소-최대 정규화(Min-Max Normalization)</strong>를 적용했습니다. 
             또한 누락된 데이터는 다차원 특성 공간에서 유클리디안 거리(Euclidean Distance)가 가장 가까운 국가들의 특성을 차용하는 <strong>k-NN 결측치 대체 알고리즘</strong>을 활용하여 보완했습니다.
           </p>
         </div>
