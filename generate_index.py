@@ -22,6 +22,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 ROSTER = ROOT / "roster.csv"
+BASE_URL = "https://desunny.github.io/dataviz-mju"   # 사이트 기준 URL (sitemap·canonical·OG)
 CLASS_LABELS = {"12": "12시 수업", "15": "15시 수업"}
 TITLE_RE = re.compile(r"<title[^>]*>(.*?)</title>", re.IGNORECASE | re.DOTALL)
 
@@ -111,7 +112,7 @@ def render(data) -> str:
         for g in cards_by_group
     )
     total = sum(g["count"] for g in cards_by_group)
-    return TEMPLATE.format(tabs=tabs, panels=panels, total=total)
+    return TEMPLATE.format(tabs=tabs, panels=panels, total=total, base=BASE_URL)
 
 
 TEMPLATE = """<!DOCTYPE html>
@@ -119,11 +120,62 @@ TEMPLATE = """<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>융합데이터 시각화 · 명지대학교 2026</title>
-<meta name="description" content="융합데이터시각화: 인문학적 통찰과 데이터의 만남 — 명지대학교 2026학년도 1학기. 학생 데이터 시각화 작품 포트폴리오.">
+<title>융합데이터시각화 학생 포트폴리오 · 명지대학교 2026</title>
+<meta name="description" content="융합데이터시각화: 인문학적 통찰과 데이터의 만남 — 명지대학교 2026학년도 1학기. 학생들이 만든 데이터 시각화 작품 포트폴리오 갤러리.">
+<meta name="keywords" content="데이터 시각화, 융합데이터시각화, 명지대학교, 데이터 리터러시, Flourish, 포트폴리오, 인포그래픽, data visualization">
+<meta name="author" content="명지대학교 융합데이터시각화 (최예신)">
+<link rel="canonical" href="{base}/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#b5612f">
+<!-- Open Graph (카카오톡·페이스북·슬랙 링크 미리보기) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="명지대학교 융합데이터시각화">
+<meta property="og:title" content="융합데이터시각화 학생 포트폴리오 · 명지대학교 2026">
+<meta property="og:description" content="인문학적 통찰과 데이터의 만남. 학생들이 만든 데이터 시각화 작품 갤러리.">
+<meta property="og:url" content="{base}/">
+<meta property="og:image" content="{base}/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="융합데이터시각화 학생 포트폴리오 · 명지대학교 2026">
+<meta name="twitter:description" content="인문학적 통찰과 데이터의 만남. 학생들이 만든 데이터 시각화 작품 갤러리.">
+<meta name="twitter:image" content="{base}/og-image.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{{
+  "@context": "https://schema.org",
+  "@graph": [
+    {{
+      "@type": "EducationalOrganization",
+      "name": "명지대학교 융합데이터시각화",
+      "url": "{base}/",
+      "description": "데이터를 읽고, 쓰고, 말하는 새로운 언어를 배우는 명지대학교 융합데이터시각화 수업."
+    }},
+    {{
+      "@type": "Course",
+      "name": "융합데이터시각화",
+      "description": "인문학적 통찰과 데이터의 만남. 시각 지각 원리·디자인 윤리·Flourish·AI 활용 데이터 전처리부터 기말 포트폴리오까지.",
+      "courseCode": "2026-1",
+      "inLanguage": "ko",
+      "provider": {{"@type": "CollegeOrUniversity", "name": "명지대학교"}},
+      "instructor": {{"@type": "Person", "name": "최예신"}}
+    }},
+    {{
+      "@type": "CollectionPage",
+      "name": "융합데이터시각화 학생 작품 갤러리",
+      "url": "{base}/",
+      "isPartOf": {{"@type": "WebSite", "name": "명지대학교 융합데이터시각화", "url": "{base}/"}}
+    }}
+  ]
+}}
+</script>
 <style>
 *{{margin:0;padding:0;box-sizing:border-box}}
 :root{{
@@ -283,6 +335,7 @@ footer .fmeta{{margin-top:24px;font-size:13px;color:#7d776c}}
   </div>
 </header>
 
+<main>
 <!-- PHILOSOPHY -->
 <section class="philo" id="philosophy">
   <div class="inner">
@@ -437,6 +490,7 @@ footer .fmeta{{margin-top:24px;font-size:13px;color:#7d776c}}
     <p class="empty" id="empty">검색 결과가 없습니다.</p>
   </div>
 </section>
+</main>
 
 <footer>
   <p class="fq serif">데이터의 숲에서 길을 찾는 안내자가 되십시오.</p>
@@ -478,6 +532,27 @@ if(tabs.length)activate(tabs[0].dataset.target);
 """
 
 
+def write_seo_files(data):
+    """robots.txt와 sitemap.xml을 생성한다 (index + 작품 35개 포함)."""
+    (ROOT / "robots.txt").write_text(
+        f"User-agent: *\nAllow: /\n\nSitemap: {BASE_URL}/sitemap.xml\n",
+        encoding="utf-8",
+    )
+    urls = [f"{BASE_URL}/"]
+    for year in data:
+        for cls, students in data[year].items():
+            for s in students:
+                urls.append(f"{BASE_URL}/{s['href']}")
+    items = "\n".join(f"  <url><loc>{u}</loc></url>" for u in urls)
+    sitemap = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{items}\n</urlset>\n"
+    )
+    (ROOT / "sitemap.xml").write_text(sitemap, encoding="utf-8")
+    return len(urls)
+
+
 def main():
     data = scan()
     if not data:
@@ -485,8 +560,10 @@ def main():
         return
     out = ROOT / "index.html"
     out.write_text(render(data), encoding="utf-8")
+    n_urls = write_seo_files(data)
     total = sum(len(s) for y in data.values() for s in y.values())
     print(f"✅ index.html 생성 완료 — 작품 {total}개")
+    print(f"✅ robots.txt / sitemap.xml 생성 — URL {n_urls}개")
     for year, classes in data.items():
         for cname, students in classes.items():
             print(f"   {year} · {CLASS_LABELS.get(cname, cname)}: {len(students)}명")

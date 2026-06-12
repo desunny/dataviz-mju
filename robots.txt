@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://desunny.github.io/dataviz-mju/sitemap.xml
