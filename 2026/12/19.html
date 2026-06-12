@@ -11,9 +11,9 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 :root{
-  --bg:#020b14;--bg2:#04111d;--panel:#061622;--panel2:#081d2c;
-  --border:#0f2030;--border2:#172e42;--border3:#1e3a52;
-  --text:#c8d8e8;--text2:#6888a0;--text3:#3a5468;
+  --bg:#04111e;--bg2:#0a1c2e;--panel:#0e2336;--panel2:#133250;
+  --border:#27425a;--border2:#345674;--border3:#436b90;
+  --text:#e4eef8;--text2:#a3bace;--text3:#7896af;
   --orange:#ff9f00;--orange-dim:rgba(255,159,0,.1);
   --green:#00d084;--green-dim:rgba(0,208,132,.1);
   --red:#ff3d5a;--red-dim:rgba(255,61,90,.1);
@@ -395,11 +395,11 @@ function showTip(e,html){tipEl.innerHTML=html;tipEl.style.display='block';const 
 function hideTip(){tipEl.style.display='none';}
 
 // Bloomberg-style Chart.js defaults
-Chart.defaults.color='#3a5468';
+Chart.defaults.color='#8ba8c0';
 Chart.defaults.font.family="'IBM Plex Mono', 'IBM Plex Sans KR', monospace";
 Chart.defaults.font.size=10;
-const GRID={color:'rgba(15,32,48,.8)',lineWidth:1};
-const C_RATE='#2196f3',C_DEP='#ff9f00',C_LOAN='#9c6fe4',C_BEFORE='#3a5468',C_AFTER='#ff9f00',C_NEWS='#00b4d8',C_ECON='#536878';
+const GRID={color:'rgba(44,68,92,.55)',lineWidth:1};
+const C_RATE='#2196f3',C_DEP='#ff9f00',C_LOAN='#9c6fe4',C_BEFORE='#8ba8c0',C_AFTER='#ff9f00',C_NEWS='#00b4d8',C_ECON='#536878';
 const charts={};
 function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
 
@@ -475,14 +475,14 @@ function renderSlopeChart(){
       layout:{padding:{left:90,right:90,top:10,bottom:10}},
       scales:{
         x:{
-          grid:{color:'rgba(15,32,48,.8)',lineWidth:1},
-          ticks:{color:'#6888a0',font:{size:12,weight:'bold'}},
-          border:{color:'#0f2030'}
+          grid:{color:'rgba(44,68,92,.55)',lineWidth:1},
+          ticks:{color:'#a9c1d5',font:{size:12,weight:'bold'}},
+          border:{color:'#2c465d'}
         },
         y:{
-          grid:{color:'rgba(15,32,48,.8)',lineWidth:1},
-          ticks:{callback:v=>fmt(v),maxTicksLimit:6,color:'#3a5468',font:{size:10}},
-          border:{color:'#0f2030'}
+          grid:{color:'rgba(44,68,92,.55)',lineWidth:1},
+          ticks:{callback:v=>fmt(v),maxTicksLimit:6,color:'#8ba8c0',font:{size:10}},
+          border:{color:'#2c465d'}
         }
       },
       plugins:{
@@ -530,7 +530,7 @@ function renderSlopeChart(){
           c.textAlign='right';
           c.fillText(d.label, x0-16, lY+4);
           c.font='9px "IBM Plex Mono"';
-          c.fillStyle='#6888a0';
+          c.fillStyle='#a9c1d5';
           c.fillText(fmt(d.mb), x0-16, lY+16);
           // 오른쪽 레이블
           c.font='bold 11px "IBM Plex Mono"';
@@ -539,7 +539,7 @@ function renderSlopeChart(){
           const pct=(d.pct>0?'+':'')+d.pct+'%';
           c.fillText(pct, x1+16, rY+4);
           c.font='9px "IBM Plex Mono"';
-          c.fillStyle='#6888a0';
+          c.fillStyle='#a9c1d5';
           c.fillText(fmt(d.ma), x1+16, rY+16);
           c.restore();
         });
@@ -569,11 +569,11 @@ function renderDumbbellChart(){
       indexAxis:'y',responsive:true,maintainAspectRatio:false,
       animation:{duration:600},
       scales:{
-        x:{grid:{...GRID},ticks:{callback:v=>fmt(v),maxTicksLimit:5,color:'#3a5468'},border:{color:'#0f2030'}},
-        y:{grid:{color:'transparent'},ticks:{color:'#6888a0',font:{size:11}},border:{color:'#0f2030'}}
+        x:{grid:{...GRID},ticks:{callback:v=>fmt(v),maxTicksLimit:5,color:'#8ba8c0'},border:{color:'#2c465d'}},
+        y:{grid:{color:'transparent'},ticks:{color:'#a9c1d5',font:{size:11}},border:{color:'#2c465d'}}
       },
       plugins:{
-        legend:{display:true,position:'top',labels:{color:'#6888a0',boxWidth:10,boxHeight:10,padding:16,font:{size:10}}},
+        legend:{display:true,position:'top',labels:{color:'#a9c1d5',boxWidth:10,boxHeight:10,padding:16,font:{size:10}}},
         tooltip:{
           backgroundColor:'#081d2c',borderColor:'#1e3a52',borderWidth:1,
           titleColor:'#e8f4ff',bodyColor:'#c8d8e8',padding:10,cornerRadius:1,
@@ -618,11 +618,11 @@ function renderGroupChart(canvasId='cGroup'){
     options:{
       responsive:true,maintainAspectRatio:false,animation:{duration:600},
       scales:{
-        x:{grid:{color:'transparent'},ticks:{color:'#6888a0',font:{size:11}},border:{color:'#0f2030'}},
-        y:{grid:{...GRID},ticks:{callback:v=>fmt(v),maxTicksLimit:5,color:'#3a5468'},border:{color:'#0f2030'}}
+        x:{grid:{color:'transparent'},ticks:{color:'#a9c1d5',font:{size:11}},border:{color:'#2c465d'}},
+        y:{grid:{...GRID},ticks:{callback:v=>fmt(v),maxTicksLimit:5,color:'#8ba8c0'},border:{color:'#2c465d'}}
       },
       plugins:{
-        legend:{display:true,position:'top',labels:{color:'#6888a0',boxWidth:10,boxHeight:10,padding:16,font:{size:10}}},
+        legend:{display:true,position:'top',labels:{color:'#a9c1d5',boxWidth:10,boxHeight:10,padding:16,font:{size:10}}},
         tooltip:{
           backgroundColor:'#081d2c',borderColor:'#1e3a52',borderWidth:1,
           titleColor:'#e8f4ff',bodyColor:'#c8d8e8',padding:10,cornerRadius:1,
@@ -644,7 +644,7 @@ function renderGroupChart(canvasId='cGroup'){
         pairs.forEach((p,i)=>{
           c.save();
           c.font='9px "IBM Plex Mono"';
-          c.fillStyle='#3a5468';
+          c.fillStyle='#8ba8c0';
           c.textAlign='center';
           const cx=x.getPixelForValue(i);
           c.fillText(`전 n=${p.g.nb}`,cx-16,chart.chartArea.bottom+24);
@@ -694,15 +694,15 @@ function renderDailyChart(){
       scales:{
         x:{
           grid:{...GRID},
-          ticks:{color:'#3a5468',font:{size:10},autoSkip:false,maxRotation:0,
+          ticks:{color:'#8ba8c0',font:{size:10},autoSkip:false,maxRotation:0,
             callback:(v,i)=>{if(i===evtIdx)return '★5/28';return labels[i];}
           },
-          border:{color:'#0f2030'}
+          border:{color:'#2c465d'}
         },
-        y:{grid:{...GRID},ticks:{color:'#3a5468',stepSize:5,font:{size:10}},border:{color:'#0f2030'},title:{display:true,text:'영상 수',color:'#3a5468',font:{size:10}}}
+        y:{grid:{...GRID},ticks:{color:'#8ba8c0',stepSize:5,font:{size:10}},border:{color:'#2c465d'},title:{display:true,text:'영상 수',color:'#8ba8c0',font:{size:10}}}
       },
       plugins:{
-        legend:{display:true,position:'top',labels:{color:'#6888a0',boxWidth:10,boxHeight:10,padding:16,font:{size:10},usePointStyle:true,pointStyle:'circle'}},
+        legend:{display:true,position:'top',labels:{color:'#a9c1d5',boxWidth:10,boxHeight:10,padding:16,font:{size:10},usePointStyle:true,pointStyle:'circle'}},
         tooltip:{
           backgroundColor:'#081d2c',borderColor:'#1e3a52',borderWidth:1,
           titleColor:'#e8f4ff',bodyColor:'#c8d8e8',padding:10,cornerRadius:1,
@@ -751,8 +751,8 @@ function renderBoxPlot(){
     options:{
       responsive:true,maintainAspectRatio:false,animation:{duration:0},layout:{padding:{bottom:52}},
       scales:{
-        x:{type:'linear',min:-0.5,max:5.5,grid:{color:'transparent'},ticks:{display:false},border:{color:'#0f2030'}},
-        y:{min:minV,max:maxV,grid:{...GRID},ticks:{callback:v=>v.toFixed(1),maxTicksLimit:7,color:'#3a5468',font:{size:10}},border:{color:'#0f2030'},title:{display:true,text:'log(조회수+1)',color:'#3a5468',font:{size:10}}}
+        x:{type:'linear',min:-0.5,max:5.5,grid:{color:'transparent'},ticks:{display:false},border:{color:'#2c465d'}},
+        y:{min:minV,max:maxV,grid:{...GRID},ticks:{callback:v=>v.toFixed(1),maxTicksLimit:7,color:'#8ba8c0',font:{size:10}},border:{color:'#2c465d'},title:{display:true,text:'log(조회수+1)',color:'#8ba8c0',font:{size:10}}}
       },
       plugins:{legend:{display:false},tooltip:{enabled:false}}
     },
@@ -808,13 +808,13 @@ function renderBoxPlot(){
           // x-axis label - 충분한 간격으로 겹침 방지
           const lblLines=s.lbl.split('\n');
           c.font=`${isAfter?'bold ':' '}9.5px "IBM Plex Sans KR"`;
-          c.fillStyle=isAfter?col:'#3a5468';
+          c.fillStyle=isAfter?col:'#8ba8c0';
           c.textAlign='center';
           lblLines.forEach((ln,li)=>{
             c.fillText(ln,cx,bottom+15+li*13);
           });
           // n label
-          c.font='9px "IBM Plex Mono"';c.fillStyle='#3a5468';
+          c.font='9px "IBM Plex Mono"';c.fillStyle='#8ba8c0';
           c.fillText('n='+s.n,cx,bottom+42);
           c.restore();
         });
