@@ -1,456 +1,380 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>서울의 고령화와 노인복지시설 소개</title>
-  
+  <title>서울시의 고령화와 노인복지시설</title>
 
-  <!-- Google Fonts: 본문은 명조, 강조는 고딕 -->
+  <!-- Google Fonts: 본문은 명조(Gowun Batang), 강조는 고딕(IBM Plex Sans KR) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@500;700&display=swap" rel="stylesheet">
-
-  <!--
-    ┌─────────────────────────────────────────────────────────────────────┐
-    │ 🆕 [경로 B 준비] Chart.js CDN 추가                                  │
-    │                                                                     │
-    │ 원본에는 없던 이 한 줄이 인라인 라이브러리 패턴의 출발점.           │
-    │ AI 프롬프트에서 "Chart.js CDN을 head에 추가" 라고 명시하면          │
-    │ 이런 라인이 자동으로 들어옵니다.                                    │
-    └─────────────────────────────────────────────────────────────────────┘
-  -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 
   <style>
     /* ─────────────────────────────────────────────
-       CSS 변수 (원본 유지)
+       CSS 변수 및 기본 스타일 (상하좌우 여백 극대화 및 미니멀)
        ───────────────────────────────────────────── */
     :root {
-      --bg: #faf8f4;
-      --text: #1a1a1a;
+      --bg: #fcfbfa;
+      --text: #1c1c1c;
       --text-soft: #4a4a4a;
-      --text-muted: #888;
-      --accent: #c43d2a;
-      --hook-bg: #1a1a1a;
-      --hook-text: #faf8f4;
-      --placeholder: #ebe7e0;
-      --placeholder-line: #d4cfc4;
-      --placeholder-text: #999;
-      --rule: #d4cfc4;
-      --column: 680px;
+      --text-muted: #8c8881;
+      --accent: #b85c38; /* 고령화 이슈의 무게감을 담은 부드러운 테라코타 브릭 컬러 */
+      --box-bg: #f4f1ea;
+      --border-color: #e6e1da;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
-      font-family: 'Gowun Batang', serif;
-      background: var(--bg);
+      background-color: var(--bg);
       color: var(--text);
-      line-height: 1.8;
+      font-family: 'Gowun Batang', serif;
       font-size: 17px;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .column {
-      max-width: var(--column);
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    /* ─────────────────────────────────────────────
-       1. 훅(Hook) — 풀스크린 (원본 유지)
-       ───────────────────────────────────────────── */
-    .hook {
-      background: var(--hook-bg);
-      color: var(--hook-text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 40px 24px;
-    }
-    .hook .eyebrow {
-      font-family: 'IBM Plex Sans KR', sans-serif;
-      font-size: 13px;
-      letter-spacing: 0.3em;
-      color: var(--accent);
-      margin-bottom: 40px;
-      font-weight: 500;
-    }
-    .hook .big-number {
-      font-family: 'Gowun Batang', serif;
-      font-size: clamp(80px, 18vw, 200px);
-      font-weight: 700;
-      line-height: 1;
-      letter-spacing: -0.04em;
-      margin-bottom: 24px;
-    }
-    .hook .big-number .percent {
-      font-size: 0.4em;
-      color: var(--accent);
-      vertical-align: top;
-      margin-left: 8px;
-    }
-    .hook .hook-text {
-      font-size: clamp(18px, 2.5vw, 24px);
-      max-width: 520px;
-      line-height: 1.5;
-      color: rgba(250, 248, 244, 0.85);
-    }
-    .hook .scroll-cue {
-      margin-top: 60px;
-      font-family: 'IBM Plex Sans KR', sans-serif;
-      font-size: 12px;
-      color: rgba(250, 248, 244, 0.5);
-      letter-spacing: 0.2em;
-    }
-
-    /* ─────────────────────────────────────────────
-       2. 컨텍스트 (원본 유지)
-       ───────────────────────────────────────────── */
-    .context { padding: 100px 0 60px; }
-    .context h2 {
-      font-family: 'IBM Plex Sans KR', sans-serif;
-      font-size: 14px;
-      letter-spacing: 0.2em;
-      color: var(--accent);
-      font-weight: 500;
-      margin-bottom: 24px;
-    }
-    .context .lead {
-      font-size: 22px;
-      line-height: 1.6;
-      color: var(--text);
-      margin-bottom: 24px;
+      line-height: 1.8;
       letter-spacing: -0.01em;
+      word-break: keep-all;
+      padding: 100px 24px; /* 위아래 충분한 공백 유지 */
     }
-    .context p {
-      color: var(--text-soft);
-      margin-bottom: 20px;
+
+    /* 중앙 정렬 컨테이너 - 가독성을 위한 최적의 너비와 좌우 여백 */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
     }
 
     /* ─────────────────────────────────────────────
-       3. 본문 챕터 (원본 유지)
+       타이포그래피 및 요소 스타일
        ───────────────────────────────────────────── */
-    .chapter { padding: 60px 0; }
-    .chapter-mark {
-      font-family: 'IBM Plex Sans KR', sans-serif;
-      font-size: 12px;
-      letter-spacing: 0.3em;
-      color: var(--accent);
-      font-weight: 700;
-      margin-bottom: 16px;
+    
+    /* 1. 훅 및 제목 (크고 명확하게) */
+    .header-section {
+      text-align: center;
+      margin-bottom: 90px;
     }
-    .chapter h3 {
+
+    .hook-badge {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+
+    .hook-text {
       font-size: 32px;
       font-weight: 700;
-      line-height: 1.3;
-      letter-spacing: -0.02em;
-      margin-bottom: 32px;
-    }
-    .chapter p {
-      color: var(--text-soft);
-      margin-bottom: 20px;
-    }
-    .chapter p strong {
       color: var(--text);
-      font-weight: 700;
-      background: linear-gradient(transparent 60%, rgba(196, 61, 42, 0.15) 60%);
-      padding: 0 2px;
-    }
-
-    .chart-block { margin: 48px 0; }
-    .chart-block.wide {
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 0 24px;
-    }
-    .placeholder {
-      background: var(--placeholder);
-      border: 1px dashed var(--placeholder-line);
-      border-radius: 4px;
-      min-height: 360px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 10px;
-      color: var(--placeholder-text);
-      font-family: 'IBM Plex Sans KR', sans-serif;
-      font-size: 14px;
-    }
-    .placeholder .tag-title {
-      font-weight: 700;
-      color: var(--text-soft);
-      font-size: 13px;
-      letter-spacing: 0.1em;
-    }
-    .placeholder .tag-desc { font-size: 13px; }
-
-    /* ─────────────────────────────────────────────
-       차트 컨테이너 (원본 유지)
-       ───────────────────────────────────────────── */
-    .chart-fill {
-      background: white;
-      border: 1px solid var(--rule);
-      border-radius: 4px;
-      padding: 24px 20px 18px;
-      position: relative;
-    }
-    .chart-fill svg {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-    .example-badge {
-      position: absolute;
-      top: 10px;
-      right: 12px;
-      font-size: 10px;
-      color: var(--text-muted);
-      font-family: 'IBM Plex Sans KR', sans-serif;
-      letter-spacing: 0.05em;
-      background: var(--bg);
-      padding: 3px 8px;
-      border-radius: 3px;
-    }
-
-    /*
-      ┌─────────────────────────────────────────────────────────────────────┐
-      │ 🆕 [12주차 신규 스타일]                                             │
-      │   교체 완료된 차트에 다는 초록색 배지.                              │
-      │   학생들에게 "이 차트는 살아났다"를 시각적으로 보여줍니다.          │
-      │   학생 본인 페이지에서는 이 배지를 꼭 안 달아도 됩니다 — 시연용.    │
-      └─────────────────────────────────────────────────────────────────────┘
-    */
-    .completed-badge {
-      position: absolute;
-      top: 10px;
-      right: 12px;
-      font-size: 10px;
-      color: white;
-      font-family: 'IBM Plex Sans KR', sans-serif;
-      letter-spacing: 0.05em;
-      background: #5a8a3a;
-      padding: 3px 8px;
-      border-radius: 3px;
-      font-weight: 500;
-    }
-
-    /*
-      ┌─────────────────────────────────────────────────────────────────────┐
-      │ 🆕 [경로 B용] Chart.js canvas 컨테이너                              │
-      │   canvas는 div로 감싸야 반응형이 깔끔합니다.                        │
-      └─────────────────────────────────────────────────────────────────────┘
-    */
-    .canvas-wrap {
-      position: relative;
-      width: 100%;
-      height: 400px;
-    }
-
-    /*
-      ┌─────────────────────────────────────────────────────────────────────┐
-      │ 🆕 [경로 A용] Flourish iframe 반응형 컨테이너                       │
-      │   16:9 비율을 유지하면서 폭이 100%로 늘어나도록.                    │
-      │   지도는 보통 더 정사각형에 가까우므로 padding-bottom 조절.         │
-      └─────────────────────────────────────────────────────────────────────┘
-    */
-    .iframe-wrap {
-      position: relative;
-      width: 100%;
-      padding-bottom: 75%;  /* 4:3 비율, 지도형에 적합 */
-      height: 0;
-      overflow: hidden;
-    }
-    .iframe-wrap iframe {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .chart-caption {
-      font-family: 'IBM Plex Sans KR', sans-serif;
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 12px;
-      text-align: center;
-      line-height: 1.6;
-    }
-
-    .rule {
-      max-width: 80px;
-      margin: 0 auto;
-      border: none;
-      border-top: 1px solid var(--rule);
-    }
-
-    /* ─────────────────────────────────────────────
-       4. 결론 (원본 유지)
-       ───────────────────────────────────────────── */
-    .conclusion {
-      background: #1a1a1a;
-      color: var(--hook-text);
-      padding: 100px 0;
-      margin-top: 60px;
-    }
-    .conclusion h2 {
-      font-family: 'IBM Plex Sans KR', sans-serif;
-      font-size: 14px;
-      letter-spacing: 0.3em;
-      color: var(--accent);
-      font-weight: 500;
+      line-height: 1.4;
       margin-bottom: 24px;
     }
-    .conclusion .closing {
-      font-size: 28px;
-      line-height: 1.5;
-      letter-spacing: -0.02em;
-      margin-bottom: 32px;
+
+    h1 {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--text-soft);
+      letter-spacing: 0px;
+      position: relative;
+      display: inline-block;
+      padding-top: 16px;
     }
-    .conclusion p {
-      color: rgba(250, 248, 244, 0.75);
-      margin-bottom: 16px;
+    
+    h1::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 1px;
+      background-color: var(--text-muted);
     }
 
-    /* ─────────────────────────────────────────────
-       5. 출처·방법론 (원본 유지)
-       ───────────────────────────────────────────── */
-    .colophon {
-      padding: 60px 0 100px;
-      font-family: 'IBM Plex Sans KR', sans-serif;
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.8;
+    /* 네모칸 (노인복지시설이란?) */
+    .definition-box {
+      background-color: var(--box-bg);
+      padding: 40px;
+      border-radius: 4px;
+      margin-bottom: 90px;
+      border-left: 3px solid var(--accent);
     }
-    .colophon h4 {
-      font-size: 12px;
-      letter-spacing: 0.2em;
-      color: var(--text);
-      margin-bottom: 16px;
-      margin-top: 24px;
+
+    .definition-box h3 {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 18px;
       font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
     }
-    .colophon h4:first-child { margin-top: 0; }
 
-    /*
-      ┌─────────────────────────────────────────────────────────────────────┐
-      │ 🆕 [시연본 안내 띠]                                                 │
-      │   페이지 맨 위에 작은 띠로 "이 파일은 12주차 시연본입니다" 표시.    │
-      │   학생들에게 보여줄 때 가렸다 펼쳤다 할 수 있음.                    │
-      └─────────────────────────────────────────────────────────────────────┘
-    */
-    .demo-banner {
-      background: #2c5fd9;
-      color: white;
+    .definition-box p {
+      color: var(--text-soft);
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .facility-types {
+      font-size: 14px;
+      color: var(--text-soft);
+      line-height: 1.6;
+      padding-top: 16px;
+      border-top: 1px dashed var(--border-color);
+    }
+
+    .facility-types span {
       font-family: 'IBM Plex Sans KR', sans-serif;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 6px;
       font-size: 12px;
-      text-align: center;
-      padding: 8px 16px;
       letter-spacing: 0.05em;
     }
-    .demo-banner strong { font-weight: 700; }
+
+    /* 소제목 (노인복지시설이 왜 중요해진 이유는?) */
+    .section-title {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 60px;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    /* 스토리텔링 문단 및 그래프 컨테이너 */
+    .story-block {
+      margin-bottom: 80px;
+    }
+
+    .story-block h4 {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .story-block p {
+      color: var(--text-soft);
+      margin-bottom: 30px;
+      text-align: justify;
+    }
+
+    /* Flourish iframe이 담길 부드러운 박스 영역 */
+    .chart-container {
+      background-color: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      margin-bottom: 40px;
+      padding: 10px;
+      overflow: hidden;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* 요구사항에 따른 그래프 크기별 제어 클래스 */
+    .chart-reduce-large { width: 70%; }
+    .chart-reduce-small { width: 85%; }
+    .chart-appropriate { width: 100%; }
+
+    /* 질문 유도 전환기 */
+    .transition-text {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: center;
+      margin: 100px 0;
+      font-style: italic;
+    }
+
+    /* 결론 섹션 */
+    .conclusion-section {
+      margin-top: 120px;
+      padding-top: 60px;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .conclusion-section p {
+      color: var(--text-soft);
+      text-align: justify;
+      margin-bottom: 50px; /* 슬로건과의 간격 확보 */
+    }
+
+    .final-badge {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      display: block;
+      letter-spacing: -0.02em;
+      line-height: 1.5;
+    }
+
+    /* 출처 및 푸터 */
+    footer {
+      margin-top: 120px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .sources {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .sources h5 {
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+    }
+
+    .sources ul {
+      list-style: none;
+    }
+
+    .sources li {
+      margin-bottom: 4px;
+      position: relative;
+      padding-left: 12px;
+    }
+
+    .sources li::before {
+      content: "·";
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+
+    .copyright {
+      margin-top: 40px;
+      font-family: 'IBM Plex Sans KR', sans-serif;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
 
   </style>
 </head>
 <body>
 
+  <div class="container">
 
-
-    <header>
-        <h1>서울의 고령화와 노인복지시설 소개</h1>
+    <!-- 1. 훅 및 제목 세션 -->
+    <header class="header-section">
+      <div class="hook-badge">Seoul Aging Report</div>
+      <div class="hook-text">서울의 고령화,<br>준비되어 있을까요?</div>
+      <h1>서울시의 고령화와 노인복지시설</h1>
     </header>
 
-    <div class="container">
-        <section id="hook">
-            <h2>① 훅(Hook) + 컨텍스트</h2>
-            <p><strong>정의:</strong> 독자를 멈춰 세우는 첫 화면과 "왜 이 이야기인가"</p>
-            <p><strong>구성:</strong> 풀스크린 큰 숫자/질문 → 짧은 문단</p>
-            <p><strong>핵심:</strong> "3초 안에 독자가 떠날지 머무를지 결정된다"</n            <div class="chart-placeholder">
-                <p>풀스크린 큰 숫자 / 질문 예시: "서울은 지금, 늙어가고 있습니다. 과연 준비되어 있을까요?"</p>
-            </div>
-            <p>서울의 고령화는 심각한 사회적 문제로 대두되고 있으며, 이에 대한 노인복지시설의 역할은 더욱 중요해지고 있습니다. 우리는 이 스토리보드를 통해 서울의 고령화 현황과 노인복지시설의 현주소를 깊이 있게 탐구하고, 미래를 위한 방안을 모색하고자 합니다.</p>
-        </section>
-
-        <section id="body-1">
-            <h2>② 본문 — 기·승·전·결 (차트 + 전환 텍스트)</h2>
-            <h3>1. 노인복지시설이란?</h3>
-            <p>노인 복지 시설은 노령화 사회에서 노인들의 건강하고 안정적인 삶을 지원하기 위해 마련된 다양한 형태의 서비스 제공 기관을 총칭합니다.</p>
-            <p><strong>노인 복지 시설 종류:</strong> 주거 복지 시설, 의료 복지 시설, 여가 복지 시설, 재가노인 복지시설, 노인보호 전문기관, 노인일자리지원기관, 학대피해노인 전용 쉼터 등이 있습니다. 각각의 목적을 가지고 지어지고 있으며, 이 모든 시설을 총망라하여 노인복지시설이라 합니다.</p>
-            <p class="transition-text">그렇다면 이러한 노인복지시설이 왜 중요해지고 있을까요? 바로 급격한 사회 고령화 속도 때문입니다.</p>
-        </section>
-
-        <section id="body-2">
-            <h3>2. 현재 사회 고령화 속도를 나타내는 그래프</h3>
-            
-            <div class="chart-container">
-                <iframe src="https://flo.uri.sh/visualisation/29341068/embed" frameborder="0" scrolling="no" style="width:100%; height:500px;" allowfullscreen></iframe>
-            </div>
-            <p class="transition-text">한국은 다른 주요 국가들에 비해 고령화가 매우 빠른 속도로 진행되고 있으며, 2036년에는 세계 3위권의 고령 국가가 될 것으로 예측됩니다. 이러한 급격한 변화는 서울시 또한 예외가 아닙니다.</p>
-        </section>
-
-        <section id="body-3">
-            <h3>3. 서울시의 고령화, 노인 복지시설 연도별 비교</h3>
-            <ul>
-                <li>노령화지수 연도별 (2019-2024)</li>
-                <li>복지시설 연도별 (2019-2024)</li>
-            </ul>
-            
-            <div class="chart-container">
-                <iframe src="https://flo.uri.sh/visualisation/29341792/embed" frameborder="0" scrolling="no" style="width:100%; height:500px;" allowfullscreen></iframe>
-            </div>
-            <p>데이터 분석 결과, 서울시의 노령화지수는 매년 꾸준히 상승하고 있지만, 노인 복지시설의 증가는 그 속도를 따라가지 못하고 있습니다. 이는 노인 복지 시설이 현재 수요를 감당하기에 부족하다는 것을 시사합니다.</p>
-            <p class="transition-text">그렇다면 현재 서울시의 노인 복지시설은 필요한 곳에 적절하게 분포되어 있을까요?</p>
-        </section>
-
-        <section id="body-4">
-            <h3>4. 적합한 곳에 지어지고 있는가? (서울시 고령화 노인 복지시설 비교 2024)</h3>
-            
-            <div class="chart-container">
-                <iframe src="https://flo.uri.sh/visualisation/28450357/embed" frameborder="0" scrolling="no" style="width:100%; height:500px;" allowfullscreen></iframe>
-            </div>
-            <p>2024년 서울시 데이터를 기반으로 고령화가 심화된 지역과 노인 복지시설의 분포를 비교한 결과, 특정 지역에서는 시설의 부족 현상이 더욱 두드러지게 나타났습니다. 이는 시설의 양적인 증가뿐만 아니라, 지역별 특성을 고려한 균형 있는 배치가 중요함을 보여줍니다.</p>
-            <p class="transition-text">이러한 현상은 비단 서울시만의 문제가 아닙니다. 전국적인 관점에서 고령화와 복지시설의 현황은 어떠할까요?</p>
-        </section>
-
-        <section id="body-5">
-            <h3>5. 전국적인 고령화와 복지시설 비교</h3>
-            <ul>
-                <li>전국 노인 비율 (2024)_kosis</li>
-                <li>전국 복지시설 설립 (2024) 논문</li>
-            </ul>
-            
-            <div class="chart-container">
-                <iframe src="https://flo.uri.sh/visualisation/29342098/embed" frameborder="0" scrolling="no" style="width:100%; height:500px;" allowfullscreen></iframe>
-            </div>
-            <p>전국 데이터를 살펴보면, 고령화가 빠르게 진행되는 지역과 복지시설의 설립이 더딘 지역 간의 격차가 명확하게 드러납니다. 이는 전국적인 차원에서도 노인 복지 인프라의 확충과 지역 균형 발전이 시급함을 보여줍니다.</p>
-        </section>
-
-        <section id="conclusion">
-            <h2>③ 결론 + 출처·방법론</h2>
-            <p><strong>결론:</strong> 서울을 포함한 대한민국은 급격한 고령화에 직면해 있으며, 현재의 노인 복지시설은 이러한 변화에 충분히 대응하지 못하고 있습니다. 노인들의 삶의 질 향상을 위해 복지시설의 양적, 질적 확대 및 지역별 균형 있는 배치가 시급히 요구됩니다.</p>
-            <p><strong>데이터 출처 및 방법론:</strong></p>
-            <ul>
-                <li>고령화 진행 추이: UN, 통계청 등 국제 및 국내 통계 자료</li>
-                <li>서울시 노령화지수 및 복지시설: 서울시 통계, 관련 연구 논문 (2019-2024)</li>
-                <li>전국 노인 비율: KOSIS (국가통계포털) 2024년 자료</li>
-                <li>전국 복지시설 설립: 관련 연구 논문 및 정부 발행 통계 자료 (2024)</li>
-            </ul>
-        </section>
+    <!-- 노인복지시설이란? 정의 네모칸 -->
+    <div class="definition-box">
+      <h3>노인복지시설이란?</h3>
+      <p>노령화 사회에서 노인들의 건강하고 안정적인 삶을 지원 위해 마련된 다양한 형태의 서비스 제공 기관을 총칭합니다.</p>
+      
+      <div class="facility-types">
+        <span>주요 시설 종류</span>
+        주거 복지 시설, 의료 복지 시설, 여가 복지 시설, 재가노인 복지시설, 노인보호 전문기관, 노인일자리지원기관, 학대피해노인 전용 쉼터 등
+      </div>
     </div>
 
+    <!-- 소제목 -->
+    <h2 class="section-title">노인복지시설이 중요해진 이유는?</h2>
+
+    <!-- 본문 스토리텔링 및 그래프 삽입 -->
+    <div class="story-block">
+      <h4>급격한 사회 고령화 속도</h4>
+      
+      <!-- [2] 그래프 크기를 70%로 축소 조절 -->
+      <div class="chart-container chart-reduce-large">
+        <iframe src='https://flo.uri.sh/visualisation/29341068/embed' title='Interactive or visual content' class='flourish-embed-iframe' frameborder='0' scrolling='no' style='width:100%;height:600px;' sandbox='allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation'></iframe>
+      </div>
+      
+      <p>한국은 다른 주요 국가들에 비해 고령화가 매우 빠른 속도로 진행되고 있으며, 2036년에는 세계 3위권의 고령 국가가 될 것으로 예측됩니다. 이러한 급격한 변화는 서울시 또한 예외가 아닙니다.</p>
+    </div>
+
+    <div class="story-block">
+      <!-- [3] 지정 소제목 반영 -->
+      <h4>서울시의 고령화, 노인 복지 시설 연도별 비교</h4>
+      
+      <!-- [3] 그래프 크기 작게 (85%) 조절 -->
+      <div class="chart-container chart-reduce-small">
+        <iframe src='https://flo.uri.sh/visualisation/29341792/embed' title='Interactive or visual content' class='flourish-embed-iframe' frameborder='0' scrolling='no' style='width:100%;height:600px;' sandbox='allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation'></iframe>
+      </div>
+      
+      <p>데이터 분석 결과, 서울시의 노령화지수는 매년 꾸준히 상승하고 있지만, 노인 복지시설의 증가는 그 속도를 따라가지 못하고 있습니다. 이는 노인 복지 시설이 현재 수요를 감당하기에 부족하다는 것을 시사합니다.</p>
+    </div>
+
+    <!-- 질문 유도 전환 문구 -->
+    <p class="transition-text">그렇다면 현재 서울시의 노인 복지시설은 필요한 곳에 적절하게 분포되어 있을까요?</p>
+
+    <div class="story-block">
+      <!-- [4] 지정 소제목 반영 -->
+      <h4>적합한 곳에 지어지고 있는가?</h4>
+      
+      <!-- [4] 그래프 크기 작게 (85%) 조절 -->
+      <div class="chart-container chart-reduce-small">
+        <iframe src='https://flo.uri.sh/visualisation/28450357/embed' title='Interactive or visual content' class='flourish-embed-iframe' frameborder='0' scrolling='no' style='width:100%;height:600px;' sandbox='allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation'></iframe>
+      </div>
+      
+      <p>2024년 서울시 데이터를 기반으로 고령화가 심화된 지역과 노인 복지시설의 분포를 비교한 결과, 특정 지역에서는 시설의 부족 현상이 더욱 두드러지게 나타났습니다. 이는 시설의 양적인 증가뿐만 아니라, 지역별 특성을 고려한 균형 있는 배치가 중요함을 보여줍니다.</p>
+    </div>
+
+    <div class="story-block">
+      <!-- [5] 그래프 크기 적절하게 (100%) 유지 -->
+      <div class="chart-container chart-appropriate">
+        <iframe src='https://flo.uri.sh/visualisation/29342098/embed' title='Interactive or visual content' class='flourish-embed-iframe' frameborder='0' scrolling='no' style='width:100%;height:600px;' sandbox='allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation'></iframe>
+      </div>
+      
+      <!-- 요구사항 문구 교체 -->
+      <p>지표상 노령인구 비율에 맞춰 시설이 확충되고는 있으나, 실질적인 체감 격차는 여전합니다. 일부 자치구와 특정 소외 지역의 경우, 증가하는 노인 인구 속도를 인프라가 미처 따라잡지 못해 여전히 복지의 사각지대로</p>
+      
+      <!-- 새로운 문구 삽입 (엔터 두 번 공백 확보 및 흐릿한 회색 마감) -->
+      <p style="margin-top: 40px; color: #a0a0a0; text-align: center; font-family: 'IBM Plex Sans KR', sans-serif; font-size: 16px;">
+        우리의 부모님, 조부모님. 그리고 머지않은 미래의 우리 가족이 마음 놓고 기대어 쉴 수 있는 공간은 얼마나 마련되어 있을까요?
+      </p>
+    </div>
+
+    <!-- 결론 섹션 (요구사항: 네모칸 없이 일반 텍스트로 노출하는 버전) -->
+    <section class="conclusion-section">
+      <p>
+        서울을 포함한 대한민국은 급격한 고령화에 직면해 있으며, 현재의 노인 복지시설은 이러한 변화에 충분히 대응하지 못하고 있습니다. 노인들의 삶의 질 향상을 위해 복지시설의 양적, 질적 확대 및 지역별 균형 있는 배치가 시급히 요구됩니다.
+      </p>
+      
+      <!-- 문구 위 엔터 한두 번 정도 친 공백(margin-top: 45px) 확보 -->
+      <span class="final-badge" style="margin-top: 45px;">
+        "오늘 누군가를 위해 다진 토대는,<br>언젠가 우리를 받쳐줄 버팀목이 됩니다."
+      </span>
+    </section>
+
+    <!-- 데이터 출처 및 푸터 -->
     <footer>
-        <p>&copy; 2024 서울의 고령화와 노인복지시설 소개. All rights reserved.</p>
+      <div class="sources">
+        <h5>데이터 출처</h5>
+        <ul>
+          <li>고령화 진행 추이: UN, 통계청 등 국제 및 국내 통계 자료</li>
+          <li>서울시 노령화지수 및 복지시설: 서울시 통계, 관련 연구 논문 (2019-2024)</li>
+          <li>전국 노인 비율: KOSIS (국가통계포털) 2024년 자료</li>
+          <li>전국 복지시설 설립: 관련 연구 논문 및 정부 발행 통계 자료 (2024)</li>
+        </ul>
+      </div>
+      <div class="copyright">
+        &copy; 2024 서울의 고령화와 노인복지시설 소개. All rights reserved.
+      </div>
     </footer>
 
-
+  </div>
 
 </body>
 </html>
