@@ -6,24 +6,27 @@
     <title>경험 소비와 F&B 트렌드 교체 현상 - 데이터 저널리즘</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Playfair Display (Serif), Noto Serif KR & Noto Sans KR -->
+    <!-- Google Fonts: Playfair Display, Noto Serif KR, Noto Sans KR -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <!-- FontAwesome for Premium Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- D3.js 라이브러리 추가 (커스텀 대화형 네트워크 맵 구현용) -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        brandBg: '#FAF8F5',       /* 화이트 기반의 차분하고 고급스러운 베이지톤 배경 */
-                        brandDark: '#1E2022',     /* 프리미엄 차콜/다크슬레이트 */
-                        brandAccent: '#AF8B58',   /* 포인트 베이지/골드 */
-                        brandMuted: '#6E7278',    /* 가독성 서브 컬러 */
-                        brandLightBeige: '#F3EFE9',/* 연한 베이지 */
-                        brandCoral: '#C05A5A'     /* 포인트 차트/강조용 코랄 */
+                        brandBg: '#FFFDF9',       /* 부드러운 우유 푸딩빛 크림 베이지 */
+                        brandDark: '#3A302E',     /* 묵직한 카카오 다크 초코 브라운 */
+                        brandAccent: '#E6A15C',   /* 쫀득한 수제 카라멜 골드 */
+                        brandMuted: '#8C7D7A',    /* 달콤쌉싸름한 코코아 브라운 */
+                        brandLightBeige: '#FBF2E9',/* 마카롱 비스킷 베이지 */
+                        brandCoral: '#FF8A98',    /* 달콤한 스트로베리 시럽 핑크 */
+                        brandMint: '#7BC4B8'      /* 산뜻한 민트 크림 그린 */
                     },
                     fontFamily: {
                         sans: ['Noto Sans KR', 'sans-serif'],
@@ -35,16 +38,16 @@
         }
     </script>
     <style>
-        /* 고급스러운 스크롤 바 및 애니메이션 효과 */
+        /* 달달하고 부드러운 감성의 스크롤 바 */
         ::-webkit-scrollbar {
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #FAF8F5;
+            background: #FFFDF9;
         }
         ::-webkit-scrollbar-thumb {
-            background: #AF8B58;
-            border-radius: 4px;
+            background: #FF8A98;
+            border-radius: 8px;
         }
         
         .fade-in-element {
@@ -62,45 +65,57 @@
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .heatmap-cell:hover {
-            transform: scale(1.1);
+            transform: scale(1.15);
             z-index: 10;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 12px 24px rgba(255, 138, 152, 0.25);
+        }
+
+        /* 인스타그램 감성 스토리 링 애니메이션 */
+        .story-ring {
+            background: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7);
+            padding: 3px;
+        }
+
+        /* 네트워크 노드 드래그 시 고정 해제 이펙트 */
+        .node-active {
+            stroke-width: 3px !important;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
         }
     </style>
 </head>
-<body class="bg-brandBg text-brandDark font-sans selection:bg-brandAccent selection:text-white overflow-x-hidden">
+<body class="bg-brandBg text-brandDark font-sans selection:bg-brandCoral selection:text-white overflow-x-hidden">
 
-    <!-- 상단 스크롤 인디케이터 바 (뉴욕타임즈 저널리즘 스타일) -->
+    <!-- 상단 스크롤 인디케이터 바 (스트로베리 핑크 시럽 느낌) -->
     <div class="fixed top-0 left-0 w-full h-[4px] bg-brandLightBeige z-50">
-        <div id="progressBar" class="h-full bg-brandAccent w-0 transition-all duration-75"></div>
+        <div id="progressBar" class="h-full bg-brandCoral w-0 transition-all duration-75"></div>
     </div>
 
-    <!-- 미니멀 헤더/네비게이션 -->
-    <header class="fixed top-0 left-0 w-full py-6 px-8 md:px-16 flex justify-between items-center z-40 bg-brandBg/80 backdrop-blur-md border-b border-brandLightBeige">
-        <div class="font-serif font-bold text-lg tracking-widest text-brandDark uppercase">
-            Experience <span class="text-brandAccent">Insight</span>
+    <!-- 미니멀 감성 카페 스타일 헤더 -->
+    <header class="fixed top-0 left-0 w-full py-5 px-8 md:px-16 flex justify-between items-center z-40 bg-brandBg/80 backdrop-blur-md border-b border-brandLightBeige">
+        <div class="font-serif font-bold text-lg tracking-widest text-brandDark uppercase flex items-center gap-2">
+            <span class="text-brandCoral">🍰</span> Experience <span class="text-brandAccent">Insight</span>
         </div>
-        <div class="hidden md:flex space-x-8 text-sm tracking-wider uppercase text-brandMuted font-medium">
-            <a href="#problem" class="hover:text-brandAccent transition">01. 문제 제기</a>
-            <a href="#definition" class="hover:text-brandAccent transition">02. 경험 소비란</a>
-            <a href="#discourse" class="hover:text-brandAccent transition">03. 담론 분석</a>
-            <a href="#heatmap-section" class="hover:text-brandAccent transition">04. 트렌드 분석</a>
-            <a href="#case" class="hover:text-brandAccent transition">05. 두 가지 전략</a>
-            <a href="#insight" class="hover:text-brandAccent transition">06. 인사이트</a>
+        <div class="hidden md:flex space-x-8 text-xs tracking-wider uppercase text-brandMuted font-bold">
+            <a href="#problem" class="hover:text-brandCoral transition">01. 피드 제기</a>
+            <a href="#definition" class="hover:text-brandCoral transition">02. 경험 소비 여정</a>
+            <a href="#discourse" class="hover:text-brandCoral transition">03. 키워드 분석</a>
+            <a href="#heatmap-section" class="hover:text-brandCoral transition">04. 트렌드 맵</a>
+            <a href="#case" class="hover:text-brandCoral transition">05. 브랜드 매치</a>
+            <a href="#insight" class="hover:text-brandCoral transition">06. 에필로그</a>
         </div>
     </header>
 
-    <!-- 1. Hero / Cover Section -->
-    <section class="min-h-screen flex flex-col justify-center items-center px-6 md:px-12 text-center relative pt-20">
+    <!-- 1. Hero / Cover Section (감성 인스타그램 피드 포스터 디자인) -->
+    <section class="min-h-screen flex flex-col justify-center items-center px-6 md:px-12 text-center relative pt-20 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brandCoral/10 via-brandBg to-brandBg">
         <div class="max-w-4xl mx-auto space-y-8">
-            <span class="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-brandAccent block mb-4 fade-in-element">F&B TREND & EXPERIENCE ECONOMY</span>
+            <span class="text-xs md:text-sm font-bold tracking-[0.3em] uppercase text-brandCoral bg-brandCoral/10 px-4 py-2 rounded-full inline-block mb-2 fade-in-element">🍰 DESSERT PERSPECTIVE PRESENTATION</span>
             
             <h1 class="font-serif text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight md:leading-none text-brandDark fade-in-element" style="transition-delay: 200ms;">
                 어제의 트렌드는 왜<br>
-                <span class="font-playfair italic text-brandAccent font-light">금세 평범해지는가?</span>
+                <span class="font-playfair italic text-brandCoral font-light">금세 평범해지는가?</span>
             </h1>
             
-            <div class="w-16 h-[2px] bg-brandAccent mx-auto my-8 fade-in-element" style="transition-delay: 400ms;"></div>
+            <div class="w-16 h-[3px] bg-brandCoral mx-auto my-8 rounded-full fade-in-element" style="transition-delay: 400ms;"></div>
             
             <p class="font-serif text-lg md:text-xl text-brandMuted max-w-2xl mx-auto leading-relaxed fade-in-element" style="transition-delay: 600ms;">
                 경험 소비 시대의 F&B 트렌드 교체 패턴 탐구
@@ -109,26 +124,26 @@
         
         <!-- 아래로 스크롤 유도 마크 -->
         <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-2 text-brandMuted">
-            <span class="text-[10px] tracking-[0.2em] uppercase font-bold">Scroll to explore</span>
-            <div class="w-[1px] h-12 bg-brandAccent/40 relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-1/2 bg-brandAccent animate-bounce"></div>
+            <span class="text-[10px] tracking-[0.2em] uppercase font-bold">Swipe down</span>
+            <div class="w-[1px] h-12 bg-brandCoral/40 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1/2 bg-brandCoral animate-bounce"></div>
             </div>
         </div>
     </section>
 
-    <!-- 2. [문제 제기] (최신 2026 기사 데이터 반영하여 리빌딩) -->
+    <!-- 2. [문제 제기] (인스타그램 스토리 하이라이트 감성) -->
     <section id="problem" class="py-32 px-6 md:px-16 lg:px-32 bg-white border-y border-brandLightBeige relative overflow-hidden">
         <div class="max-w-5xl mx-auto">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16">
                 <div class="lg:col-span-5 space-y-6">
-                    <span class="font-serif text-brandAccent text-sm font-semibold tracking-wider block">01 / PROBLEM STATEMENT</span>
+                    <span class="font-serif text-brandCoral text-sm font-bold tracking-wider block">01 / BRAND FEED INSIGHT</span>
                     <h2 class="font-serif text-3xl md:text-4xl font-bold leading-snug">
                         붕괴된 트렌드 수명,<br>알고리즘이 만든 피로.
                     </h2>
                     <p class="text-brandMuted text-sm md:text-base leading-relaxed">
-                        과거 허니버터칩이 1년, 탕후루가 6개월 동안 시장을 호령했던 것과 달리, 최근 두쫀쿠(두바이 쫀득 쿠키)는 단 3개월 만에 열기가 식었습니다. SNS 숏폼 알고리즘을 타고 단 12일 만에 검색량이 100배로 치솟은 '버터떡'의 사례처럼, 오늘날 디저트는 미식의 대상이 아닌 소모적인 'SNS용 일회성 콘텐츠'로 즉시 대체되고 있습니다.
+                        과거 허니버터칩이 1년, 탕후루가 6개월 동안 피드를 호령했던 것과 달리, 최근 두쫀쿠(두바이 쫀득 쿠키)는 단 3개월 만에 열기가 식었습니다. SNS 숏폼 알고리즘을 타고 단 12일 만에 검색량이 100배로 치솟은 '버터떡'의 사례처럼, 오늘날 디저트는 미식의 대상이 아닌 소모적인 '인증 사진용 일회성 콘텐츠'로 즉시 대체되고 있습니다.
                     </p>
-                    <div class="bg-brandBg border-l-2 border-brandCoral p-4 rounded-r-xl">
+                    <div class="bg-brandBg border-l-4 border-brandCoral p-4 rounded-r-2xl">
                         <p class="text-xs text-brandMuted leading-relaxed">
                             <strong class="text-brandDark">실제 여론 조사 결과:</strong> 소비자의 <strong>79%</strong>가 "디저트 트렌드가 지나치게 빠르게 바뀐다"며 유행 과포화와 피로감을 체감하고 있습니다. 또한 카다이프(68.3%↑) 등 단기 수요 폭주에 따른 원재료 가격 폭등으로 시장 변동성마저 커지는 실정입니다.
                         </p>
@@ -136,43 +151,54 @@
                 </div>
                 
                 <div class="lg:col-span-7">
-                    <!-- 유행 수명 붕괴 타임라인 그래픽 -->
-                    <div class="relative flex flex-col md:flex-row justify-between items-center gap-6 md:gap-4">
-                        <!-- Connecting Line for MD/LG screen -->
-                        <div class="absolute top-1/2 left-0 w-full h-[1px] bg-brandLightBeige -translate-y-1/2 hidden md:block"></div>
-                        
+                    <!-- 인스타그램 스토리 링 형태로 구현한 유행 주기 타임라인 -->
+                    <div class="flex flex-wrap md:flex-nowrap justify-center md:justify-between items-center gap-6 md:gap-4">
                         <!-- Item 1: Honey Butter -->
-                        <div class="bg-brandBg border border-brandLightBeige p-5 rounded-2xl w-full md:w-[22%] text-center relative z-10 hover:border-brandAccent/60 transition group">
-                            <span class="text-[10px] text-brandMuted font-bold block mb-1">2014~2015</span>
-                            <h4 class="font-serif font-bold text-sm group-hover:text-brandAccent transition">허니버터칩</h4>
-                            <div class="text-[10px] text-brandCoral font-bold mt-1">유행 주기: 1년</div>
+                        <div class="flex flex-col items-center text-center w-24 md:w-1/4 group cursor-pointer">
+                            <div class="story-ring w-20 h-20 rounded-full flex items-center justify-center shadow-md mb-3 group-hover:scale-105 transition">
+                                <div class="w-[70px] h-[70px] bg-white rounded-full flex items-center justify-center text-2xl">
+                                    🍯
+                                </div>
+                            </div>
+                            <span class="text-[10px] text-brandMuted font-bold block">2014~2015</span>
+                            <h4 class="font-serif font-bold text-xs text-brandDark mt-1">허니버터칩</h4>
+                            <div class="text-[9px] text-brandCoral font-bold mt-0.5">수명: 1년</div>
                         </div>
-                        <!-- Arrow for Mobile -->
-                        <div class="md:hidden text-brandAccent text-sm"><i class="fa-solid fa-chevron-down"></i></div>
 
                         <!-- Item 2: Tanghulu -->
-                        <div class="bg-brandBg border border-brandLightBeige p-5 rounded-2xl w-full md:w-[22%] text-center relative z-10 hover:border-brandAccent/60 transition group">
-                            <span class="text-[10px] text-brandMuted font-bold block mb-1">2023. 09</span>
-                            <h4 class="font-serif font-bold text-sm group-hover:text-brandAccent transition">탕후루</h4>
-                            <div class="text-[10px] text-brandCoral font-bold mt-1">유행 주기: 6개월</div>
+                        <div class="flex flex-col items-center text-center w-24 md:w-1/4 group cursor-pointer">
+                            <div class="story-ring w-20 h-20 rounded-full flex items-center justify-center shadow-md mb-3 group-hover:scale-105 transition">
+                                <div class="w-[70px] h-[70px] bg-white rounded-full flex items-center justify-center text-2xl">
+                                    🍓
+                                </div>
+                            </div>
+                            <span class="text-[10px] text-brandMuted font-bold block">2023. 09</span>
+                            <h4 class="font-serif font-bold text-xs text-brandDark mt-1">탕후루</h4>
+                            <div class="text-[9px] text-brandCoral font-bold mt-0.5">수명: 6개월</div>
                         </div>
-                        <!-- Arrow for Mobile -->
-                        <div class="md:hidden text-brandAccent text-sm"><i class="fa-solid fa-chevron-down"></i></div>
 
                         <!-- Item 3: Du-jjon-ku -->
-                        <div class="bg-brandBg border border-brandLightBeige p-5 rounded-2xl w-full md:w-[22%] text-center relative z-10 hover:border-brandAccent/60 transition group">
-                            <span class="text-[10px] text-brandMuted font-bold block mb-1">2024. 10</span>
-                            <h4 class="font-serif font-bold text-sm group-hover:text-brandAccent transition">두바이쿠키</h4>
-                            <div class="text-[10px] text-brandCoral font-bold mt-1">유행 주기: 3개월</div>
+                        <div class="flex flex-col items-center text-center w-24 md:w-1/4 group cursor-pointer">
+                            <div class="story-ring w-20 h-20 rounded-full flex items-center justify-center shadow-md mb-3 group-hover:scale-105 transition">
+                                <div class="w-[70px] h-[70px] bg-white rounded-full flex items-center justify-center text-2xl">
+                                    🍫
+                                </div>
+                            </div>
+                            <span class="text-[10px] text-brandMuted font-bold block">2024. 10</span>
+                            <h4 class="font-serif font-bold text-xs text-brandDark mt-1">두바이쿠키</h4>
+                            <div class="text-[9px] text-brandCoral font-bold mt-0.5">수명: 3개월</div>
                         </div>
-                        <!-- Arrow for Mobile -->
-                        <div class="md:hidden text-brandAccent text-sm"><i class="fa-solid fa-chevron-down"></i></div>
 
-                        <!-- Item 4: Butter Rice Cake (최신 2026.03 버터떡 반영) -->
-                        <div class="bg-brandBg border border-brandAccent/40 p-5 rounded-2xl w-full md:w-[22%] text-center relative z-10 hover:border-brandAccent transition group bg-brandLightBeige/40">
-                            <span class="text-[10px] text-brandAccent font-bold block mb-1">2026. 03</span>
-                            <h4 class="font-serif font-bold text-sm text-brandDark">버터떡</h4>
-                            <div class="text-[10px] text-brandCoral font-bold mt-1">단 12일만 100배↑</div>
+                        <!-- Item 4: Butter Rice Cake (요청 반영: '2주만'으로 수정 완료) -->
+                        <div class="flex flex-col items-center text-center w-24 md:w-1/4 group cursor-pointer">
+                            <div class="story-ring w-20 h-20 rounded-full flex items-center justify-center shadow-md mb-3 group-hover:scale-105 transition animate-pulse">
+                                <div class="w-[70px] h-[70px] bg-white rounded-full flex items-center justify-center text-2xl">
+                                    🧈
+                                </div>
+                            </div>
+                            <span class="text-[10px] text-brandAccent font-bold block">2026. 03</span>
+                            <h4 class="font-serif font-bold text-xs text-brandDark mt-1">버터떡</h4>
+                            <div class="text-[9px] text-brandCoral font-bold mt-0.5">수명: 2주만</div>
                         </div>
                     </div>
                 </div>
@@ -180,20 +206,22 @@
 
             <!-- 유행 간격 일침 요약 라인 -->
             <div class="mt-12 text-center border-t border-brandLightBeige pt-8">
-                <p class="font-serif text-lg md:text-xl font-bold text-brandCoral tracking-wide">
-                    허니버터칩(1년) → 탕후루(6개월) → 두바이초콜릿(3개월) → 버터떡(실시간 급증)
+                <p class="font-serif text-base md:text-lg font-bold text-brandCoral tracking-wide bg-brandCoral/5 py-4 px-6 rounded-2xl inline-block">
+                    💌 허니버터칩(1년) → 탕후루(6개월) → 두바이초콜릿(3개월) → 버터떡(실시간 급증)
                 </p>
-                <p class="text-xs text-brandMuted mt-2 font-bold uppercase tracking-wider">
+                <p class="text-xs text-brandMuted mt-3 font-bold uppercase tracking-wider">
                     가상 알고리즘이 밀어 올린 트렌드의 수명이 한계점 수준으로 짧아지고 있다.
                 </p>
             </div>
             
-            <!-- 핵심 연구 질문 강조 (변경 불가 가이드라인 문장 완벽 준수) -->
-            <div class="mt-16 bg-brandBg border border-brandLightBeige p-8 md:p-12 rounded-3xl text-center max-w-3xl mx-auto shadow-sm">
+            <!-- 핵심 연구 질문 강조 -->
+            <div class="mt-16 bg-brandBg border border-brandLightBeige p-8 md:p-12 rounded-3xl text-center max-w-3xl mx-auto shadow-sm relative">
+                <span class="absolute top-4 left-6 text-2xl text-brandCoral/30">“</span>
                 <span class="text-[11px] tracking-widest text-brandAccent font-bold uppercase block mb-3">Core Research Question</span>
                 <p class="font-serif text-xl md:text-3xl font-bold leading-relaxed text-brandDark">
                     "왜 우리는 더 빨리 질리고,<br>더 새로운 소비를 찾는가?"
                 </p>
+                <span class="absolute bottom-2 right-6 text-2xl text-brandCoral/30">”</span>
             </div>
         </div>
     </section>
@@ -202,156 +230,237 @@
     <section id="definition" class="py-32 px-6 md:px-16 lg:px-32 bg-brandBg relative">
         <div class="max-w-5xl mx-auto">
             <div class="text-center max-w-2xl mx-auto mb-20">
-                <span class="font-serif text-brandAccent text-sm font-semibold tracking-wider block mb-2">02 / THE SHIFT OF VALUE</span>
+                <span class="font-serif text-brandCoral text-sm font-bold tracking-wider block mb-2">02 / THE SHIFT OF VALUE</span>
                 <h2 class="font-serif text-3xl md:text-4xl font-bold">소비를 넘어서는 경험의 여정</h2>
                 <p class="text-brandMuted mt-4 leading-relaxed">
                     오늘날 소비자는 단순한 제품의 소유를 넘어 그것이 제공하는 무형의 경험 가치를 중심으로 소비 흐름을 완성합니다.
                 </p>
             </div>
             
-            <!-- 소유 -> 경험 -> 공유 -> 기억 인터랙티브 타임라인 -->
+            <!-- 소유 -> 경험 -> 공유 -> 기억 인터랙티브 피드 카드 형태 -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <!-- Step 1 -->
-                <div class="bg-white p-8 rounded-2xl border border-brandLightBeige hover:shadow-lg transition duration-500 flex flex-col justify-between">
+                <div class="bg-white p-6 rounded-2xl border border-brandLightBeige hover:shadow-lg transition duration-500 flex flex-col justify-between relative group">
+                    <div class="absolute top-4 right-4 text-xs text-brandCoral/50 font-bold">#OOTD</div>
                     <div>
-                        <div class="font-playfair text-4xl italic text-brandAccent/40 font-light mb-6">01</div>
-                        <h3 class="font-serif text-xl font-bold mb-3">소유 (Ownership)</h3>
-                        <p class="text-sm text-brandMuted leading-relaxed">
+                        <div class="font-playfair text-4xl italic text-brandCoral/30 font-bold mb-4">01</div>
+                        <h3 class="font-serif text-lg font-bold mb-3 text-brandDark">소유 (Ownership)</h3>
+                        <p class="text-xs text-brandMuted leading-relaxed">
                             물건을 직접 획득하고 내 것으로 소유하는 전통적 물질 중심의 가치 단계.
                         </p>
                     </div>
-                    <div class="h-1 bg-brandLightBeige w-full mt-8 rounded-full overflow-hidden">
-                        <div class="bg-brandAccent h-full w-1/4"></div>
+                    <div class="h-1 bg-brandLightBeige w-full mt-6 rounded-full overflow-hidden">
+                        <div class="bg-brandCoral h-full w-1/4"></div>
                     </div>
                 </div>
                 
                 <!-- Step 2 -->
-                <div class="bg-white p-8 rounded-2xl border border-brandLightBeige hover:shadow-lg transition duration-500 flex flex-col justify-between">
+                <div class="bg-white p-6 rounded-2xl border border-brandLightBeige hover:shadow-lg transition duration-500 flex flex-col justify-between relative">
+                    <div class="absolute top-4 right-4 text-xs text-brandCoral/50 font-bold">#CAFE</div>
                     <div>
-                        <div class="font-playfair text-4xl italic text-brandAccent/40 font-light mb-6">02</div>
-                        <h3 class="font-serif text-xl font-bold mb-3">경험 (Experience)</h3>
-                        <p class="text-sm text-brandMuted leading-relaxed">
+                        <div class="font-playfair text-4xl italic text-brandCoral/30 font-bold mb-4">02</div>
+                        <h3 class="font-serif text-lg font-bold mb-3 text-brandDark">경험 (Experience)</h3>
+                        <p class="text-xs text-brandMuted leading-relaxed">
                             공간과 맛, 그리고 특별한 시간에 온전히 스며들며 오감으로 경험하는 단계.
                         </p>
                     </div>
-                    <div class="h-1 bg-brandLightBeige w-full mt-8 rounded-full overflow-hidden">
-                        <div class="bg-brandAccent h-full w-2/4"></div>
+                    <div class="h-1 bg-brandLightBeige w-full mt-6 rounded-full overflow-hidden">
+                        <div class="bg-brandCoral h-full w-2/4"></div>
                     </div>
                 </div>
                 
                 <!-- Step 3 -->
-                <div class="bg-white p-8 rounded-2xl border border-brandLightBeige hover:shadow-lg transition duration-500 flex flex-col justify-between">
+                <div class="bg-white p-6 rounded-2xl border border-brandLightBeige hover:shadow-lg transition duration-500 flex flex-col justify-between relative">
+                    <div class="absolute top-4 right-4 text-xs text-brandCoral/50 font-bold">#FEED</div>
                     <div>
-                        <div class="font-playfair text-4xl italic text-brandAccent/40 font-light mb-6">03</div>
-                        <h3 class="font-serif text-xl font-bold mb-3">공유 (Sharing)</h3>
-                        <p class="text-sm text-brandMuted leading-relaxed">
+                        <div class="font-playfair text-4xl italic text-brandCoral/30 font-bold mb-4">03</div>
+                        <h3 class="font-serif text-lg font-bold mb-3 text-brandDark">공유 (Sharing)</h3>
+                        <p class="text-xs text-brandMuted leading-relaxed">
                             체험한 순간을 SNS에 업로드하여 정체성을 알리고 타인과 연결되는 교류 단계.
                         </p>
                     </div>
-                    <div class="h-1 bg-brandLightBeige w-full mt-8 rounded-full overflow-hidden">
-                        <div class="bg-brandAccent h-full w-3/4"></div>
+                    <div class="h-1 bg-brandLightBeige w-full mt-6 rounded-full overflow-hidden">
+                        <div class="bg-brandCoral h-full w-3/4"></div>
                     </div>
                 </div>
                 
                 <!-- Step 4 -->
-                <div class="bg-white p-8 rounded-2xl border border-brandAccent/20 hover:shadow-lg transition duration-500 flex flex-col justify-between">
+                <div class="bg-white p-6 rounded-2xl border border-brandCoral/30 hover:shadow-lg transition duration-500 flex flex-col justify-between relative">
+                    <div class="absolute top-4 right-4 text-xs text-brandCoral font-bold">#MYLIFE</div>
                     <div>
-                        <div class="font-playfair text-4xl italic text-brandAccent font-bold mb-6">04</div>
-                        <h3 class="font-serif text-xl font-bold text-brandDark mb-3">기억 (Memory)</h3>
-                        <p class="text-sm text-brandMuted leading-relaxed">
+                        <div class="font-playfair text-4xl italic text-brandCoral font-bold mb-4">04</div>
+                        <h3 class="font-serif text-lg font-bold text-brandDark mb-3">기억 (Memory)</h3>
+                        <p class="text-xs text-brandMuted leading-relaxed">
                             나만의 취향 콜렉션으로 굳어지며 오랫동안 정체성의 일부로 영속하는 궁극적 지향점.
                         </p>
                     </div>
-                    <div class="h-1 bg-brandAccent/30 w-full mt-8 rounded-full overflow-hidden">
-                        <div class="bg-brandAccent h-full w-full"></div>
+                    <div class="h-1 bg-brandCoral/30 w-full mt-6 rounded-full overflow-hidden">
+                        <div class="bg-brandCoral h-full w-full"></div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 4. [텍스트 분석] -->
+    <!-- 4. [텍스트 분석] (실시간 드래그 및 필터 기능이 내장된 고품질 로컬 D3 네트워크 맵 구축) -->
     <section id="discourse" class="py-32 px-6 md:px-16 lg:px-32 bg-white border-y border-brandLightBeige relative">
-        <div class="max-w-5xl mx-auto">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <span class="font-serif text-brandAccent text-sm font-semibold tracking-wider block mb-2">03 / DISCOURSE ANALYSIS</span>
+        <div class="max-w-5xl mx-auto space-y-16">
+            <div class="text-center max-w-3xl mx-auto">
+                <span class="font-serif text-brandCoral text-sm font-bold tracking-wider block mb-2">03 / INSTAGRAM KEYWORDS</span>
                 <h2 class="font-serif text-3xl md:text-4xl font-bold">경험 소비 담론 분석 핵심 요약</h2>
                 <p class="text-brandMuted mt-3 leading-relaxed text-sm">
                     미디어 기사 35건 텍스트 분석 결과, 복잡한 통계 기법보다 실제 발현되는 현상을 중심으로 도출한 핵심 발견점들입니다.
                 </p>
             </div>
 
-            <!-- 5개 직관적 카드 형태로 전면 개편 -->
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-16">
+            <!-- 인스타그램 비즈니스 대시보드 감성의 '완전 자체구축 대화형 D3.js 네트워크 그래프' -->
+            <div class="bg-brandBg border border-brandLightBeige rounded-3xl shadow-sm overflow-hidden">
+                <!-- Mockup App Header -->
+                <div class="bg-[#FFFDF9] border-b border-brandLightBeige px-6 py-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="flex gap-1.5">
+                            <span class="w-3 h-3 rounded-full bg-brandCoral"></span>
+                            <span class="w-3 h-3 rounded-full bg-brandAccent"></span>
+                            <span class="w-3 h-3 rounded-full bg-brandMint"></span>
+                        </div>
+                        <span class="text-xs font-semibold text-brandDark font-mono">analytics_network_map.json</span>
+                    </div>
+                    <!-- 실시간 검색 및 필터 패널 -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <input 
+                            type="text" 
+                            id="nodeSearchInput" 
+                            placeholder="🔍 키워드 검색..." 
+                            class="text-xs border border-brandLightBeige rounded-full px-3 py-1.5 bg-white text-brandDark focus:outline-none focus:border-brandCoral w-40 transition"
+                        />
+                        <button onclick="filterNetwork('All')" class="tab-btn active text-[10px] font-bold px-2.5 py-1.5 rounded-full bg-brandLightBeige text-brandDark hover:bg-brandCoral/10 transition">All</button>
+                        <button onclick="filterNetwork('Experience')" class="tab-btn text-[10px] font-bold px-2.5 py-1.5 rounded-full bg-white text-brandMuted border border-brandLightBeige hover:bg-brandMint/10 transition">Experience</button>
+                        <button onclick="filterNetwork('Emotion')" class="tab-btn text-[10px] font-bold px-2.5 py-1.5 rounded-full bg-white text-brandMuted border border-brandLightBeige hover:bg-brandCoral/10 transition">Emotion</button>
+                        <button onclick="filterNetwork('Community')" class="tab-btn text-[10px] font-bold px-2.5 py-1.5 rounded-full bg-white text-brandMuted border border-brandLightBeige hover:bg-brandMint/10 transition">Community</button>
+                        <button onclick="filterNetwork('Exploration')" class="tab-btn text-[10px] font-bold px-2.5 py-1.5 rounded-full bg-white text-brandMuted border border-brandLightBeige hover:bg-purple-100 transition">Exploration</button>
+                    </div>
+                </div>
+
+                <div class="p-6 md:p-8 space-y-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h3 class="font-serif font-bold text-xl text-brandDark">경험 소비 언어 네트워크 (Co-occurrence Network Map)</h3>
+                            <p class="text-xs text-brandMuted mt-1">단어간의 인접도와 시각화 가중치를 실시간으로 계산하는 인터랙티브 물리 엔진 노드 맵</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="text-[10px] bg-brandCoral/10 text-brandCoral font-bold px-2.5 py-1 rounded-full">실시간 엔진 작동중</span>
+                            <span class="text-[10px] bg-brandAccent/10 text-brandAccent font-bold px-2.5 py-1 rounded-full">노드 결합도 우수</span>
+                        </div>
+                    </div>
+
+                    <!-- 드래그/충돌 시뮬레이터 캔버스 컨테이너 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <div class="lg:col-span-8 bg-white border border-brandLightBeige/80 rounded-2xl overflow-hidden relative shadow-md" style="height: 520px;">
+                            <!-- D3 Graph Container -->
+                            <div id="d3-network-canvas" class="w-full h-full"></div>
+                        </div>
+                        
+                        <!-- 클릭한 키워드 실시간 인사이트 패널 -->
+                        <div class="lg:col-span-4 bg-[#FFF0F2]/30 border border-brandCoral/20 rounded-2xl p-6 flex flex-col justify-between shadow-sm">
+                            <div class="space-y-4">
+                                <div class="text-[10px] text-brandCoral font-bold uppercase tracking-wider">Active Node Insight</div>
+                                <div id="selectedNodeName" class="font-serif text-2xl font-bold text-brandDark">경험 소비</div>
+                                <span id="selectedNodeCategory" class="inline-block text-[10px] bg-brandCoral text-white font-bold px-2.5 py-1 rounded-full">Emotion</span>
+                                <p id="selectedNodeDesc" class="text-xs md:text-sm text-brandMuted leading-relaxed pt-2">
+                                    제품의 기능적 소유를 넘어 심리적 만족과 정체성을 찾는 현대적 소비 방식.
+                                </p>
+                            </div>
+                            
+                            <div class="pt-4 border-t border-brandCoral/20 mt-4 space-y-2">
+                                <div class="text-[10px] text-brandMuted font-bold">인접한 핵심 담론 연결고리:</div>
+                                <div id="selectedNodeNeighbors" class="flex flex-wrap gap-1.5">
+                                    <span class="text-[10px] bg-white border border-brandLightBeige px-2 py-1 rounded text-brandDark">소유 너머</span>
+                                    <span class="text-[10px] bg-white border border-brandLightBeige px-2 py-1 rounded text-brandDark">인증 문화</span>
+                                    <span class="text-[10px] bg-white border border-brandLightBeige px-2 py-1 rounded text-brandDark">취향 탐색</span>
+                                    <span class="text-[10px] bg-white border border-brandLightBeige px-2 py-1 rounded text-brandDark">팝업 스토어</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col md:flex-row gap-4 items-center justify-between text-xs text-brandMuted border-t border-brandLightBeige/80 pt-4">
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-brandAccent"></i> 마우스로 동그라미(노드)를 직접 드래그하여 원하는 위치로 움직이거나 당겨보세요. 마우스 스크롤로 줌 인/아웃도 가능합니다.</span>
+                        <span class="font-serif text-[11px] text-brandCoral font-semibold">데이터 소스: 경험 소비 관련 뉴스 리포트 35선 명사 분석</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 마카롱 5개 직관적 카드 형태로 전면 개편 -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
                 <!-- Card 1: Experience -->
-                <div class="bg-brandBg p-6 rounded-2xl border border-brandLightBeige text-center hover:border-brandAccent transition duration-300 flex flex-col justify-between h-full">
+                <div class="bg-[#FFF0F2] p-6 rounded-2xl border border-brandCoral/10 text-center hover:shadow-md transition duration-300 flex flex-col justify-between h-full">
                     <div>
-                        <div class="w-12 h-12 rounded-full bg-brandLightBeige flex items-center justify-center mx-auto mb-4 text-brandAccent text-lg">
+                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center mx-auto mb-4 text-brandCoral text-lg shadow-sm">
                             <i class="fa-solid fa-compass"></i>
                         </div>
                         <h3 class="font-serif font-bold text-base text-brandDark tracking-wider mb-2">Experience</h3>
                     </div>
-                    <div class="text-xs text-brandMuted border-t border-brandLightBeige/80 pt-3 font-medium">
+                    <div class="text-xs text-brandMuted border-t border-brandCoral/10 pt-3 font-semibold">
                         팝업스토어 · 전시 · 체험
                     </div>
                 </div>
 
                 <!-- Card 2: Emotion -->
-                <div class="bg-brandBg p-6 rounded-2xl border border-brandLightBeige text-center hover:border-brandAccent transition duration-300 flex flex-col justify-between h-full">
+                <div class="bg-[#FFF7ED] p-6 rounded-2xl border border-brandAccent/10 text-center hover:shadow-md transition duration-300 flex flex-col justify-between h-full">
                     <div>
-                        <div class="w-12 h-12 rounded-full bg-brandLightBeige flex items-center justify-center mx-auto mb-4 text-brandAccent text-lg">
+                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center mx-auto mb-4 text-brandAccent text-lg shadow-sm">
                             <i class="fa-solid fa-heart"></i>
                         </div>
                         <h3 class="font-serif font-bold text-base text-brandDark tracking-wider mb-2">Emotion</h3>
                     </div>
-                    <div class="text-xs text-brandMuted border-t border-brandLightBeige/80 pt-3 font-medium">
+                    <div class="text-xs text-brandMuted border-t border-brandAccent/10 pt-3 font-semibold">
                         몰입 · 행복 · 힐링
                     </div>
                 </div>
 
                 <!-- Card 3: Community -->
-                <div class="bg-brandBg p-6 rounded-2xl border border-brandLightBeige text-center hover:border-brandAccent transition duration-300 flex flex-col justify-between h-full">
+                <div class="bg-[#F0FDF4] p-6 rounded-2xl border-brandMint/10 text-center hover:shadow-md transition duration-300 flex flex-col justify-between h-full">
                     <div>
-                        <div class="w-12 h-12 rounded-full bg-brandLightBeige flex items-center justify-center mx-auto mb-4 text-brandAccent text-lg">
+                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center mx-auto mb-4 text-brandMint text-lg shadow-sm">
                             <i class="fa-solid fa-users"></i>
                         </div>
                         <h3 class="font-serif font-bold text-base text-brandDark tracking-wider mb-2">Community</h3>
                     </div>
-                    <div class="text-xs text-brandMuted border-t border-brandLightBeige/80 pt-3 font-medium">
+                    <div class="text-xs text-brandMuted border-t border-brandMint/10 pt-3 font-semibold">
                         팬덤 · SNS · 공유
                     </div>
                 </div>
 
                 <!-- Card 4: Exploration -->
-                <div class="bg-brandBg p-6 rounded-2xl border border-brandLightBeige text-center hover:border-brandAccent transition duration-300 flex flex-col justify-between h-full">
+                <div class="bg-[#F5F3FF] p-6 rounded-2xl border-purple-100 text-center hover:shadow-md transition duration-300 flex flex-col justify-between h-full">
                     <div>
-                        <div class="w-12 h-12 rounded-full bg-brandLightBeige flex items-center justify-center mx-auto mb-4 text-brandAccent text-lg">
+                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center mx-auto mb-4 text-purple-500 text-lg shadow-sm">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </div>
                         <h3 class="font-serif font-bold text-base text-brandDark tracking-wider mb-2">Exploration</h3>
                     </div>
-                    <div class="text-xs text-brandMuted border-t border-brandLightBeige/80 pt-3 font-medium">
+                    <div class="text-xs text-brandMuted border-t border-purple-100 pt-3 font-semibold">
                         취향 탐색 · 정체성
                     </div>
                 </div>
 
                 <!-- Card 5: Price -->
-                <div class="bg-brandBg p-6 rounded-2xl border border-brandLightBeige text-center hover:border-brandAccent transition duration-300 flex flex-col justify-between h-full">
+                <div class="bg-[#FFFBEB] p-6 rounded-2xl border-yellow-100 text-center hover:shadow-md transition duration-300 flex flex-col justify-between h-full">
                     <div>
-                        <div class="w-12 h-12 rounded-full bg-brandLightBeige flex items-center justify-center mx-auto mb-4 text-brandAccent text-lg">
+                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center mx-auto mb-4 text-yellow-500 text-lg shadow-sm">
                             <i class="fa-solid fa-tags"></i>
                         </div>
                         <h3 class="font-serif font-bold text-base text-brandDark tracking-wider mb-2">Price</h3>
                     </div>
-                    <div class="text-xs text-brandMuted border-t border-brandLightBeige/80 pt-3 font-medium">
+                    <div class="text-xs text-brandMuted border-t border-yellow-100 pt-3 font-semibold">
                         경험 사치 · 양극화
                     </div>
                 </div>
             </div>
 
             <!-- 핵심 발견 & 연구 연결 (editorial box) -->
-            <div class="border-l-4 border-brandAccent pl-6 space-y-4 max-w-4xl mx-auto">
-                <div class="text-xs font-bold tracking-widest text-brandAccent uppercase">Key Findings & Research Connection</div>
+            <div class="border-l-4 border-brandCoral pl-6 space-y-4 max-w-4xl mx-auto">
+                <div class="text-xs font-bold tracking-widest text-brandCoral uppercase">Key Findings & Research Connection</div>
                 <p class="font-serif text-lg leading-relaxed text-brandDark">
                     "경험 소비 담론은 단순히 '돈을 쓰는 방식'의 변화가 아니라 소비자가 경험을 통해 자신의 취향과 정체성을 탐색하는 현상으로 나타납니다."
                 </p>
@@ -367,10 +476,10 @@
         <div class="max-w-5xl mx-auto">
             <!-- 제목 (변경 금지 요구사항 완벽 반영) -->
             <div class="text-center max-w-3xl mx-auto mb-16">
-                <span class="font-serif text-brandAccent text-sm font-semibold tracking-wider block mb-2">04 / DATA VISUALIZATION</span>
+                <span class="font-serif text-brandCoral text-sm font-bold tracking-wider block mb-2">04 / DATA VISUALIZATION</span>
                 <h2 class="font-serif text-3xl md:text-5xl font-bold leading-tight" id="heatmap-main-title">F&B 트렌드의 등장과 교체 패턴</h2>
-                <p class="text-brandAccent text-lg font-serif mt-2" id="heatmap-sub-title">경험 소비 확산에 따른 소비자 관심 이동</p>
-                <div class="w-12 h-[1px] bg-brandAccent/60 mx-auto mt-6"></div>
+                <p class="text-brandCoral text-lg font-serif mt-2" id="heatmap-sub-title">경험 소비 확산에 따른 소비자 관심 이동</p>
+                <div class="w-12 h-[2px] bg-brandCoral mx-auto mt-6"></div>
             </div>
 
             <!-- 히트맵 차트 영역 -->
@@ -381,11 +490,11 @@
                     <div class="flex items-center space-x-2">
                         <span class="text-[10px] text-brandMuted">Low</span>
                         <div class="flex space-x-[2px]">
-                            <div class="w-3 h-3 bg-[#FAF8F5] border border-brandLightBeige"></div>
-                            <div class="w-3 h-3 bg-[#F4ECDF]"></div>
-                            <div class="w-3 h-3 bg-[#EADCC6]"></div>
-                            <div class="w-3 h-3 bg-[#D3AF83]"></div>
-                            <div class="w-3 h-3 bg-[#A47141]"></div>
+                            <div class="w-3 h-3 bg-[#FFFDF9] border border-brandLightBeige"></div>
+                            <div class="w-3 h-3 bg-[#FFF0F2]"></div>
+                            <div class="w-3 h-3 bg-[#FFCCD2]"></div>
+                            <div class="w-3 h-3 bg-[#FFA3AF]"></div>
+                            <div class="w-3 h-3 bg-[#FF7588]"></div>
                             <div class="w-3 h-3 bg-[#C05A5A]"></div>
                         </div>
                         <span class="text-[10px] text-brandMuted">High</span>
@@ -425,14 +534,14 @@
             <!-- [필수] Key Findings 심층 해석 영역 - 히트맵 하단으로 재배치 -->
             <div class="bg-white p-8 md:p-12 rounded-3xl border border-brandLightBeige shadow-sm">
                 <div class="flex items-center space-x-3 mb-8">
-                    <div class="w-2 h-6 bg-brandAccent rounded-full"></div>
+                    <div class="w-2.5 h-6 bg-brandCoral rounded-full"></div>
                     <h3 class="font-serif text-2xl font-bold text-brandDark">Key Findings & Data Interpretation</h3>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <!-- Finding 1 -->
                     <div class="space-y-3">
-                        <div class="text-brandAccent font-bold text-lg">① 트렌드 교체 가속화</div>
+                        <div class="text-brandCoral font-bold text-lg">① 트렌드 교체 가속화</div>
                         <p class="text-sm text-brandMuted leading-relaxed">
                             각 품목의 메가 트렌드 시점이 완전히 분리되며, 매우 가파르고 뾰족한 검색 피크를 형성하고 이동하는 양상이 나타납니다. 소비자는 유행이 안정화되기 전에 완전히 이탈합니다.
                         </p>
@@ -440,7 +549,7 @@
 
                     <!-- Finding 2 -->
                     <div class="space-y-3">
-                        <div class="text-brandAccent font-bold text-lg">② 유행 중첩 현상 증가</div>
+                        <div class="text-brandCoral font-bold text-lg">② 유행 중첩 현상 증가</div>
                         <p class="text-sm text-brandMuted leading-relaxed">
                             어느 한 품목의 인기가 정점을 친 뒤 쇠퇴하기 전, 이미 차세대 디저트가 치고 올라와 소비자 경험을 채우기 시작하여 복수의 유행 주기가 밀접하게 교차 및 중첩됩니다.
                         </p>
@@ -448,7 +557,7 @@
 
                     <!-- Finding 3 -->
                     <div class="space-y-3">
-                        <div class="text-brandAccent font-bold text-lg">③ 소비자 관심 이동</div>
+                        <div class="text-brandCoral font-bold text-lg">③ 소비자 관심 이동</div>
                         <p class="text-sm text-brandMuted leading-relaxed">
                             이 히트맵 분석의 주목적은 유행 주기가 단순히 짧아진 것만을 계산하려는 것이 아니라, 소비자의 시선과 경험 에너지가 흑당버블티에서 요아정으로 끊임없이 급속 선회하는 <strong>소비자 관심 이동 현상 자체를 증명</strong>하는 데 있습니다.
                         </p>
@@ -458,11 +567,11 @@
         </div>
     </section>
 
-    <!-- 히트맵에서 사례 연구로 전환되는 가교 역할의 저널리즘 징검다리 섹션 -->
-    <section class="py-24 px-6 md:px-16 lg:px-32 bg-brandBg border-t border-brandLightBeige relative overflow-hidden">
+    <!-- 히트맵에서 사례 연구로 전환되는 가교 역할의 인스타그램 오로라 그라데이션 징검다리 섹션 -->
+    <section class="py-28 px-6 md:px-16 lg:px-32 bg-gradient-to-tr from-[#FFF3F3] via-[#FFFDF9] to-[#F5F3FF] border-t border-brandLightBeige relative overflow-hidden">
         <div class="max-w-4xl mx-auto text-center space-y-6">
-            <span class="text-xs font-semibold tracking-[0.2em] uppercase text-brandAccent block">Transition Insight Bridge</span>
-            <div class="w-10 h-[1px] bg-brandAccent/60 mx-auto"></div>
+            <span class="text-xs font-bold tracking-[0.2em] uppercase text-brandCoral block">🍩 Transition Insight Bridge</span>
+            <div class="w-10 h-[1.5px] bg-brandCoral mx-auto"></div>
             <blockquote class="font-serif text-2xl md:text-3xl lg:text-4xl font-bold leading-relaxed text-brandDark max-w-3xl mx-auto">
                 "소비자는 왜 특정 경험에 반응하는가?<br>
                 <span class="font-playfair italic text-brandCoral">그리고 경험은 어떻게 지속되는가?</span>"
@@ -473,11 +582,11 @@
         </div>
     </section>
 
-    <!-- 6. [사례 분석] (경험 소비 시대에 브랜드가 선택한 두 전략) -->
+    <!-- 6. [사례 분석] -->
     <section id="case" class="py-32 px-6 md:px-16 lg:px-32 bg-white border-t border-brandLightBeige relative">
         <div class="max-w-5xl mx-auto">
             <div class="text-center max-w-2xl mx-auto mb-20">
-                <span class="font-serif text-brandAccent text-sm font-semibold tracking-wider block mb-2">05 / CASE STUDY</span>
+                <span class="font-serif text-brandCoral text-sm font-bold tracking-wider block mb-2">05 / CASE STUDY</span>
                 <h2 class="font-serif text-3xl md:text-4xl font-bold">경험 소비 시대에 브랜드가 선택한 두 전략</h2>
                 <p class="text-brandMuted mt-4 leading-relaxed">
                     트렌드 극복과 소비자의 회귀를 만들어내기 위해 두 브랜드가 실천하는 고유한 경험 메커니즘을 분석합니다.
@@ -485,16 +594,28 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch mb-20">
-                <!-- Case 1: Kancho -->
-                <div class="bg-brandBg rounded-3xl border border-brandLightBeige overflow-hidden flex flex-col justify-between hover:shadow-lg transition duration-500">
-                    <div class="p-8 md:p-12 space-y-6">
-                        <div class="flex justify-between items-start">
-                            <span class="bg-brandAccent text-white text-[10px] tracking-wider font-bold px-3 py-1 rounded-full uppercase">Case 01</span>
-                            <span class="text-xs text-brandAccent font-bold">참여형 소비</span>
+                <!-- Case 1: Kancho (인스타그램 피드 스타일) -->
+                <div class="bg-brandBg rounded-3xl border border-brandLightBeige overflow-hidden flex flex-col justify-between hover:shadow-xl transition duration-500 shadow-sm">
+                    <!-- 인스타 프로필 상단 스타일 -->
+                    <div class="flex items-center justify-between p-4 border-b border-brandLightBeige">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-brandCoral flex items-center justify-center text-sm">🍪</div>
+                            <div>
+                                <span class="text-xs font-bold block text-brandDark">kancho_official</span>
+                                <span class="text-[9px] text-brandMuted block">Sponsored</span>
+                            </div>
                         </div>
-                        <h3 class="font-serif text-3xl font-bold text-brandDark">칸쵸 : <span class="text-brandAccent">새로운 경험</span></h3>
+                        <i class="fa-solid fa-ellipsis-vertical text-brandMuted"></i>
+                    </div>
+
+                    <div class="p-8 md:p-10 space-y-6 flex-grow">
+                        <div class="flex justify-between items-start">
+                            <span class="bg-brandCoral text-white text-[10px] tracking-wider font-bold px-3 py-1 rounded-full uppercase">Case 01</span>
+                            <span class="text-xs text-brandCoral font-bold">참여형 소비</span>
+                        </div>
+                        <h3 class="font-serif text-3xl font-bold text-brandDark">칸쵸 : <span class="text-brandCoral">새로운 경험</span></h3>
                         
-                        <div class="space-y-4 pt-4 border-t border-brandLightBeige/60">
+                        <div class="space-y-4 pt-4 border-t border-brandLightBeige">
                             <h4 class="font-bold text-sm text-brandDark">핵심 전략</h4>
                             <p class="text-sm text-brandMuted leading-relaxed">
                                 호기심 자극을 통한 단기적 몰입과 참여형 이벤트 위주의 확산 방식
@@ -504,32 +625,54 @@
                         <div class="space-y-4">
                             <h4 class="font-bold text-sm text-brandDark">주요 조사 내용</h4>
                             <ul class="text-sm text-brandMuted space-y-2">
-                                <li><i class="fa-solid fa-circle-nodes text-brandAccent mr-2 text-[10px]"></i> <strong>이름 찾기 캠페인:</strong> 504개 이름 속 마이 네임 탐색 유희</li>
-                                <li><i class="fa-solid fa-circle-nodes text-brandAccent mr-2 text-[10px]"></i> <strong>SNS 유행 공유:</strong> '칸쵸깡' 등 놀이적 피드 확산 자극</li>
-                                <li><i class="fa-solid fa-circle-nodes text-brandAccent mr-2 text-[10px]"></i> <strong>참여형 소비:</strong> 놀이 기획 자체가 가치가 되는 순간 설계</li>
+                                <li><i class="fa-solid fa-circle-nodes text-brandCoral mr-2 text-[10px]"></i> <strong>이름 찾기 캠페인:</strong> 504개 이름 속 마이 네임 탐색 유희</li>
+                                <li><i class="fa-solid fa-circle-nodes text-brandCoral mr-2 text-[10px]"></i> <strong>SNS 유행 공유:</strong> '칸쵸깡' 등 놀이적 피드 확산 자극</li>
+                                <li><i class="fa-solid fa-circle-nodes text-brandCoral mr-2 text-[10px]"></i> <strong>참여형 소비:</strong> 놀이 기획 자체가 가치가 되는 순간 설계</li>
                             </ul>
                         </div>
                     </div>
                     
-                    <div class="p-8 md:px-12 md:pb-12 bg-brandLightBeige/40 border-t border-brandLightBeige/60 text-center">
-                        <span class="text-[10px] tracking-widest text-brandAccent font-bold uppercase block mb-2">Core Message</span>
+                    <!-- 피드 액션 바 -->
+                    <div class="px-6 py-3 border-t border-brandLightBeige flex justify-between text-brandMuted text-lg">
+                        <div class="flex gap-4">
+                            <i class="fa-regular fa-heart hover:text-brandCoral cursor-pointer transition"></i>
+                            <i class="fa-regular fa-comment hover:text-brandAccent cursor-pointer transition"></i>
+                            <i class="fa-regular fa-paper-plane hover:text-brandAccent cursor-pointer transition"></i>
+                        </div>
+                        <i class="fa-regular fa-bookmark hover:text-brandAccent cursor-pointer transition"></i>
+                    </div>
+
+                    <div class="p-8 md:px-10 md:pb-10 bg-brandLightBeige/40 border-t border-brandLightBeige text-center">
+                        <span class="text-[10px] tracking-widest text-brandCoral font-bold uppercase block mb-2">Core Message</span>
                         <p class="font-serif text-lg font-bold text-brandDark italic">"찾는 과정 자체가 소비 경험이 된다."</p>
                     </div>
                 </div>
 
-                <!-- Case 2: Lululemon -->
-                <div class="bg-brandBg rounded-3xl border border-brandLightBeige overflow-hidden flex flex-col justify-between hover:shadow-lg transition duration-500">
-                    <div class="p-8 md:p-12 space-y-6">
+                <!-- Case 2: Lululemon (인스타그램 피드 스타일) -->
+                <div class="bg-brandBg rounded-3xl border border-brandLightBeige overflow-hidden flex flex-col justify-between hover:shadow-xl transition duration-500 shadow-sm">
+                    <!-- 인스타 프로필 상단 스타일 -->
+                    <div class="flex items-center justify-between p-4 border-b border-brandLightBeige">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-brandDark flex items-center justify-center text-sm text-white">🧘</div>
+                            <div>
+                                <span class="text-xs font-bold block text-brandDark">lululemon_kr</span>
+                                <span class="text-[9px] text-brandMuted block">Active Community</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-ellipsis-vertical text-brandMuted"></i>
+                    </div>
+
+                    <div class="p-8 md:p-10 space-y-6 flex-grow">
                         <div class="flex justify-between items-start">
                             <span class="bg-brandDark text-white text-[10px] tracking-wider font-bold px-3 py-1 rounded-full uppercase">Case 02</span>
                             <span class="text-xs text-brandAccent font-bold">커뮤니티 중심</span>
                         </div>
                         <h3 class="font-serif text-3xl font-bold text-brandDark">룰루레몬 : <span class="text-brandAccent">지속적인 경험</span></h3>
                         
-                        <div class="space-y-4 pt-4 border-t border-brandLightBeige/60">
+                        <div class="space-y-4 pt-4 border-t border-brandLightBeige">
                             <h4 class="font-bold text-sm text-brandDark">핵심 전략</h4>
                             <p class="text-sm text-brandMuted leading-relaxed">
-                                라이프스타일에 침투하여 단단한 유대감을 구축하는 관계 유지 방식
+                                라이스스타일에 침투하여 단단한 유대감을 구축하는 관계 유지 방식
                             </p>
                         </div>
 
@@ -543,45 +686,82 @@
                         </div>
                     </div>
                     
-                    <div class="p-8 md:px-12 md:pb-12 bg-brandLightBeige/40 border-t border-brandLightBeige/60 text-center">
+                    <!-- 피드 액션 바 -->
+                    <div class="px-6 py-3 border-t border-brandLightBeige flex justify-between text-brandMuted text-lg">
+                        <div class="flex gap-4">
+                            <i class="fa-solid fa-heart text-brandCoral cursor-pointer transition"></i>
+                            <i class="fa-regular fa-comment hover:text-brandAccent cursor-pointer transition"></i>
+                            <i class="fa-regular fa-paper-plane hover:text-brandAccent cursor-pointer transition"></i>
+                        </div>
+                        <i class="fa-solid fa-bookmark text-brandAccent cursor-pointer transition"></i>
+                    </div>
+
+                    <div class="p-8 md:px-10 md:pb-10 bg-brandLightBeige/40 border-t border-brandLightBeige text-center">
                         <span class="text-[10px] tracking-widest text-brandAccent font-bold uppercase block mb-2">Core Message</span>
                         <p class="font-serif text-lg font-bold text-brandDark italic">"참여할 이유를 지속적으로 제공한다."</p>
                     </div>
                 </div>
             </div>
 
-            <!-- 칸쵸 vs 룰루레몬 경험 설계 매트릭스 다이어그램 표 -->
-            <div class="mb-20 bg-brandBg border border-brandLightBeige rounded-3xl p-8 md:p-12">
-                <div class="text-center mb-8">
-                    <span class="text-xs text-brandAccent font-bold uppercase tracking-widest">Experience Paradigm Shift</span>
-                    <h4 class="font-serif text-xl font-bold mt-1">두 전략의 경험 가치 다이어그램</h4>
-                    <p class="text-xs text-brandMuted mt-1">새로운 단발성 경험에서 일상에 스며드는 영속적인 관계로의 비교</p>
+            <!-- 경험 설계 매트릭스 다이어그램 표 (볼드/컬러 강조 최적화 완료) -->
+            <div class="mb-20 bg-brandBg border border-brandLightBeige rounded-3xl p-8 md:p-12 shadow-sm">
+                <div class="text-center mb-10">
+                    <span class="text-xs text-brandCoral font-bold uppercase tracking-widest bg-brandCoral/10 px-3 py-1 rounded-full">Experience Strategy Matrix</span>
+                    <h4 class="font-serif text-2xl font-bold mt-3 text-brandDark">두 전략의 경험 가치 다이어그램</h4>
+                    <p class="text-xs text-brandMuted mt-1">브랜드 목적과 가치 주기에 대응하는 유효한 경험 설계 비교</p>
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse min-w-[500px]">
+                    <table class="w-full text-left border-collapse min-w-[550px]">
                         <thead>
                             <tr class="border-b border-brandLightBeige/80">
-                                <th class="pb-4 font-serif text-sm font-bold text-brandMuted uppercase tracking-wider w-1/4">구분 (Dimension)</th>
-                                <th class="pb-4 font-serif text-sm font-bold text-brandAccent uppercase tracking-wider w-3/8 text-center bg-brandAccent/5 rounded-t-xl">칸쵸 (새로운 경험)</th>
-                                <th class="pb-4 font-serif text-sm font-bold text-brandDark uppercase tracking-wider w-3/8 text-center">룰루레몬 (지속적인 경험)</th>
+                                <th class="pb-4 font-serif text-xs md:text-sm font-bold text-brandMuted uppercase tracking-wider w-1/4">구분 (Dimension)</th>
+                                <!-- 칸쵸 컬럼 -->
+                                <th class="pt-8 pb-4 font-serif text-xs md:text-sm font-bold text-brandDark uppercase tracking-wider w-3/8 text-center bg-brandCoral/5 rounded-t-xl border-t-2 border-x border-brandCoral/20 relative">
+                                    <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brandCoral text-white text-[8px] font-bold tracking-widest px-2.5 py-0.5 rounded-full uppercase shadow-sm whitespace-nowrap">
+                                        ⚡ 단기 발견 지향
+                                    </span>
+                                    칸쵸
+                                </th>
+                                <!-- 룰루레몬 컬럼 -->
+                                <th class="pt-8 pb-4 font-serif text-xs md:text-sm font-bold text-brandDark uppercase tracking-wider w-3/8 text-center bg-brandAccent/10 rounded-t-xl border-t-2 border-x border-brandAccent/40 relative">
+                                    <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brandAccent text-white text-[8px] font-bold tracking-widest px-2.5 py-0.5 rounded-full uppercase shadow-sm whitespace-nowrap">
+                                        🌱 장기 관계 지향
+                                    </span>
+                                    룰루레몬
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-brandLightBeige/60">
-                            <tr>
-                                <td class="py-4 font-bold text-xs md:text-sm text-brandDark">발견 및 관계</td>
-                                <td class="py-4 text-center text-xs md:text-sm text-brandMuted bg-brandAccent/5"><strong>참여:</strong> 숨은 이름 찾기</td>
-                                <td class="py-4 text-center text-xs md:text-sm text-brandDark font-medium"><strong>관계:</strong> 끈끈한 취향 커뮤니티</td>
+                            <!-- 로우 1: 일반 글씨체 -->
+                            <tr class="group">
+                                <td class="py-5 font-bold text-xs md:text-sm text-brandDark">설계적 핵심 가치</td>
+                                <td class="py-5 text-center text-xs md:text-sm text-brandMuted bg-brandCoral/5 transition">
+                                    즉각적인 유희, 트렌디함, 폭발적 화제 생성
+                                </td>
+                                <td class="py-5 text-center text-xs md:text-sm text-brandMuted bg-brandAccent/10 transition">
+                                    안정성, 라이프스타일 융합, 깊은 브랜드 충성도
+                                </td>
                             </tr>
-                            <tr>
-                                <td class="py-4 font-bold text-xs md:text-sm text-brandDark">공유 및 지속</td>
-                                <td class="py-4 text-center text-xs md:text-sm text-brandMuted bg-brandAccent/5"><strong>화제성:</strong> 단발적인 바이럴 전파</td>
-                                <td class="py-4 text-center text-xs md:text-sm text-brandDark font-medium"><strong>커뮤니티:</strong> 동료와의 영속적 상호작용</td>
+                            <!-- 로우 2: 일반 글씨체 -->
+                            <tr class="group">
+                                <td class="py-5 font-bold text-xs md:text-sm text-brandDark">소비자 행동 촉발</td>
+                                <td class="py-5 text-center text-xs md:text-sm text-brandMuted bg-brandCoral/5 transition">
+                                    즉각적 재미를 수집하고 가볍게 SNS 인증하기
+                                </td>
+                                <td class="py-5 text-center text-xs md:text-sm text-brandMuted bg-brandAccent/10 transition">
+                                    동료를 모으고 일상 루틴으로 정기 방문하기
+                                </td>
                             </tr>
-                            <tr class="border-b border-brandLightBeige">
-                                <td class="py-4 font-bold text-xs md:text-sm text-brandDark">경험 주기</td>
-                                <td class="py-4 text-center text-xs md:text-sm text-brandCoral font-bold bg-brandAccent/5 rounded-b-xl">단기 경험 (Ephemeral)</td>
-                                <td class="py-4 text-center text-xs md:text-sm text-brandDark font-bold">지속 경험 (Enduring)</td>
+                            <!-- 로우 3: 성과 측면에만 각자 고유 브랜드 컬러로 강력한 볼드 강조 처리 적용 -->
+                            <tr class="group">
+                                <td class="py-5 font-bold text-xs md:text-sm text-brandDark">관계적 성과</td>
+                                <td class="py-5 text-center text-xs md:text-sm text-brandCoral font-bold bg-brandCoral/5 rounded-b-xl transition">
+                                    확산력(Viral Reach) 중심의 단기 파급력
+                                </td>
+                                <td class="py-5 text-center text-xs md:text-sm text-brandAccent font-bold bg-brandAccent/10 rounded-b-xl transition">
+                                    지속성(Retention) 중심의 영속적 이탈 방지
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -589,17 +769,17 @@
             </div>
 
             <!-- 최종 비교 테이블 / 카드뷰 (변경 불가 대조 논리 유지) -->
-            <div class="bg-brandBg border border-brandLightBeige rounded-3xl p-8 md:p-12">
+            <div class="bg-brandBg border border-brandLightBeige rounded-3xl p-8 md:p-12 shadow-sm">
                 <h4 class="font-serif text-xl font-bold text-center mb-8">두 전략의 종착점 비교</h4>
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center text-center">
                     
                     <div class="md:col-span-5 space-y-2">
-                        <span class="text-xs text-brandAccent font-bold">KANCHONIAN WAY</span>
+                        <span class="text-xs text-brandCoral font-bold">KANCHONIAN WAY</span>
                         <div class="font-serif text-2xl font-bold text-brandDark">칸쵸 : 새로운 경험</div>
                         <p class="text-xs text-brandMuted">빠르고 폭발적인 순간 점령, 탐색의 유희</p>
                     </div>
                     
-                    <div class="md:col-span-2 flex justify-center text-brandAccent font-serif italic text-3xl">
+                    <div class="md:col-span-2 flex justify-center text-brandCoral font-serif italic text-3xl">
                         <i class="fa-solid fa-shuffle rotate-90 md:rotate-0"></i>
                     </div>
                     
@@ -614,51 +794,51 @@
         </div>
     </section>
 
-    <!-- 7. 최종 인사이트 (에필로그 출처 크레딧 명시 완료) -->
+    <!-- 7. 최종 인사이트 -->
     <section id="insight" class="py-32 px-6 md:px-16 lg:px-32 bg-brandDark text-brandBg relative overflow-hidden">
-        <!-- 배경 데코 요소 -->
-        <div class="absolute -right-20 -bottom-20 w-96 h-96 rounded-full bg-brandAccent/10 blur-3xl"></div>
-        <div class="absolute -left-20 -top-20 w-96 h-96 rounded-full bg-[#9E3B3B]/10 blur-3xl"></div>
+        <!-- 배경 카카오 밤하늘 빛 오로라 -->
+        <div class="absolute -right-20 -bottom-20 w-96 h-96 rounded-full bg-brandCoral/10 blur-3xl"></div>
+        <div class="absolute -left-20 -top-20 w-96 h-96 rounded-full bg-brandAccent/10 blur-3xl"></div>
 
         <div class="max-w-4xl mx-auto text-center space-y-8 relative z-10">
-            <span class="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-brandAccent block mb-4">06 / FINAL INSIGHT</span>
+            <span class="text-xs md:text-sm font-semibold tracking-[0.3em] uppercase text-brandCoral block mb-4">06 / FINAL INSIGHT</span>
             
             <h2 class="font-serif text-2xl md:text-5xl font-bold tracking-tight leading-relaxed text-white">
-                "경험 소비 시대에는 상품 자체보다<br>소비자가 <span class="font-playfair italic text-brandAccent font-light">다시 참여하고 싶게 만드는</span><br>경험 설계가 중요하다."
+                "경험 소비 시대에는 상품 자체보다<br>소비자가 <span class="font-playfair italic text-brandCoral font-light">다시 참여하고 싶게 만드는</span><br>경험 설계가 중요하다."
             </h2>
             
-            <div class="w-12 h-[2px] bg-brandAccent mx-auto my-8"></div>
+            <div class="w-12 h-[3px] bg-brandCoral mx-auto my-8 rounded-full"></div>
             
             <!-- 최종 인사이트 본문 및 하단 크레딧 정식 삽입 -->
-            <div class="max-w-3xl mx-auto space-y-6 text-sm md:text-base text-[#BAC1C8] leading-relaxed font-serif text-left md:text-center">
+            <div class="max-w-3xl mx-auto space-y-6 text-sm md:text-base text-brandLightBeige leading-relaxed font-serif text-left md:text-center">
                 <p>
                     고객의 구매 여정은 이제 예측 가능한 실선이 아니다. 잠깐 반짝였다 사라지는 점에 가깝다. 따라서 브랜딩은 짧고 결정적인 고객과의 만남 순간에 집중해야 한다. 
                 </p>
-                <p class="text-brandAccent font-semibold text-base md:text-lg">
+                <p class="text-brandCoral font-semibold text-base md:text-lg">
                     브랜딩의 목표는 긴 여정에서 반드시 들러야 하는 경유지가 될 필요가 있다.
                 </p>
                 <p>
-                    그 경유지는 거대한 세계관이 아니라, 소비자의 기억에 남는 하나의 <strong class="text-white font-sans font-bold">‘작은 경험’</strong>이다. 그리고 그 경험은 이탈 이후에도 다시 떠올릴 수 있는 <span class="text-white border-b border-brandAccent/40 pb-1 font-sans">여운</span>을 남겨야 한다.
+                    그 경유지는 거대한 세계관이 아니라, 소비자의 기억에 남는 하나의 <strong class="text-white font-sans font-bold">‘작은 경험’</strong>이다. 그리고 그 경험은 이탈 이후에도 다시 떠올릴 수 있는 <span class="text-brandCoral border-b border-brandCoral/40 pb-1 font-sans">여운</span>을 남겨야 한다.
                 </p>
                 
-                <!-- 매거진 정식 출처 링크 (뉴욕타임즈 에디토리얼 스타일) -->
-                <div class="pt-8 border-t border-[#BAC1C8]/10 text-xs text-brandMuted/80 font-sans tracking-wide">
-                    <span class="block mb-1 text-[10px] text-brandAccent uppercase tracking-widest font-bold">Source of Inspiration</span>
-                    출처: <a href="https://magazine.cheil.com/57611?utm_source=chatgpt.com" target="_blank" class="text-brandBg hover:text-brandAccent transition underline underline-offset-4 decoration-brandAccent/40 hover:decoration-brandAccent">제일기획 매거진 『이탈하는 소비자를 잡는 ‘작은 경험’의 여운』</a>
+                <!-- 매거진 정식 출처 링크 -->
+                <div class="pt-8 border-t border-brandBg/10 text-xs text-brandMuted font-sans tracking-wide">
+                    <span class="block mb-1 text-[10px] text-brandCoral uppercase tracking-widest font-bold">Source of Inspiration</span>
+                    출처: <a href="https://magazine.cheil.com/57611?utm_source=chatgpt.com" target="_blank" class="text-brandBg hover:text-brandCoral transition underline underline-offset-4 decoration-brandCoral/40 hover:decoration-brandCoral">제일기획 매거진 『이탈하는 소비자를 잡는 ‘작은 경험’의 여운』</a>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-[#121314] text-[#6E7278] text-xs py-12 px-6 border-t border-brandDark text-center">
+    <footer class="bg-[#2B2120] text-brandMuted text-xs py-12 px-6 border-t border-[#120B0A] text-center">
         <p class="uppercase tracking-widest font-serif mb-3">EXPERIENCE CONSUMPTION & F&B TRENDS DECK MOCKUP</p>
         <p>&copy; 2026 Experience Insight Project. All rights reserved.</p>
     </footer>
 
-    <!-- JavaScript for Data Loading and Scroll Interaction -->
+    <!-- JavaScript for Data Loading, Scroll Interaction & D3 Physics Network -->
     <script>
-        // 1. CSV 데이터 객체화 (요청하신 업로드 파일 구조 그대로 탑재)
+        // 1. CSV 데이터 객체화
         const trendsData = {
             "요아정": [25.18, 19.06, 15.19, 16.86, 26.15, 105.86, 211.27, 198.58, 599.13, 162.99],
             "크룽지": [0.02, 0.03, 0.02, 5.30, 1016.64, 906.35, 486.18, 301.59, 159.24, 93.01],
@@ -668,21 +848,21 @@
 
         const years = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
 
-        // 데이터의 최대값 및 최솟값 탐색 (색 농도 정규화를 위함)
+        // 데이터의 최대값 및 최솟값 탐색
         let maxValue = 0;
         Object.values(trendsData).forEach(arr => {
             arr.forEach(val => { if(val > maxValue) maxValue = val; });
         });
 
-        // 2. 히트맵 셀 색상 매핑 함수 (세련된 미니멀 골드/베이지 스케일링에서 피크치는 코랄-레드로 반전 강조)
+        // 2. 히트맵 셀 색상 매핑 함수
         function getCellBgColor(val) {
             const ratio = val / maxValue;
-            if (ratio < 0.01) return '#FAF8F5'; // 최소치
-            if (ratio < 0.05) return '#F4ECDF';
-            if (ratio < 0.15) return '#EADCC6';
-            if (ratio < 0.3) return '#D3AF83';
-            if (ratio < 0.6) return '#A47141';
-            return '#C05A5A'; // 최고 관심도 구간 (탕후루 2695 / 흑당버블티 1580 / 크룽지 1016)
+            if (ratio < 0.01) return '#FFFDF9'; // 최소 기본 배경 크림색
+            if (ratio < 0.05) return '#FFF0F2'; // 연한 우유 핑크
+            if (ratio < 0.15) return '#FFCCD2'; // 연딸기 마카롱 핑크
+            if (ratio < 0.3) return '#FFA3AF';  // 생딸기 쥬스 핑크
+            if (ratio < 0.6) return '#FF7588';  // 진한 스트로베리 시럽
+            return '#C05A5A'; // 피크 점
         }
 
         // 히트맵 동적 렌더링
@@ -692,7 +872,7 @@
             const rowDiv = document.createElement('div');
             rowDiv.className = 'grid grid-cols-11 gap-2 items-center';
 
-            // 품목 이름 셀
+            // 품목 이름 셀 (다크초콜릿 브라운)
             const nameCell = document.createElement('div');
             nameCell.className = 'text-left font-serif font-bold text-sm text-brandDark pr-2 py-3 border-r border-brandLightBeige';
             nameCell.innerText = item;
@@ -705,7 +885,6 @@
                 cell.className = 'heatmap-cell h-12 rounded-lg cursor-pointer flex items-center justify-center text-[10px] font-bold text-transparent hover:text-white relative';
                 cell.style.backgroundColor = bgColor;
                 
-                // 만약 아주 진한 셀이면 글자색 흰색, 연하면 차콜로 툴팁 보완
                 const isDark = val > 400;
                 cell.innerHTML = `
                     <span class="hidden md:inline select-none">${Math.round(val)}</span>
@@ -714,7 +893,7 @@
                     </div>
                 `;
 
-                // Hover Interaction 커스텀
+                // Hover Interaction Custom
                 cell.addEventListener('mouseenter', (e) => {
                     cell.querySelector('div').classList.remove('hidden');
                     cell.classList.remove('text-transparent');
@@ -739,7 +918,7 @@
             document.getElementById('progressBar').style.width = scrolled + '%';
         });
 
-        // 4. 스크롤 페이드인 인터랙션 구현 (Intersection Observer)
+        // 4. 스크롤 페이드인 인터랙션 구현
         const observerOptions = {
             root: null,
             threshold: 0.1,
@@ -759,6 +938,262 @@
             observer.observe(el);
         });
 
+        // ==========================================
+        // 5. 대화형 D3.js 물리 시뮬레이션 기반 네트워크 그래프
+        // ==========================================
+        const graphData = {
+            nodes: [
+                { id: "경험 소비", group: "Emotion", size: 42, desc: "제품의 기능적 소유를 넘어 마음의 울림과 자기 정체성을 확립하기 위한 체험 행동" },
+                { id: "소유 너머", group: "Emotion", size: 28, desc: "물건의 단순 영구 보관보다 그것을 소유하는 순간의 밀도 높은 스토리와 유희에 가치를 매기는 행위" },
+                { id: "브랜드 세계관", group: "Exploration", size: 30, desc: "브랜드 고유의 철학적 가치를 스토리와 캐릭터 등으로 입체화하여 몰입 유도" },
+                { id: "오프라인 공간", group: "Experience", size: 34, desc: "온라인 공간이 제공하지 못하는 오감 자극과 물리적인 실재 체험을 제공하는 공간" },
+                { id: "경험 사치", group: "Price", size: 25, desc: "비싸더라도 특별한 취향 만족과 차별화된 기억 수집을 위해서라면 과감하게 투자하는 가심비 소비" },
+                { id: "디지털 피로", group: "Emotion", size: 22, desc: "지나친 스크린 속 피드 범람에서 일탈하여 현장감 넘치는 아날로그와 힐링으로 귀환하는 욕망" },
+                { id: "이색 체험", group: "Experience", size: 26, desc: "기존 카테고리를 허물고 낯설지만 짜릿한 미각적/청각적 만족을 주는 하이브리드 미식 체험" },
+                { id: "몰입형 공간", group: "Experience", size: 29, desc: "외부 세계와 단절된 채 브랜드 고유의 사운드와 조명, 미식에만 오롯이 동화되는 한정된 차원 설계" },
+                { id: "팝업 스토어", group: "Experience", size: 36, desc: "짧은 시간 내에 극적인 희소성과 호기심을 폭발시켜 실시간 줄서기와 인증을 유도하는 F&B의 성지" },
+                { id: "인증 문화", group: "Community", size: 38, desc: "체크인과 리뷰를 남기고 마음에 드는 음식을 박제하며 온라인 상의 자아를 장식하는 신인류 행동 양식" },
+                { id: "가치 소비", group: "Exploration", size: 24, desc: "환경이나 소상공인 등 사회적 올바름과 소신을 지지하기 위해 윤리적 디저트나 친환경 패키지를 구매하는 것" },
+                { id: "취향 탐색", group: "Exploration", size: 32, desc: "타인의 시선을 넘어 나만의 입맛, 디테일한 커스텀 조합법을 개척하고 발견해 나가는 기쁨" },
+                { id: "정체성 수집", group: "Exploration", size: 31, desc: "방문한 특별 디저트 성지의 도장 깨기 기록을 개인 피드에 차곡차곡 모아 브랜딩 자아를 설계" },
+                { id: "공동체 유대", group: "Community", size: 27, desc: "같은 디저트를 공유하고, 러닝과 요가를 함께하며 온-오프라인의 진정성 있는 인맥을 공유" },
+                { id: "오감 브랜딩", group: "Experience", size: 23, desc: "미각에만 한정짓지 않고 시각, 질감, 사운드를 함께 융합하여 기억의 지속 시간을 연장시키는 브랜딩" }
+            ],
+            links: [
+                { source: "경험 소비", target: "소유 너머" },
+                { source: "경험 소비", target: "인증 문화" },
+                { source: "경험 소비", target: "취향 탐색" },
+                { source: "경험 소비", target: "팝업 스토어" },
+                { source: "소유 너머", target: "가치 소비" },
+                { source: "브랜드 세계관", target: "정체성 수집" },
+                { source: "브랜드 세계관", target: "공동체 유대" },
+                { source: "오프라인 공간", target: "몰입형 공간" },
+                { source: "오프라인 공간", target: "팝업 스토어" },
+                { source: "오프라인 공간", target: "오감 브랜딩" },
+                { source: "경험 사치", target: "가치 소비" },
+                { source: "디지털 피로", target: "오프라인 공간" },
+                { source: "이색 체험", target: "팝업 스토어" },
+                { source: "몰입형 공간", target: "오감 브랜딩" },
+                { source: "인증 문화", target: "정체성 수집" },
+                { source: "인증 문화", target: "공동체 유대" },
+                { source: "취향 탐색", target: "정체성 수집" },
+                { source: "가치 소비", target: "취향 탐색" }
+            ]
+        };
+
+        const colorMap = {
+            "Experience": "#7BC4B8", /* 민트 */
+            "Emotion": "#FF8A98",    /* 스트로베리 핑크 */
+            "Community": "#E6A15C",  /* 카라멜 골드 */
+            "Exploration": "#A78BFA",/* 퍼플 */
+            "Price": "#FCD34D"       /* 옐로우 */
+        };
+
+        let svg, simulation, link, node, labels;
+        let width, height;
+
+        function initD3Network() {
+            const container = d3.select("#d3-network-canvas");
+            container.selectAll("*").remove(); // 초기화
+            
+            const rect = container.node().getBoundingClientRect();
+            width = rect.width || 500;
+            height = rect.height || 520;
+
+            svg = container.append("svg")
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("viewBox", `0 0 ${width} ${height}`)
+                .attr("preserveAspectRatio", "xMidYMid meet");
+
+            // 줌 & 팬 레이어 추가
+            const g = svg.append("g");
+            svg.call(d3.zoom().on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            }));
+
+            // 물리 시뮬레이션 설정
+            simulation = d3.forceSimulation(graphData.nodes)
+                .force("link", d3.forceLink(graphData.links).id(d => d.id).distance(100))
+                .force("charge", d3.forceManyBody().strength(-180))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force("collide", d3.forceCollide().radius(d => d.size + 15));
+
+            // 연결선(Link) 드로잉
+            link = g.append("g")
+                .attr("stroke", "#F3EFE9")
+                .attr("stroke-opacity", 0.8)
+                .attr("stroke-width", 2)
+                .selectAll("line")
+                .data(graphData.links)
+                .join("line");
+
+            // 노드(Node) 드로잉
+            node = g.append("g")
+                .selectAll("circle")
+                .data(graphData.nodes)
+                .join("circle")
+                .attr("r", d => d.size * 0.7 + 6)
+                .attr("fill", d => colorMap[d.group])
+                .attr("stroke", "#FFFDF9")
+                .attr("stroke-width", 2)
+                .attr("cursor", "grab")
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended))
+                .on("click", handleNodeClick);
+
+            // 레이블(Label) 드로잉
+            labels = g.append("g")
+                .selectAll("text")
+                .data(graphData.nodes)
+                .join("text")
+                .attr("text-anchor", "middle")
+                .attr("dy", d => d.size * 0.7 + 20)
+                .attr("font-size", "10px")
+                .attr("font-weight", "bold")
+                .attr("fill", "#3A302E")
+                .text(d => d.id)
+                .attr("pointer-events", "none");
+
+            simulation.on("tick", () => {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                node
+                    .attr("cx", d => d.x)
+                    .attr("cy", d => d.y);
+
+                labels
+                    .attr("x", d => d.x)
+                    .attr("y", d => d.y);
+            });
+        }
+
+        // 클릭 시 인터랙티브 패널 갱신
+        function handleNodeClick(event, d) {
+            d3.select("#selectedNodeName").text(d.id);
+            d3.select("#selectedNodeCategory")
+                .text(d.group)
+                .style("background-color", colorMap[d.group]);
+            d3.select("#selectedNodeDesc").text(d.desc);
+
+            // 인접 노드 탐색 및 갱신
+            const neighbors = new Set();
+            graphData.links.forEach(l => {
+                if (l.source.id === d.id) neighbors.add(l.target.id);
+                if (l.target.id === d.id) neighbors.add(l.source.id);
+            });
+
+            const neighborContainer = d3.select("#selectedNodeNeighbors");
+            neighborContainer.selectAll("*").remove();
+
+            if (neighbors.size === 0) {
+                neighborContainer.append("span")
+                    .attr("class", "text-[10px] text-brandMuted")
+                    .text("인접 노드 연결 없음");
+            } else {
+                neighbors.forEach(nName => {
+                    neighborContainer.append("span")
+                        .attr("class", "text-[10px] bg-white border border-brandLightBeige px-2 py-1 rounded text-brandDark shadow-sm hover:border-brandCoral transition cursor-pointer")
+                        .text(nName)
+                        .on("click", () => {
+                            const targetNode = graphData.nodes.find(n => n.id === nName);
+                            if (targetNode) {
+                                // 강제 포커싱
+                                simulation.alpha(0.3).restart();
+                                handleNodeClick(null, targetNode);
+                            }
+                        });
+                });
+            }
+
+            // 노드 하이라이팅 이펙트
+            node.transition().duration(200)
+                .attr("opacity", n => (n.id === d.id || neighbors.has(n.id)) ? 1 : 0.25);
+            link.transition().duration(200)
+                .attr("stroke-opacity", l => (l.source.id === d.id || l.target.id === d.id) ? 0.9 : 0.1)
+                .attr("stroke", l => (l.source.id === d.id || l.target.id === d.id) ? colorMap[d.group] : "#F3EFE9");
+        }
+
+        // 실시간 검색창 필터링 함수
+        document.getElementById('nodeSearchInput')?.addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase().trim();
+            if (!query) {
+                node.transition().attr("opacity", 1);
+                link.transition().attr("stroke-opacity", 0.8).attr("stroke", "#F3EFE9");
+                return;
+            }
+
+            node.transition().duration(200)
+                .attr("opacity", n => n.id.toLowerCase().includes(query) ? 1 : 0.15);
+            link.transition().duration(200)
+                .attr("stroke-opacity", l => (l.source.id.toLowerCase().includes(query) || l.target.id.toLowerCase().includes(query)) ? 0.8 : 0.05);
+        });
+
+        // 카테고리 탭 필터링 함수
+        function filterNetwork(category) {
+            // 버튼 활성화 탭 클래스 변경
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                if (btn.innerText.trim() === category) {
+                    btn.classList.add('active', 'bg-brandCoral/20', 'text-brandCoral', 'border-brandCoral');
+                    btn.classList.remove('bg-white', 'text-brandMuted');
+                } else {
+                    btn.classList.remove('active', 'bg-brandCoral/20', 'text-brandCoral', 'border-brandCoral');
+                    btn.classList.add('bg-white', 'text-brandMuted');
+                }
+            });
+
+            if (category === 'All') {
+                node.transition().duration(300).attr("opacity", 1);
+                link.transition().duration(300).attr("stroke-opacity", 0.8).attr("stroke", "#F3EFE9");
+                return;
+            }
+
+            node.transition().duration(300)
+                .attr("opacity", n => n.group === category ? 1 : 0.15);
+            link.transition().duration(300)
+                .attr("stroke-opacity", l => (l.source.group === category && l.target.group === category) ? 0.8 : 0.05);
+        }
+
+        // 드래그 라이프사이클 함수들
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+            d3.select(this).classed("node-active", true);
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+            d3.select(this).classed("node-active", false);
+        }
+
+        // 반응형 리사이징 지원
+        window.addEventListener("resize", () => {
+            if (svg) {
+                const container = d3.select("#d3-network-canvas");
+                const rect = container.node().getBoundingClientRect();
+                width = rect.width;
+                height = rect.height;
+                svg.attr("viewBox", `0 0 ${width} ${height}`);
+                simulation.force("center", d3.forceCenter(width / 2, height / 2));
+                simulation.alpha(0.3).restart();
+            }
+        });
+
         // 윈도우 로드 시 첫 메인 트리거 실행
         window.onload = function() {
             document.querySelectorAll('.fade-in-element').forEach((el, index) => {
@@ -766,6 +1201,9 @@
                     el.classList.add('visible');
                 }, index * 150);
             });
+            
+            // 네트워크 그래프 시뮬레이션 즉시 구동
+            initD3Network();
         };
     </script>
 </body>

@@ -353,6 +353,62 @@
       margin-top: 38px;
     }
 
+    /* 애착유형 3종은 한 줄, '담론'(분석 관점)은 아래 별도 라인 */
+    .method-grid.attach-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    .lens-card {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      margin-top: 18px;
+      padding: 22px 30px;
+      border-radius: var(--radius);
+      background: var(--blue);
+      box-shadow: 0 16px 40px rgba(38, 60, 89, 0.22);
+    }
+    .lens-card .lens-tag {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding-right: 28px;
+      border-right: 1px solid rgba(255, 255, 255, 0.28);
+    }
+    .lens-card .lens-tag .label {
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    .lens-card .lens-tag .value {
+      color: #fff;
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .lens-card p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+    @media (max-width: 620px) {
+      .lens-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 20px 22px;
+      }
+      .lens-card .lens-tag {
+        flex-direction: row;
+        align-items: baseline;
+        gap: 12px;
+        padding-right: 0;
+        border-right: none;
+      }
+    }
+
     .method-card {
       min-height: 150px;
       padding: 24px;
@@ -801,7 +857,7 @@
         <p class="kicker">Brief Context</p>
         <h2>애착유형은 친밀한 관계를 맺고 유지하는 방식이다</h2>
         <p class="lead">애착유형은 가까운 사람과의 관계에서 안정감과 친밀성을 어떻게 형성하는지를 설명하는 심리학 개념이다.<br><br>일반적으로 안정형, 불안형, 회피형 등으로 설명되며, 고정된 성격이라기보다 관계 속에서 반복되는 정서적 반응 패턴에 가깝다.</p>
-        <div class="method-grid">
+        <div class="method-grid attach-grid">
           <div class="method-card">
             <div class="label">회피형</div>
             <div class="value" style="color:var(--avoidant)">거리두기</div>
@@ -817,11 +873,13 @@
             <div class="value" style="color:var(--secure)">균형</div>
             <p>친밀감과 독립성을 비교적 균형 있게 다루는 방식으로 설명된다.</p>
           </div>
-          <div class="method-card">
-            <div class="label">분석 관점</div>
-            <div class="value" style="color:var(--blue)">담론</div>
-            <p>이 연구는 실제 애착유형 분포보다, 온라인에서 각 유형이 어떤 의미로 사용되는지에 주목한다.</p>
+        </div>
+        <div class="lens-card">
+          <div class="lens-tag">
+            <span class="label">분석 관점</span>
+            <span class="value">담론</span>
           </div>
+          <p>이 연구는 실제 애착유형 분포보다, 온라인에서 각 유형이 어떤 의미로 사용되는지에 주목한다.</p>
         </div>
       </div>
     </section>
